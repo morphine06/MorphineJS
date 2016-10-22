@@ -236,14 +236,7 @@ module.exports = class MorphineServer {
         //     app.set('trust proxy', 1) ; // trust first proxy
         //     sess.cookie.secure = true ; // serve secure cookies
         // }
-        sess.store = new RedisStore({
-            // adapter: 'sails-redis',
-            host: 'localhost',
-            // port: 6379,
-            db: 1,
-            prefix: 'sessms',
-            pass: null
-        }) ;
+        sess.store = new RedisStore(morphineserver.config.models.redis) ;
         app.use(session(sess)) ;
 
 

@@ -10,5 +10,12 @@ module.exports = {
             database : 'morphineserver',
             charset  : 'utf8_general_ci'
         }
+    },
+    redis: {
+        host: 'localhost',
+        // port: 6379,
+        db: 1,
+        prefix: 'sessms',
+        pass: null
     }
 } ;
