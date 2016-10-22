@@ -1,0 +1,59 @@
+{
+  "name": "morphine",
+  "version": "1.0.0",
+  "description": "",
+  "main": "libs/M_App.js",
+  "bin": {
+    "morphine": "bin/index.js"
+  },
+  "dependencies": {
+    "babel-core": "^6.14.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.14.0",
+    "babelify": "^7.3.0",
+    "bcrypt-nodejs": "^0.0.3",
+    "bookshelf": "^0.10.1",
+    "bootstrap": "^3.3.7",
+    "browserify": "^13.1.0",
+    "chalk": "^1.1.3",
+    "co": "^4.6.0",
+    "co-prompt": "^1.0.0",
+    "font-awesome": "^4.6.3",
+    "fs-extra": "^0.30.0",
+    "gaze": "^1.1.1",
+    "glob": "^7.0.6",
+    "globule": "^1.0.0",
+    "imports-loader": "^0.6.5",
+    "jquery": "^3.1.1",
+    "jquery.transit": "^0.9.12",
+    "knex": "^0.11.10",
+    "moment": "^2.15.1",
+    "mysql": "^2.11.1",
+    "nodemailer": "^2.6.4",
+    "nodemailer-html-to-text": "^2.1.0",
+    "nodemailer-smtp-pool": "^2.8.2",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "password-generator": "^2.0.2",
+    "request": "^2.75.0",
+    "skipper": "^0.6.4",
+    "striptags": "^2.1.1",
+    "stripe": "^4.12.0",
+    "uuid": "^2.0.3",
+    "webpack": "^1.13.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/morphine06/morphine.git"
+  },
+  "author": "David Miglior",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/morphine06/morphine/issues"
+  },
+  "homepage": "https://gitlab.com/morphine06/morphine#README"
+}
