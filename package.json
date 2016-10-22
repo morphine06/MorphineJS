@@ -48,12 +48,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/morphine06/morphine.git"
+    "url": "git+ssh://git@github.com:morphine06/MorphineJS.git"
   },
   "author": "David Miglior",
   "license": "ISC",
   "bugs": {
-    "url": "https://gitlab.com/morphine06/morphine/issues"
+    "url": "https://github.com/morphine06/MorphineJS/issues"
   },
-  "homepage": "https://gitlab.com/morphine06/morphine#README"
+  "homepage": "https://github.com/morphine06/MorphineJS"
 }
