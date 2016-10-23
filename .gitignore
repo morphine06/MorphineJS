@@ -1,6 +1,7 @@
 
 config/local.js
 divers/*
+assets/compiled/*
 uploads
 
 node_modules

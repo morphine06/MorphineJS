@@ -33,7 +33,7 @@ if (args=='new') {
 }
 
 function newAction() {
-    fs.emptyDirSync('/Users/davidmiglior/Documents/test/test3') ;
+    // fs.emptyDirSync('/Users/davidmiglior/Documents/test/test3') ;
     dirCurrent += '/' ;
     let files = fs.readdirSync(dirCurrent) ;
     let empty = true ;
