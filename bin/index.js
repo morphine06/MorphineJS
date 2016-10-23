@@ -45,7 +45,7 @@ function newAction() {
         return ;
     }
     console.log("Please wait, copy directories and files.");
-    let tabCopy = ['assets', 'config', 'controllers', 'models', 'services', 'tasks', 'views', '.babelrc', '.gitignore', '.jshintrc', 'dev.js', 'prod.js', 'node_modules'] ;
+    let tabCopy = ['assets', 'config', 'controllers', 'models', 'services', 'tasks', 'views', '.babelrc', '.gitignore', '.jshintrc', 'dev.js', 'prod.js'] ;//, 'node_modules'
     async.series([
         (next) => {
             async.eachSeries(tabCopy, (dir, nextDir)=> {
@@ -57,17 +57,22 @@ function newAction() {
                 next() ;
             }) ;
         },
+        // (next) => {
+        //     fs.copy(rootMorphine+'libs', dirCurrent+'node_modules/morphinejs/libs', ()=> {
+        //         fs.copy(rootMorphine+'package.json', dirCurrent+'node_modules/morphinejs/package.json', ()=> {
+        //             next() ;
+        //         }) ;
+        //     }) ;
+        //
+        // },
         (next) => {
-            fs.copy(rootMorphine+'libs', dirCurrent+'node_modules/morphine/libs', ()=> {
-                fs.copy(rootMorphine+'package.json', dirCurrent+'node_modules/morphine/package.json', ()=> {
-                    next() ;
-                }) ;
+            fs.copy(bintemplate+'local.js', dirCurrent+'config/local.js', ()=> {
+                next() ;
             }) ;
-
         },
         (next) => {
             let data = fs.readFileSync(dirCurrent+'tasks/copy.js', {encoding: 'utf-8'}) ;
-            data = data.replace('./../../../libs/M_.js','./../../../node_modules/morphine/libs/M_.js') ;
+            data = data.replace('./../../../libs/M_.js','./../../../node_modules/morphinejs/libs/M_.js') ;
             fs.writeFileSync(dirCurrent+'tasks/copy.js', data) ;
 
             var items = [] ;
@@ -79,7 +84,7 @@ function newAction() {
                 async.eachSeries(items, (item, nextItem)=> {
                     if (item.stats.isFile()) {
                         let data = fs.readFileSync(item.path, {encoding: 'utf-8'}) ;
-                        data = data.replace('./../../../libs/M_.js','./../../../node_modules/morphine/libs/M_.js') ;
+                        data = data.replace('./../../../libs/M_.js','./../../../node_modules/morphinejs/libs/M_.js') ;
                         fs.writeFileSync(item.path, data) ;
                     }
                     nextItem() ;
@@ -94,14 +99,14 @@ function newAction() {
             data = data.replace('__VAR_NAME__',project) ;
             data = data.replace('__VAR_AUTHOR__',process.env.USER) ;
             fs.writeFileSync(dirCurrent+'package.json', data) ;
-            console.log(chalk.green("Please wait, execute 'npm install'.")) ;
+            // console.log(chalk.green("Please wait, execute 'npm install'.")) ;
             // execNpmInstall() ;
             // fs.copy(rootMorphine+'node_modules', dirCurrent+'node_modules', function() {
                 next() ;
             // }) ;
         }
     ], ()=> {
-        console.log(chalk.green("'node dev' for launch development.\n'node prod' for production mode."));
+        console.log(chalk.green("Now execute : \"npm install\"... then :\n'node dev' for launch development.\n'node prod' for production mode."));
 
     }) ;
 }
