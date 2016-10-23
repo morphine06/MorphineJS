@@ -66,7 +66,7 @@ function newAction() {
         //
         // },
         (next) => {
-            fs.copy(bintemplate+'local.js', dirCurrent+'config/local.js', ()=> {
+            fs.copy(bintemplate+'/local.js', dirCurrent+'config/local.js', ()=> {
                 next() ;
             }) ;
         },
