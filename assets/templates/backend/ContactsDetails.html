@@ -1,0 +1,187 @@
+<div style=""><!-- width:500px; -->
+	<div class="contacts_details_maindiv">
+
+		<div class="M_Row">
+			<div class="M_FloatRight">
+				<% if (canModify) { %><button type="button" class="contactsdetail_btmodify M_Button primary">Modifier</button><% } %>
+				<% if (row_co.ca_id && M_.Shared.canAccessCandidate(M_.App.Session)) { %><button type="button" class="contactsdetail_btdrh M_Button primary">Module DRH</button><% } %>
+				<!-- <button type="button" class="contactsdetail_btactions M_Button primary">Action <span class="fa fa-caret-down"></span></button> -->
+			</div>
+			<div class="M_ImgRoundContainer M_FloatLeft" style="margin: 0 20px 0 0;">
+				<div class=" M_ImgRound" style="width:100px; height:100px; background-image:url(/ws/contacts/avatar/100/100/<%= row_co.co_id %>?d=<%= moment(row_co.updatedAt).valueOf() %>);"></div>
+			</div>
+			<h1 style="margin:10px 0 0 0;"><%= M_.Shared.completeName(row_co, true) %></h1>
+			<!-- <% if (row_co.ag_id) { %><h2 style="margin:0;">Agence <%= row_co.ag_id.ag_name %></h2><% } %> -->
+			<% if (row_co.agencies && row_co.agencies.length) { %>
+				<h2 style="margin:0;"><%= M_.Utils.plural(row_co.agencies.length, "Agence", null, true) %>
+				<% _.each(row_co.agencies, function(row_ag, indexTemp) { %><% if (indexTemp>0) { %>, <% } %><%= row_ag.ag_name %><% }) %>
+				</h2>
+			<% } %>
+
+			<% if(row_co.co_function) { %>
+				<h2 style="margin:0;"><%= row_co.co_function %></h2>
+				<!-- <div>Droit : <%= M_.Services.displayRight(row_co) %></div> -->
+			<% } else { %>
+				<!-- <div>Droit : <%= M_.Services.displayRight(row_co) %></div> -->
+			<% } %>
+			<div></div>
+			<% if(row_co.co_code) { %><div><%= row_co.co_code %></div><% } %>
+			<div class="M_Clear"></div>
+		</div>
+		<div class="M_Row" style="margin: 10px 0 15px 0;">
+			<div class="contactsdetail_co_status" style="width:300px; float:left;"></div>
+			<div class="contactsdetail_co_status2" style="float:left; margin-left:15px;"></div>
+			<div class="M_Clear"></div>
+		</div>
+
+		<div class="M_Row bg_col6 M_Pad M_MarginBottom">
+			<div class="M_Col4 M_MarginRight M_BorderRight" style="">
+				<h3>Coordonnées</h3>
+				<div>eMail PRO : <% if(row_co.co_email1) { %><a href="mailto:<%= row_co.co_email1 %>"><%= row_co.co_email1 %></a><% } else { %>Non renseigné<% } %></div>
+				<% if(row_co.co_email2) { %><div>eMail PRO : <a href="mailto:<%= row_co.co_email2 %>"><%= row_co.co_email2 %></a></div><% } %>
+				<% if(row_co.co_email3) { %><div>eMail PRO : <a href="mailto:<%= row_co.co_email3 %>"><%= row_co.co_email3 %></a></div><% } %>
+				<% if (M_.Services.getUserRight('contacts_rightsusers') || row_co.co_id==M_.App.Session.co_id) { %>
+					<% if(row_co.co_emailperso1) { %><div>eMail PERSO : <a href="mailto:<%= row_co.co_emailperso1 %>"><%= row_co.co_emailperso1 %></a></div><% } %>
+					<% if(row_co.co_emailperso2) { %><div>eMail PERSO : <a href="mailto:<%= row_co.co_emailperso2 %>"><%= row_co.co_emailperso2 %></a></div><% } %>
+					<% if(row_co.co_emailperso3) { %><div>eMail PERSO : <a href="mailto:<%= row_co.co_emailperso3 %>"><%= row_co.co_emailperso3 %></a></div><% } %>
+					<% if(row_co.co_tel1) { %><div>Tél : <a href="tel:<%= row_co.co_tel1_formated %>"><%= row_co.co_tel1_normalized %></a></div><% } %>
+					<% if(row_co.co_tel2) { %><div>Tél : <a href="tel:<%= row_co.co_tel2_formated %>"><%= row_co.co_tel2_normalized %></a></div><% } %>
+					<% if(row_co.co_tel3) { %><div>Tél : <a href="tel:<%= row_co.co_tel3_formated %>"><%= row_co.co_tel3_normalized %></a></div><% } %>
+					<% if(row_co.co_mobile1) { %><div>Mobile : <a href="tel:<%= row_co.co_mobile1_formated %>"><%= row_co.co_mobile1_normalized %></a></div><% } %>
+					<% if(row_co.co_mobile2) { %><div>Mobile : <a href="tel:<%= row_co.co_mobile2_formated %>"><%= row_co.co_mobile2_normalized %></a></div><% } %>
+					<% if(row_co.co_mobile3) { %><div>Mobile : <a href="tel:<%= row_co.co_mobile3_formated %>"><%= row_co.co_mobile3_normalized %></a></div><% } %>
+					<% if(row_co.co_fax1) { %><div>Fax : <a href="fax:<%= row_co.co_fax1_formated %>"><%= row_co.co_fax1_normalized %></a></div><% } %>
+					<% if(row_co.co_fax2) { %><div>Fax : <a href="fax:<%= row_co.co_fax2_formated %>"><%= row_co.co_fax2_normalized %></a></div><% } %>
+					<% if(row_co.co_fax3) { %><div>Fax : <a href="fax:<%= row_co.co_fax2_formated %>"><%= row_co.co_fax3_normalized %></a></div><% } %>
+					<% if(row_co.co_web1) { %><div>Web : <a href="<%= row_co.co_web1 %>" target="_blank"><%= row_co.co_web1 %></a></div><% } %>
+					<% if(row_co.co_web2) { %><div>Web : <a href="<%= row_co.co_web2 %>" target="_blank"><%= row_co.co_web2 %></a></div><% } %>
+					<% if(row_co.co_web3) { %><div>Web : <a href="<%= row_co.co_web3 %>" target="_blank"><%= row_co.co_web3 %></a></div><% } %>
+				<% } %>
+				<% if (row_co.agencies && row_co.agencies.length) { %>
+					<h3 style="margin-top:10px;">Coordonnées agence</h3>
+					<% if(row_co.agencies[0].ag_email) { %><div>eMail : <a href="mailto:<%= row_co.agencies[0].ag_email %>"><%= row_co.agencies[0].ag_email %></a></div><% } %>
+					<% if(row_co.agencies[0].ag_email2) { %><div>eMail : <a href="mailto:<%= row_co.agencies[0].ag_email2 %>"><%= row_co.agencies[0].ag_email2 %></a></div><% } %>
+					<% if(row_co.agencies[0].ag_emailrecruteur) { %><div>Recruteur : <a href="mailto:<%= row_co.agencies[0].ag_emailrecruteur %>"><%= row_co.agencies[0].ag_emailrecruteur %></a></div><% } %>
+					<% if(row_co.agencies[0].ag_phone) { %><div>Tél : <a href="tel:<%= M_.Utils.alphaNum(row_co.agencies[0].ag_phone) %>"><%= M_.Utils.formatPhone(row_co.agencies[0].ag_phone) %></a></div><% } %>
+					<% if(row_co.agencies[0].ag_fax) { %><div>Fax : <a href="fax:<%= M_.Utils.alphaNum(row_co.agencies[0].ag_fax) %>"><%= M_.Utils.formatPhone(row_co.agencies[0].ag_fax) %></a></div><% } %>
+
+				<% } %>
+			</div>
+
+
+
+			<div class="M_Col4 M_MarginRight M_BorderRight" style="">
+				<% if ((M_.Services.getUserRight('contacts_rightsusers') || row_co.co_id==M_.App.Session.co_id) && row_co.co_address1) { %>
+					<h3>Adresse</h3>
+					<%= M_.Shared.completeAddress(row_co, true) %>
+				<% } %>
+				<% if(row_co.agencies && row_co.agencies.length) { %>
+					<h3 style="margin-top:10px;">Adresse agence</h3>
+					<%= M_.Services.completeAgencyAddress(row_co.agencies[0], true) %>
+				<% } %>
+
+			</div>
+
+			<div class="M_Col4" style="">
+				<% if (M_.Services.getUserRight('contacts_rightsusers') || row_co.co_id==M_.App.Session.co_id) { %>
+					<h3>Autres informations</h3>
+					<% if(row_co.co_siret) { %><div><b>Siret :</b> <%= row_co.co_siret %></div><% } %>
+					<% if(row_co.co_comment) { %><div><b>Commentaire :</b> <%= row_co.co_comment %></div><% } %>
+					<% if (row_co.co_linkedin) { %><div><span class="fa fa-linkedin-square"></span>&nbsp;&nbsp;<a target="_blank" href="<%= M_.Utils.urlIze(row_co.co_linkedin) %>">Voir sur Linkedin</a></div><% } %>
+					<% if (row_co.co_viadeo) { %><div><span class="fa fa-bitbucket"></span>&nbsp;&nbsp;<a target="_blank" href="<%= M_.Utils.urlIze(row_co.co_viadeo) %>">Voir sur Viadeo</a></div><% } %>
+					<% if(row_co.co_birthday) { %><div><b>Anniversaire :</b> <%= moment(row_co.co_birthday).format('DD MMMM') %><% if (M_.Services.getUserRight('contacts_rightsusers')) { %> (<%= moment().diff(moment(row_co.co_birthday), 'years') %> ans)<% } %></div><% } %>
+				<% } %>
+			</div>
+
+		</div>
+
+		<% if((M_.Services.getUserRight('contacts_rightsusers') || row_co.co_id==M_.App.Session.co_id)) { %>
+		<div class="M_Row" style="">
+			<div class="M_Col6">
+				<h3>Infos utilisateur</h3>
+				<table>
+					<tr><td>Droit :</td><td><%= M_.Services.displayRight(row_co) %></td></tr>
+					<% if(row_co.co_login) { %><tr><td>Identifiant :</td><td><%= row_co.co_login %></td></tr><% } %>
+
+					<% if(row_co.co_comptecollectif) { %><tr><td>Compte collectif :</td><td><%= row_co.co_comptecollectif %></td></tr><% } %>
+					<% if(row_co.co_comptecomptable) { %><tr><td>Compte comptable :</td><td><%= row_co.co_comptecomptable %></td></tr><% } %>
+					<% if(row_co.co_codetiers) { %><tr><td>Code tiers :</td><td><%= row_co.co_codetiers %></td></tr><% } %>
+					<% if(row_co.co_matricule) { %><tr><td>Numéro de matricule :</td><td><%= row_co.co_matricule %></td></tr><% } %>
+					<% if(row_co.co_idpld) { %>
+						<tr><td>ID PLD :</td><td><%= row_co.co_idpld %></td></tr>
+					<% } else { %>
+						<tr><td>ID PLD :</td><td><span class="red">Aucun</span></td></tr>
+					<% } %>
+					<tr><td>IBAN saisit :</td><td><%= row_co.co_iban?"OUI":"<span class='red'>NON</span>" %></td></tr>
+					<% if(row_co.co_km_homework) { %><tr><td>Nb de km maison-travail :</td><td><%= row_co.co_km_homework %> Km</td></tr><% } %>
+
+					<% if(row_co.vehicles && row_co.vehicles.length) { %>
+						<tr><td valign='top'>Véhicules :</td><td valign='top'>
+							<% _.each(row_co.vehicles, function(row_ve) { %>
+								<%
+								var t = '' ;
+								if (_.find(M_.Shared.getVehiclesTypes(), {key:row_ve.ve_type})) t = _.find(M_.Shared.getVehiclesTypes(), {key:row_ve.ve_type}).val ;
+								var t2 = '' ;
+								if (_.find(M_.Shared.getVehiculeOwner(), {key:row_ve.ve_owner})) t2 = _.find(M_. Shared.getVehiculeOwner(), {key:row_ve.ve_owner}).val ;
+								%>
+								<%= t2 %> | <%= row_ve.ve_name %> | <%= row_ve.ve_numberplate %> | <%= t %><br/>
+							<% }) %>
+						</td></tr>
+					<% } %>
+
+				</table>
+			</div>
+			<% if (row_co.contracts && row_co.contracts.length) { %>
+			<div class="M_Col6">
+				<h3>Contrats de travail</h3>
+				<%
+				var numTemp = 0 ;
+				_.each(row_co.contracts, function(contract) {
+					numTemp++ ;
+				%>
+					<% if (numTemp>1) { %><hr><% } %>
+					<table>
+						<tr><td>Début / fin : </td><td><%= moment(contract.cc_start).format('DD/MM/YYYY') %> au <%= moment(contract.cc_end).format('DD/MM/YYYY') %></td></tr>
+						<tr><td>Type de contrat : </td><td><%= _.result(_.find(M_.Shared.getTypesContrat(), {key:contract.cc_type}), 'val') %></td></tr>
+						<tr><td>Entité payante : </td><td><%= _.result(_.find(M_.Shared.getEntities(), {key:contract.cc_entity}), 'val') %></td></tr>
+					</table>
+				<% }) %>
+			</div>
+			<% } %>
+		</div>
+		<% } %>
+
+		<% if (row_co.co_keywords && row_co.co_keywords.length) { %>
+		<div style="margin-top:15px;">
+			<% _.each(row_co.co_keywords, function(keyword) { %>
+				<div class="M_ComboboxMultiItem selected"><%= keyword %></div>
+			<% }) %>
+			<div class="M_Clear"></div>
+		</div>
+		<% } %>
+
+		<% if (row_co.vacations && row_co.vacations.length && M_.Shared.canViewVacationsOnContact(row_co, M_.App.Session)) { %>
+		<div style="margin-top:15px;">
+			<hr>
+			<h3>Vacances</h3>
+			<div class="contactsdetail_vacations"></div>
+		</div>
+		<% } %>
+
+		<% if (row_co.todos && row_co.todos.length && M_.Shared.canViewTodosOnContact(row_co, M_.App.Session)) { %>
+		<div style="margin-top:15px;">
+			<hr>
+			<h3>Travail à faire</h3>
+			<div class="contactsdetail_todos"></div>
+		</div>
+		<% } %>
+
+
+
+
+		<div class="M_MarginTop little"><%= M_.Services.drawCreatedModified(row_co) %><br>
+			ID : <%= row_co.co_id %></div>
+		<div></div>
+
+	</div>
+</div>

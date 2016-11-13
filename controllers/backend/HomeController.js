@@ -10,6 +10,8 @@ module.exports = class extends BaseController {
         });
     }
     infos(req, res) {
+        // console.log("req.user",req.user);
+        if (!req.user.co_rights) req.user.co_rights = {} ;
         res.send({user:req.user}) ;
     }
 } ;

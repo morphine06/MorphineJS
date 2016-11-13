@@ -1,27 +1,22 @@
 'use strict';
 
-import {M_} from './../../../libs/M_.js' ;
+import {M_} from './../../../libs-client/M_.js' ;
 import {Home} from './Home.js' ;
+import {Contacts} from './Contacts.js' ;
+import {Services} from './Services.js' ;
+import {Shared} from './../../compiled/Shared.js' ;
+
 
 M_.registerModule('Home',Home) ;
+M_.registerModule('Contacts',Contacts) ;
 
-// import {Services} from 'js6/libs/Services.js' ;
-// import {Shared} from 'js6/libs/Shared.js' ;
-
-// var M_ = System.get('M_/M_') ;
-// var Contacts = System.get('controllers/Contacts').Contacts ;
-// var dav = new M_.David() ;
-// dav.print() ;
-// // Contacts.init() ;
-// Contacts.init() ;
-// console.log("Contacts",Contacts)
-
-// log("App",M_.App)
-
-_.M_ = M_ ;
+// for access of M_ and Services in templates, we set this objects in lowdash !!!
+window.M_ = M_ ;
+window.M_.Services = Services ;
+window.M_.Shared = Shared ;
+// _.M_ = M_ ;
 // _.Services = M_.App.Services = Services ;
 // _.Shared = Shared ;
-// _.Utils = M_.Utils ;
 
 
 moment.locale('fr') ;
@@ -29,15 +24,6 @@ moment.locale('fr') ;
 var modules = [
 	{key:'Home', icon:'fa-bell faa-ring', label:"Accueil", right:''},
 	{key:'Contacts', icon:'fa-user', label:"Contacts", right:'contacts'},
-	{key:'Expenses', icon:'fa-user-plus', label:"Notes de frais", right:'expenses'},
-	{key:'Vacation', icon:'fa-plane', label:"Absences", right:'vacation'},
-	{key:'VacationAdmin', icon:'fa-plane', label:"Absences admin", right:'vacation_admin'},
-	{key:'Reports', icon:'fa-globe', label:"Rapport hebdo", right:'reports'},
-	{key:'ReportsAdmin', icon:'fa-globe', label:"Rapport hebdo admin", right:'reports_admin'},
-	{key:'MonthlyReports', icon:'fa-globe', label:"Rapport mensuel", right:'monthlyreports'},
-	{key:'MonthlyReportsAdmin', icon:'fa-globe', label:"Rapport mensuel admin", right:'monthlyreports_admin'},
-	{key:'Candidates', icon:'fa-user-plus', label:"Module DRH", right:'humanresources'},
-	{key:'Commercials', icon:'fa-user-plus', label:"Paliers ch. d'aff", right:'commercials'},
 	{key:'Preferences', icon:'fa-gears', label:"Préférences", right:''},
 	{key:'Search', icon:'fa-gears', label:"Rechercher", right:'', hideInMenu: true},
 ] ;
@@ -63,9 +49,8 @@ M_.App
 	}
 })
 .beforeReady(function(next) {
-
+	// console.log("Services",Services);
 	this.drawMenus = function() {
-
 		var html = "" ;
 		_.each(modules, (module)=> {
 			if (module.hideInMenu) return ;
@@ -76,21 +61,11 @@ M_.App
 		$("#mainnavcontent").html(html) ;
 	};
 	this.loadSessionInfos = function() {
-		$.ajax({
-			url: "/ws/infos",
-			type: 'GET',
-			contentType: 'application/json',
-			data: JSON.stringify({}),
-			dataType: 'json',
-			success: (data)=> {
-				_.Session = M_.App.Session = data.data ;
-				// log("M_.App.Session",M_.App.Session);
-				// console.log("title", Services.getUserRight('contacts'));
-				this.drawMenus() ;
-
-				if (next) next() ;
-			}
-		});
+		M_.Utils.getJson('/ws/infos', {}, (data)=> {
+			M_.App.Session = data.user ;
+			this.drawMenus() ;
+			next() ;
+		}) ;
 	} ;
 	this.loadSessionInfos() ;
 
@@ -134,39 +109,6 @@ M_.App
 	$(".mainlogo").click(()=> {
 		M_.App.open('Home') ;
 	});
-
-
-	// Services._updateBadgeActions() ;
-	// $("#loginAlert").click((evt)=> {
-	// 	evt.stopPropagation() ;
-	// 	var items = [];
-	// 	_.each(M_.App.Session.todos, (todo)=> {
-	// 		let f = M_.Utils.findInArray(Shared.getTodoTypes(), todo.td_type) ;
-	// 		let d = moment(todo.co_id_user.updatedAt).valueOf() ;
-	// 		let txt = `
-	// 			<div class='M_ImgRound loginAlertLiContent2' style="background-image:url(/bp/login/avatar/35/35/${todo.co_id_user.co_id}?d=${d})"></div>
-	// 			<div class='loginAlertLiContent'>
-	// 				<div>${f.val}</div>
-	// 				<div class='loginAlertLiLittle'>${Services.getTextForTodo(todo)}</div>
-	// 			</div>
-	// 			<div class='M_Clear'></div>
-	// 		` ;
-	// 		items.push({
-	// 			text: txt,
-	// 			todo: todo,
-	// 			click: (evt, item)=> {
-	// 				Services.redirectForTodo(item.todo) ;
-	// 			}
-	// 		}) ;
-	// 	}) ;
-	// 	var dd = new M_.Dropdown({
-	// 		autoShow: true,
-	// 		alignTo: $("#loginAlert"),
-	// 		itemsClass: 'loginAlertLi',
-	// 		items: items
-	// 	}) ;
-	// 	dd.show() ;
-	// }) ;
 
 
 	// $('#mainsearchinput').keyup((evt)=> {

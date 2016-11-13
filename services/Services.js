@@ -1,6 +1,10 @@
 "use strict";
 
 module.exports = {
+    sendWebservices: (res, obj)=> {
+        if (obj.err) return res.status(400).send(obj) ;
+        res.send(obj) ;
+    },
     scripts: (mypackage) => {
         let packages = require(morphineserver.rootDir+'/tasks/packages') ;
         // let fs = require('fs-extra') ;
@@ -14,7 +18,7 @@ module.exports = {
                     res += "<script src='/compiled/"+mypackage+"-jst.js'></script>\n" ;
                 } else if (script.indexOf('|')>=0) {
                     let s = script.split('|') ;
-                    res += "<script src='/compiled/"+s[0]+"'></script>\n" ;
+                    res += "<script src='/"+s[0]+"'></script>\n" ;
                 } else {
                     let s = script.replace(/assets/, '') ;
                     res += "<script src='"+s+"'></script>\n" ;
@@ -34,6 +38,9 @@ module.exports = {
                 if (nbAdded>0) res += '\t' ;
                 if (style=='less') {
                     res += '<link rel="stylesheet" href="/compiled/'+mypackage+'-less.css" />\n' ;
+                } else if (style.indexOf('|')>=0) {
+                    let s = style.split('|') ;
+                    res += '<link rel="stylesheet" href="/'+s[0]+'" />\n' ;
                 } else {
                     let s = style.replace(/assets/, '') ;
                     res += '<link rel="stylesheet" href="'+s+'" />\n' ;

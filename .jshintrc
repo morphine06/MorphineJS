@@ -58,6 +58,7 @@
 		"Vehicles": false,
 		"Entities": false,
 		"Users": false,
+		"Groups": false,
 		"process": false
 	},
 	"globalstrict": true,

@@ -24,4 +24,7 @@ module.exports = class {
     render(page, params) {
         this.res.render(page, params);
     }
+    send(res, data) {
+        res.send(data) ;
+    }
 } ;

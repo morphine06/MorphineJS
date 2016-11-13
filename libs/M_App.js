@@ -133,11 +133,13 @@ module.exports = class MorphineServer {
                             ok = false ;
                             return nextPolicy() ;
                         }
-                        Policies[policy](req, res, (_ok)=> {
-                            // console.log("ok2",_ok);
-                            if (!_ok) ok = false ;
-                            nextPolicy() ;
-                        }) ;
+                        if (ok) {
+                            Policies[policy](req, res, (_ok)=> {
+                                // console.log("ok2",_ok);
+                                if (!_ok) ok = false ;
+                                nextPolicy() ;
+                            }) ;
+                        } else nextPolicy() ;
                     }, ()=> {
                         if (ok) controllers[route.controller][route.action](req, res) ;
                     }) ;

@@ -30,12 +30,6 @@
 
 
 
-
-
-
-
-
-
 'use strict';
 
 // import {$} from "./../js/jquery";
@@ -52,7 +46,7 @@ window.log = function () {
 
 moment().localeData('fr');
 moment().utcOffset(0);
-console.log("moment().utcOffset()",moment().utcOffset());
+// console.log("moment().utcOffset()",moment().utcOffset());
 
 Array.prototype.m_remove = function(val) {
 	var pos = this.indexOf(val);
@@ -74,7 +68,7 @@ M_ = {
 } ;
 
 M_.registerModule = (name, module)=> {
-	console.log("name,module",name,module);
+	// console.log("name,module",name,module);
 	M_._registeredModules[name] = module ;
 } ;
 
@@ -288,7 +282,7 @@ M_.App = new (class {
 		if (this[module]===undefined) {
 			// var Mod = System.get('js6/controllers/'+module+".js")[module] ;
 			// this[module] = new Mod({controllerName:module, tpl:JST[module]}) ;
-			console.log("JST",JST,M_._registeredModules);
+			// console.log("JST",JST,M_._registeredModules);
 			// import {mymod} from './'+module+'.js' ;
 			this[module] = new M_._registeredModules[module]({controllerName:module, tpl:JST[module]}) ;
 			this.tabController.push(this[module]) ;
@@ -1969,7 +1963,7 @@ M_.Model = class {
 		};
 		$.extend(this, defaults, opts, this.getDefinition()) ;
 
-		Object.mixin(this, M_.Observable) ;
+		_.mixin(this, M_.Observable) ;
 		this.initObservable() ;
 
 		if (!this.row) log("Vous devez définir opts.row") ;
@@ -2230,7 +2224,7 @@ M_.Store = class {
 		opts = (opts)?opts:{} ;
 		$.extend(this, defaults, opts);
 
-		Object.mixin(this, M_.Observable);
+		_.mixin(this, M_.Observable);
 		this.initObservable() ;
 
 		if (this.model) {
@@ -2717,7 +2711,7 @@ M_.Outlet = class {
 		opts = (opts)?opts:{} ;
 		$.extend(this, defaults, opts) ;
 
-		Object.mixin(this, M_.Observable) ;
+		_.mixin(this, M_.Observable) ;
 		this.initObservable() ;
 
 		if (M_.Utils.isEmpty(this.id)) this.id = M_.Utils.id() ;
@@ -3270,7 +3264,7 @@ M_.List = class extends M_.Outlet {
 		super(opts) ;
 
 		// $.extend(true, this.prototype, M_.Stored) ;
-		Object.mixin(this, M_.Stored) ;
+		_.mixin(this, M_.Stored) ;
 		// log("store", Object.mixin)
 		this.initStored() ;
 
@@ -4067,7 +4061,7 @@ M_.Drawer = class {
 		opts = (opts)?opts:{} ;
 		$.extend(this, defaults, opts) ;
 
-		Object.mixin(this, M_.Observable) ;
+		_.mixin(this, M_.Observable) ;
 		this.initObservable() ;
 
 		$(window).resize(()=>{
@@ -4224,7 +4218,7 @@ M_.Modal = class {
 		opts = (opts)?opts:{} ;
 		$.extend(this, defaults, opts) ;
 
-		Object.mixin(this, M_.Observable) ;
+		_.mixin(this, M_.Observable) ;
 		this.initObservable() ;
 
 		$(window).resize(()=>{
@@ -4377,7 +4371,7 @@ M_.Window = class {
 		opts = (opts)?opts:{} ;
 		$.extend(this, defaults, opts) ;
 
-		Object.mixin(this, M_.Observable) ;
+		_.mixin(this, M_.Observable) ;
 		this.initObservable() ;
 
 		$(window).resize(()=>{
@@ -5102,7 +5096,7 @@ M_.CalendarMonth = class {
 		opts = (opts)?opts:{} ;
 		$.extend(this, defaults, opts) ;
 
-		Object.mixin(this, M_.Observable) ;
+		_.mixin(this, M_.Observable) ;
 		this.initObservable() ;
 
 
@@ -5553,7 +5547,7 @@ M_.Calendar.MonthView = class extends M_.CalendarMonth {
 
 		super(opts) ;
 
-		Object.mixin(this, M_.Stored) ;
+		_.mixin(this, M_.Stored) ;
 		// log("store", Object.mixin)
 		this.initStored() ;
 	}
@@ -5725,9 +5719,9 @@ M_.Form.Form = class {
 		opts = (opts)?opts:{} ;
 		$.extend(this, defaults, opts) ;
 
-		Object.mixin(this, M_.Observable) ;
+		_.mixin(this, M_.Observable) ;
 		this.initObservable() ;
-		Object.mixin(this, M_.CRUD) ;
+		_.mixin(this, M_.CRUD) ;
 		this.initCRUD() ;
 
 		var items = this.items ;

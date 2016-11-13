@@ -1,11 +1,14 @@
 module.exports = {
     livereloadPort: 35729,
     livereloadExtensions: ['ejs', 'html', 'css', 'js', 'es6', 'png', 'gif', 'jpg', 'php', 'php5', 'py', 'rb', 'erb', 'coffee'],
-    tasksOnStartDev: ['delete', 'copy', 'webpack', 'jst', 'less', 'watch'], //'ifempty:webpack','delete', 'webpack', 'less', 'jst',
-    tasksOnStartProd: ['delete', 'copy', 'webpack', 'jst', 'less', 'compile-scripts', 'compile-styles'],
+    tasksOnStartDev: ['copy', 'jst', 'less', 'webpack', 'watch'], // 'delete', 'copy', 'webpack', 'jst', 'less', 'ifempty:webpack'
+    tasksOnStartProd: ['delete', 'copy', 'jst', 'less', 'webpack', 'compile-scripts', 'compile-styles'],
     watch: [
         {
             dirs: [ "assets/js/**/*" ],
+            tasks: ['webpack', 'livereload']
+        }, {
+            dirs: [ "libs-client/*" ],
             tasks: ['webpack', 'livereload']
         // }, {
         //     dirs: [ "tasks/packages.js" ],

@@ -5,9 +5,6 @@ var async = require('async');
 
 var fs = require('fs') ;
 var mysql = require('mysql2') ;
-// var Offshore = require('offshore');
-// var OffshoreSql = require('offshore-sql');
-// var offshore = new Offshore();
 
 class M_TableExec {
     constructor(table) {
@@ -26,9 +23,9 @@ class M_TableExec {
         this.order = '' ;
         this.having = '' ;
         this.groupby = '' ;
-        this.tabAlreadyIncluded = [] ;
+        this.tabAlreadyIncluded = {} ;
         this.iscount = false ;
-        this.joinModels = [{modelname:this.modelname, fieldJoin:null, modelnameto:null}] ;
+        this.joinModels = [{modelname:this.modelname, fieldJoin:null, modelnameto:null, modelalias:'t1'}] ;
         _.each(this.def.attributes, (field, fieldName)=> {
             if (field.primary) {
                 this.primary = fieldName ;
@@ -89,21 +86,6 @@ class M_TableExec {
         this.querySaved = query ;
         return this ;
     }
-    // replace(where, whereData, data) {//where, whereData,
-    //     console.log("where,whereData,data",where,whereData,data);
-    //     if (data === undefined) {
-    //         data = whereData ;
-    //         this.whereData = [] ;
-    //     } else {
-    //         this.whereData = whereData ;
-    //     }
-    //     console.log("data",data);
-    //     this.onlyOne = true ;
-    //     this.command = 'REPLACE' ;
-    //     this.where = where ;
-    //     this.data = data ;
-    //     return this ;
-    // }
     destroy(where, whereData) {
         if (whereData === undefined) {
             this.whereData = [] ;
@@ -117,7 +99,6 @@ class M_TableExec {
     }
     _searchModelNameFromFieldName(fieldJoin, fromModelName) {
         var f = null ;
-        // console.log("fromModelName",fromModelName);
         _.each(M_Db.models[fromModelName].def.attributes, (field, fieldName)=> {
             if (fieldName==fieldJoin && field.model) f = field.model ;
         }) ;
@@ -126,15 +107,23 @@ class M_TableExec {
     populate(fieldJoin) {
         let tabFieldsJoins = fieldJoin.split('.') ;
         let previousModelName = this.modelname ;
+        let previousModelAlias = 't1' ;
         let tabOrigin = [] ;
         _.each(tabFieldsJoins, (join)=> {
             tabOrigin.push(join) ;
-            var modelname = this._searchModelNameFromFieldName(join, previousModelName) ;
-            if (modelname && _.indexOf(this.tabAlreadyIncluded, modelname)==-1) {
-                this.joinModels.push({modelname:modelname, fieldJoin:join, modelnameto:previousModelName, origin:tabOrigin.join('.')}) ;
-                this.tabAlreadyIncluded.push(modelname) ;
+            let modelname = this._searchModelNameFromFieldName(join, previousModelName) ;
+            let modelalias = 't1' ;
+            if (modelname) {
+                if (!this.tabAlreadyIncluded[modelname+'__'+tabOrigin.join('_')]) {
+                    modelalias = 't'+(this.joinModels.length+1) ;
+                    this.joinModels.push({modelname:modelname, modelalias:modelalias, fieldJoin:join, modelnameto:previousModelName, modelaliasto:previousModelAlias, origin:tabOrigin.join('.')}) ;
+                    this.tabAlreadyIncluded[modelname+'__'+tabOrigin.join('_')] = modelalias ;
+                } else {
+                    modelalias = this.tabAlreadyIncluded[modelname+'__'+tabOrigin.join('_')] ;
+                }
             }
             previousModelName = modelname ;
+            previousModelAlias = modelalias ;
         }) ;
         return this ;
     }
@@ -152,7 +141,6 @@ class M_TableExec {
     }
     _createWhere() {
         let where = '' ;
-        // let whereData = this.whereData ;
         if (!this.where) {
             where = '1' ;
         } else if (_.isInteger(this.where)) {
@@ -184,8 +172,8 @@ class M_TableExec {
         _.each(this.joinModels, (model, num)=> {
             _.each(M_Db.models[model.modelname].def.attributes, (field, fieldName)=> {
                 let as = '' ;
-                if (model.modelnameto) as = ' AS '+M_Db.models[model.modelname].def.tableName+'_'+model.fieldJoin+'_'+fieldName ;
-                tabSelect.push(M_Db.models[model.modelname].def.tableName+'.'+fieldName+as) ;
+                if (model.modelnameto) as = ' AS '+model.modelalias+'_'+model.fieldJoin+'_'+fieldName ;
+                tabSelect.push(model.modelalias+'.'+fieldName+as) ;
             }) ;
         }) ;
         return tabSelect.join(', ') ;
@@ -193,8 +181,8 @@ class M_TableExec {
     _createJoin() {
         let tabJoin = [] ;
         _.each(this.joinModels, (model, num)=> {
-            if (!model.modelnameto) tabJoin.push(M_Db.models[model.modelname].def.tableName) ;
-            else tabJoin.push('LEFT JOIN '+M_Db.models[model.modelname].def.tableName+' ON '+M_Db.models[model.modelname].def.tableName+'.'+M_Db.models[model.modelname].primary+'='+M_Db.models[model.modelnameto].def.tableName+'.'+model.fieldJoin) ;
+            if (!model.modelnameto) tabJoin.push(M_Db.models[model.modelname].def.tableName+' '+model.modelalias) ;
+            else tabJoin.push('LEFT JOIN '+M_Db.models[model.modelname].def.tableName+' '+model.modelalias+' ON '+model.modelalias+'.'+M_Db.models[model.modelname].primary+'='+model.modelaliasto+'.'+model.fieldJoin) ;
         }) ;
         return tabJoin.join(' ') ;
     }
@@ -206,6 +194,7 @@ class M_TableExec {
     _createSelectQuery() {
 
         let query = 'SELECT '+this._createSelect()+' FROM '+this._createJoin()+' WHERE '+this._createWhere()+this._createOrder() ;
+        // console.log("query",query);
         return query ;
 
     }
@@ -222,17 +211,6 @@ class M_TableExec {
         let query = 'INSERT INTO '+this.def.tableName+'('+fields.join(', ')+') VALUES ('+vals.join(', ')+')' ;
         return query ;
     }
-    // _createReplaceQuery() {
-    //     let fields = [],
-    //         vals = [] ;
-    //     _.each(this.data, (val, key)=> {
-    //         fields.push(key) ;
-    //         vals.push('?') ;
-    //         this.whereData.push(val) ;
-    //     }) ;
-    //     let query = 'REPLACE INTO '+this.def.tableName+'('+fields.join(', ')+') VALUES ('+vals.join(', ')+')' ;
-    //     return query ;
-    // }
     _createUpdateQuery() {
         let vals = [] ;
         _.each(this.data, (val, key)=> {
@@ -274,10 +252,16 @@ class M_TableExec {
                 }
             }
             if (field.type=='boolean') {
-                // console.log("isboolean1",this.data[fieldName]);
                 if (this.data[fieldName]===false) this.data[fieldName] = 0 ;
                 if (this.data[fieldName]===true) this.data[fieldName] = 1 ;
-                // console.log("isboolean2",this.data[fieldName]);
+                if (this.data[fieldName]==='false') this.data[fieldName] = 0 ;
+                if (this.data[fieldName]==='true') this.data[fieldName] = 1 ;
+            }
+            if (field.type=='datetime') {
+                if (_.isDate(this.data[fieldName])) this.data[fieldName] = moment(this.data[fieldName]).format('YYYY-MM-DD HH:mm:ss') ;
+            }
+            if (field.type=='date') {
+                if (_.isDate(this.data[fieldName])) this.data[fieldName] = moment(this.data[fieldName]).format('YYYY-MM-DD') ;
             }
         }) ;
     }
@@ -293,6 +277,10 @@ class M_TableExec {
                         row[fieldName] = null ;
                     }
                 }
+                if (field.type=='boolean') {
+                    if (row[fieldName]) row[fieldName] = true ;
+                    else row[fieldName] = false ;
+                }
             }) ;
             let alreadyOrigins = [] ;
             _.each(this.joinModels, (model, num)=> {
@@ -300,8 +288,18 @@ class M_TableExec {
                     // this._setObjectToRow(row, row, model.modelname, model.modelnameto, model.fieldJoin) ;
                     let obj = {} ;
                     _.each(M_Db.models[model.modelname].def.attributes, (field, fieldName)=> {
-                        let f = M_Db.models[model.modelname].def.tableName+'_'+model.fieldJoin+'_'+fieldName ;
+                        // let f = M_Db.models[model.modelname].def.tableName+'_'+model.fieldJoin+'_'+fieldName ;
+                        let f = model.modelalias+'_'+model.fieldJoin+'_'+fieldName ;
                         if (row.hasOwnProperty(f)) {
+                            if (field.type=='json') {
+                                try {
+                                    if (row[f]) row[f] = JSON.parse(row[f]) ;
+                                    else row[f] = null ;
+                                } catch(e) {
+                                    console.log("json parse error",e,f, row[f]);
+                                    row[f] = null ;
+                                }
+                            }
                             obj[fieldName] = row[f] ;
                             delete row[f] ;
                         }
@@ -350,7 +348,6 @@ class M_TableExec {
     }
     exec(cb, returnCompleteRow) {
         // console.log("this.command,this.data",this.command,this.data);
-        let thenUpdateOrCreate = false ;
         this._beforeQuery(() => {
             let query ;
             switch (this.command) {
@@ -368,10 +365,6 @@ class M_TableExec {
                 case 'DELETE':
                 query = this._createDestroyQuery() ;
                 break;
-                // case 'REPLACE':
-                // query = this._createSelectQuery() ;
-                // thenUpdateOrCreate = true ;
-                // break;
                 default:
                 query = this._createSelectQuery() ;
             }
@@ -401,11 +394,6 @@ class M_TableExec {
                     // res = this.data ;
                     res = rows.insertId ;
                     break;
-                    // case 'REPLACE':
-                    // if (rows.length) res = rows[0] ;
-                    // else res = null ;
-                    // // res = rows.insertId ;
-                    // break;
                     default:
                     this._postTreatment(rows) ;
                     if (this.onlyOne) {
@@ -413,6 +401,7 @@ class M_TableExec {
                         else res = null ;
                     } else res = rows ;
                 }
+                // console.log("res",res);
                 if (this.def.debug) console.log("res",res);
                 // console.log('The solution is: ', rows);
                 if (err) return cb(err, res) ;
@@ -438,7 +427,6 @@ class M_TableExec {
 }
 class M_Table {
     constructor(def, connection) {
-        // console.log(def);
         this.def = def ;
         this.connection = connection ;
         this.modelname = this.def.modelname ;
@@ -452,6 +440,18 @@ class M_Table {
                 if (field.length) this.primaryLength = field.length ;
             }
         }) ;
+    }
+    createEmpty() {
+        var row = {} ;
+        _.each(this.def.attributes, (field, fieldName)=> {
+            row[fieldName] = '' ;
+            let typejs = M_Db._ormTypeToDatabaseType(field.type, '', 'typejs') ;
+            if (typejs=='number') row[fieldName] = 0 ;
+            if (typejs=='date') row[fieldName] = null ;
+            if (typejs=='boolean') row[fieldName] = false ;
+            if (field.defaultsTo) row[fieldName] = field.defaultsTo ;
+        }) ;
+        return row ;
     }
     use(connectionId) {
         var exec = new M_TableExec(this) ;
@@ -477,22 +477,26 @@ class M_Table {
         var exec = new M_TableExec(this) ;
         return exec.update(where, whereData, data) ;
     }
-    replace(where, whereData, data, cb) {//where, whereData,
-        // var exec = new M_TableExec(this.def, this.connection) ;
-        // return exec.replace(data) ;//where, whereData,
-        // let whereData2 = [] ;
-        // if (data === undefined) {
-        //     data = whereData ;
-        // } else {
-        //     whereData2 = whereData ;
-        // }
+    replace(where, whereData, data, cb, returnCompleteRow) {//where, whereData,
         let where2 = _.cloneDeep(where) ;
         let whereData2 = _.cloneDeep(whereData) ;
         // let data2 = _.cloneDeep(data) ;
         this.findOne(where, whereData).exec((errsql, _row)=> {
             if (errsql) console.log("errsql",errsql);
-            if (!_row) this.create(data).exec(cb) ;
-            else this.update(where2, whereData2, data).exec(cb) ;
+            if (!_row) this.create(data).exec((errsql, idTemp)=> {
+                if (returnCompleteRow) {
+                    this.findOne(idTemp).exec((errsql, _row)=> {
+                        cb(errsql, _row) ;
+                    }) ;
+                } else cb(errsql, idTemp) ;
+            }) ;
+            else this.update(where2, whereData2, data).exec((errsql, rows)=> {
+                if (returnCompleteRow) {
+                    this.findOne(where2, whereData2).exec((errsql, _row)=> {
+                        cb(errsql, _row) ;
+                    }) ;
+                } else cb(errsql, rows) ;
+            }) ;
         }) ;
     }
     destroy(where, whereData) {
@@ -651,11 +655,6 @@ var M_Db = new (class {
         var currentDef ;
         async.series([
             (next)=> {
-                // this.knex.schema.hasTable(def.name).then((_exists)=> {
-                //     exists = _exists ;
-                //     next();
-                // }).catch(console.log) ;
-                // console.log("def.tableName",def.tableName);
                 this.connection.query("SELECT * FROM "+def.tableName+" LIMIT 0,1", (errsql, rows)=> {
                     // console.log("errsql,rows",errsql,rows);
                     if (!errsql) exists = true ;

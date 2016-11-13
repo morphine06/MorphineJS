@@ -72,7 +72,7 @@ function newAction() {
         },
         (next) => {
             let data = fs.readFileSync(dirCurrent+'tasks/copy.js', {encoding: 'utf-8'}) ;
-            data = data.replace('./../../../libs/M_.js','./../../../node_modules/morphinejs/libs/M_.js') ;
+            data = data.replace('./../../../libs-client/M_.js','./../../../node_modules/morphinejs/libs/M_.js') ;
             fs.writeFileSync(dirCurrent+'tasks/copy.js', data) ;
 
             var items = [] ;
@@ -84,7 +84,7 @@ function newAction() {
                 async.eachSeries(items, (item, nextItem)=> {
                     if (item.stats.isFile()) {
                         let data = fs.readFileSync(item.path, {encoding: 'utf-8'}) ;
-                        data = data.replace('./../../../libs/M_.js','./../../../node_modules/morphinejs/libs/M_.js') ;
+                        data = data.replace('./../../../libs-client/M_.js','./../../../node_modules/morphinejs/libs/M_.js') ;
                         fs.writeFileSync(item.path, data) ;
                     }
                     nextItem() ;
