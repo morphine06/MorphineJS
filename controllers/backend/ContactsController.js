@@ -200,11 +200,11 @@ module.exports = class extends BaseController {
 			row_co.co_rights = {} ;
 			row_co.contracts = [] ;
 			row_co.co_birthday = '' ;
-			res.send({data: row_co});
+			this.send(res, {data: row_co});
 		} else {
 			Contacts
 			.findOne({
-				co_id: req.params.co_id
+				't1.co_id': req.params.co_id
 			})
 			.populate('ag_id')
 			.populate('updatedCo')
@@ -218,6 +218,12 @@ module.exports = class extends BaseController {
 				row_co.contracts = [] ;
 				async.parallel([
 					(next)=> {
+						OptionsServices.get('', 'allrights_'+row_co.co_type, function (defaultRights) {
+							row_co.defaultRights = defaultRights ;
+							next() ;
+						}) ;
+					},
+					(next)=> {
                         next() ;
 						// row_co.todos = [] ;
 						// if (row_co.co_type!='contact' && row_co.co_type!='candidate') {
@@ -230,7 +236,7 @@ module.exports = class extends BaseController {
 						// }
 					},
 				], (err, results)=> {
-					res.send({
+					this.send(res, {
 						data: row_co
 					});
 				});
@@ -239,7 +245,7 @@ module.exports = class extends BaseController {
     }
     find(req, res) {
 		filterContacts(req, (rows_co)=> {
-			res.send({data:rows_co}) ;
+			this.send(res, {data:rows_co}) ;
 		}) ;
 	}
 	export(req, res) {
@@ -256,7 +262,7 @@ module.exports = class extends BaseController {
 			res.setHeader('Content-type', 'text/text');
 			res.setHeader('Content-Length', content.length);
 
-			res.send(content) ;
+			this.send(res, content) ;
 		}) ;
 	}
 	savestatus(req, res) {
@@ -265,7 +271,7 @@ module.exports = class extends BaseController {
 		}, {
 			co_status: req.body.co_status
 		}, (err, row_co)=> {
-			res.send({
+			this.send(res, {
 				data: row_co
 			});
 		});
@@ -302,8 +308,9 @@ module.exports = class extends BaseController {
 						rights2[right] = bodyval ;
 					}
 				});
-				if (row_co.co_type=='contact' || row_co.co_type=='customer') rights2 = {} ;
-				Contacts.update({co_id: row_co.co_id}, {co_optionsrights:rights2}).exec((errsql)=> {
+				// if (row_co.co_type=='contact' || row_co.co_type=='customer') rights2 = {} ;
+				// console.log("rights2",rights2);
+				Contacts.update({co_id: row_co.co_id}, {co_rights:rights2}).exec((errsql)=> {
 					if(errsql) console.log("errsql",errsql) ;
 					nextSerie();
 				}) ;
@@ -319,22 +326,22 @@ module.exports = class extends BaseController {
 		req.body.createdCo = req.user.co_id;
 		req.body.updatedCo = req.user.co_id;
 		this._updateOrCreate(req, (err, row_co)=> {
-			if(err) return res.send(err);
-			res.send({data:row_co});
+			if(err) return this.send(res, err);
+			this.send(res, {data:row_co});
 		});
 	}
 	update(req, res) {
 		req.body.updatedCo = req.user.co_id;
 		this._updateOrCreate(req, (err, row_co)=> {
-			if(err) return res.send(err);
-			res.send({data:row_co});
+			if(err) return this.send(res, err);
+			this.send(res, {data:row_co});
 		});
 	}
 	updateavatar(req, res) {
 		savePhoto(req, req.body.co_id, ()=> {
 			Contacts.findOne(req.body.co_id).exec((errsql, row_co)=> {
 				if (errsql) console.log("errsql",errsql);
-				res.send({data:row_co});
+				this.send(res, {data:row_co});
 			}) ;
 		});
 	}
@@ -436,7 +443,7 @@ module.exports = class extends BaseController {
 		});
 	}
     avatar(req, res) {
-        // return res.send("OK");
+        // return this.send(res, "OK");
 
         // res.header('Cache-Control', 'public, max-age='+sails.config.http.cache);
 

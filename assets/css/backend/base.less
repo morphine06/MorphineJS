@@ -1,62 +1,13 @@
 @import './M_';
 @import url( "./variables.less" );
 
-@base: #f938ab;
-
-.box-shadow(@style, @c) when (iscolor(@c)) {
-  -webkit-box-shadow: @style @c;
-  box-shadow:         @style @c;
-}
-.box-shadow(@style, @alpha: 50%) when (isnumber(@alpha)) {
-  .box-shadow(@style, rgba(0, 0, 0, @alpha));
-}
-.box {
-  color: saturate(@base, 5%);
-  border-color: lighten(@base, 30%);
-  div { .box-shadow(0 0 5px, 30%) }
-}
 
 
 
-body {
-	// background-color: @gray1;
-}
-h1 {
-	color: @green3;
-}
-h1.notcolored {
-	color: @gray2;
-}
-h2 {
-	font-size: 20px;
-	font-weight: 400;
-	line-height: 20px;
-	color: @gray2;
-	margin: 0 0 8px 0;
-}
-
-h3, .M_TabButton {
-	font-size: 12px;
-	line-height: 13px;
-	font-weight: bold;
-	text-transform: uppercase;
-	color: @gray2;
-}
-h3 {
-	margin: 0 0 8px 0;
-}
-h6 {
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-	font-weight: 100;
-	font-size: 20px;
-}
-hr {
-	margin: 15px 0;
-}
 #preferences_table {
 	width: 600px;
 	margin: 0 auto;
-	border-top: 1px solid @gray1;
+	border-top: 1px solid @grey;
 	padding-top: 30px;
 	a {
 		text-decoration: none;
@@ -65,7 +16,7 @@ hr {
 		float: left;
 		width: 300px;
 		padding-bottom: 30px;
-		border-bottom: 1px solid @gray1;
+		border-bottom: 1px solid @grey;
 		margin-bottom: 30px;
 		img {
 			display: block;
@@ -81,11 +32,11 @@ hr {
 }
 b {
 	font-weight: bold;
-	// color: @blue4;
+	// color: @blue;
 }
 strong {
 	font-weight: bold;
-	color: @blue4;
+	color: @blue;
 }
 
 .unselectable {
@@ -111,14 +62,14 @@ strong {
 	width: @sidebar-width;
 	height: calc(100% - @maintoolsbar-height);
 	// border-right: 1px solid #b0bec5;
-	background-color: @gray5;
+	background-color: @bluegrey-900;
 	box-sizing: border-box;
 	padding: 0;
 	li {
 		padding: 10px 15px;
 	}
 	h1 {
-		background-color: @gray5;
+		background-color: @grey;
 		height: @maintoolsbar-height;
 		font-size: 20px;
 		color: white;
@@ -137,101 +88,23 @@ strong {
 		float: left;
 		margin-right: 10px;
 	}
+    .nav.nav-main {
+        li {
+        	color: @grey;
+        	margin: 0;
+        	border-bottom: 1px solid @grey;
+        	-webkit-transition: background-color 0.5s ease 0s;
+        	        transition: background-color 0.5s ease 0s;
+            &:hover, &.over {
+                color: white;
+            }
+            &:hover {
+                background-color: @bluegrey-500;
+            }
+        }
+    }
 }
-// #mainnav span {
-// 	width: 34px;
-// 	height: 34px;
-// 	display: block;
-// 	float: left;
-// 	background-repeat: no-repeat;
-// 	margin: 5px 0 5px 10px;
-// }
-// #mainnav .menumodule_Home span {
-// 	background-image: url(/images/ico_1home-NB.png);
-// }
-// #mainnav .menumodule_Home:hover span,
-// #mainnav .menumodule_Home.over span {
-// 	background-image: url(/images/ico_1home.png);
-// }
-// #mainnav .menumodule_Contacts span {
-// 	background-image: url(/images/ico_2contacts-NB.png);
-// }
-// #mainnav .menumodule_Contacts:hover span,
-// #mainnav .menumodule_Contacts.over span {
-// 	background-image: url(/images/ico_2contacts.png);
-// }
-// #mainnav .menumodule_Vacation span {
-// 	background-image: url(/images/ico_3abscences-NB.png);
-// }
-// #mainnav .menumodule_Vacation:hover span,
-// #mainnav .menumodule_Vacation.over span {
-// 	background-image: url(/images/ico_3abscences.png);
-// }
-// #mainnav .menumodule_VacationAdmin span {
-// 	background-image: url(/images/ico_4abscences-admin-NB.png);
-// }
-// #mainnav .menumodule_VacationAdmin:hover span,
-// #mainnav .menumodule_VacationAdmin.over span {
-// 	background-image: url(/images/ico_4abscences-admin.png);
-// }
-// #mainnav .menumodule_Reports span {
-// 	background-image: url(/images/ico_5rapporthebdo-NB.png);
-// }
-// #mainnav .menumodule_Reports:hover span,
-// #mainnav .menumodule_Reports.over span {
-// 	background-image: url(/images/ico_5rapporthebdo.png);
-// }
-// #mainnav .menumodule_ReportsAdmin span {
-// 	background-image: url(/images/ico_6rapporthebdo-admin-NB.png);
-// }
-// #mainnav .menumodule_ReportsAdmin:hover span,
-// #mainnav .menumodule_ReportsAdmin.over span {
-// 	background-image: url(/images/ico_6rapporthebdo-admin.png);
-// }
-// #mainnav .menumodule_MonthlyReports span {
-// 	background-image: url(/images/ico_6rapportmensuel-NB.png);
-// }
-// #mainnav .menumodule_MonthlyReports:hover span,
-// #mainnav .menumodule_MonthlyReports.over span {
-// 	background-image: url(/images/ico_6rapportmensuel.png);
-// }
-// #mainnav .menumodule_MonthlyReportsAdmin span {
-// 	background-image: url(/images/ico_7rapportmensuel-admin-NB.png);
-// }
-// #mainnav .menumodule_MonthlyReportsAdmin:hover span,
-// #mainnav .menumodule_MonthlyReportsAdmin.over span {
-// 	background-image: url(/images/ico_7rapportmensuel-admin.png);
-// }
-// #mainnav .menumodule_Candidates span {
-// 	background-image: url(/images/ico_8moduleDRH-NB.png);
-// }
-// #mainnav .menumodule_Candidates:hover span,
-// #mainnav .menumodule_Candidates.over span {
-// 	background-image: url(/images/ico_8moduleDRH.png);
-// }
-// #mainnav .menumodule_Preferences span {
-// 	background-image: url(/images/ico_9preferences-NB.png);
-// }
-// #mainnav .menumodule_Preferences:hover span,
-// #mainnav .menumodule_Preferences.over span {
-// 	background-image: url(/images/ico_9preferences.png);
-// }
 
-
-#mainnav .nav.nav-main li {
-	color: @gray2;
-	margin: 0;
-	border-bottom: 1px solid @gray2;
-	-webkit-transition: background-color 0.5s ease 0s;
-	        transition: background-color 0.5s ease 0s;
-}
-#mainnav .nav.nav-main li:hover,
-#mainnav .nav.nav-main li.over {
-	color: @gray1;
-}
-#mainnav .nav.nav-main li:hover {
-	background-color: @gray2;
-}
 
 #mainnav .nav.nav-main a {
 	text-decoration: none;
@@ -247,11 +120,11 @@ strong {
 #maincenter {
 	height: 100%;
 	width: 100%;
-	background-color: @monogray2;
+	background-color: @bluegrey-50;
 }
 #maintoolsbar {
 	height: @maintoolsbar-height;
-	background-color: @gray3;
+	background-color: @bluegrey-700;
 	color: white;
 }
 #maintoolsbarcontent {
@@ -284,7 +157,7 @@ strong {
 	cursor: pointer;
 }
 .mainseperation {
-	border-left: 1px solid @gray1;
+	border-left: 1px solid @grey;
 	width: 1px;
 	float: left;
 	height: 25px;
@@ -359,22 +232,22 @@ strong {
 	h1 {
 		font-size: 20px;
 		line-height: 22px;
-		color: @gray2;
+		color: @grey;
 	}
 }
 
 
 .noUi-connect.bg_colOrange1 {
-	background-color: @yellow2;
+	background-color: @yellow;
 }
 .noUi-connect.bg_colBlue1 {
-	background-color: @blue2;
+	background-color: @blue;
 }
 .noUi-connect.bg_colGreen1 {
-	background-color: @green2;
+	background-color: @green;
 }
 .noUi-connect.bg_colRed1 {
-	background-color: @red2;
+	background-color: @red;
 }
 
 @keyframes bganim {
@@ -412,12 +285,12 @@ strong {
 }
 
 #vacation_previousmonth, #vacation_nextmonth {
-	color: @gray1;
+	color: @grey;
 	cursor: pointer;
 	font-size: 40px;
 }
 #vacation_previousmonth:hover, #vacation_nextmonth:hover {
-	color: @gray2;
+	color: @grey;
 }
 
 #vacationwinedit_va_start2 label, #vacationwinedit_va_end2 label {
@@ -425,7 +298,7 @@ strong {
 }
 
 .faicon {
-	background-color: @blue3;
+	background-color: @blue;
 	padding: 5px 7px 0 7px;
 	border-radius: 3px;
 	height: 24px;
@@ -453,7 +326,7 @@ strong {
 .little2 {
 	font-size: @font-size-smallsmall;
 	line-height: @font-size-smallsmall;
-	color: @gray4;
+	color: @grey;
 	line-height: 11px;
 }
 
@@ -489,7 +362,7 @@ strong {
 .home_3stats_num {
 	font-size: 50px;
 	line-height: 50px;
-	color: @blue3;
+	color: @blue;
 	text-align: center;
 	font-weight: 100;
 }
@@ -502,7 +375,7 @@ strong {
 .home_3stats_num_ng {
   font-size: 50px;
   line-height: 50px;
-  color: @red3;
+  color: @red;
   text-align: center;
   font-weight: 100;
 }
@@ -513,7 +386,7 @@ strong {
   padding-top: 8px;
 }
 .home_3stats_week {
-	color: @monogray3;
+	color: @grey;
 }
 
 
@@ -566,7 +439,7 @@ strong {
 			text-align: center;
 			span {
 				display: block;
-				color: @gray2;
+				color: @grey;
 			}
 			span:first-child {
 				font-size: 30px;
@@ -575,16 +448,16 @@ strong {
 		}
 	}
 	&:first-child .home_4stats_top {
-		background-color: @red2;
+		background-color: @red;
 	}
 	&:nth-child(2) .home_4stats_top {
-		background-color: @blue3;
+		background-color: @blue;
 	}
 	&:nth-child(3) .home_4stats_top {
-		background-color: @green3;
+		background-color: @green;
 	}
 	&:last-child .home_4stats_top {
-		background-color: @green4;
+		background-color: @green;
 	}
 
 }
@@ -778,16 +651,12 @@ strong {
 
 
 .M_Window {
-	background-color: @monogray2;
+	background-color: @bluegrey-50;
 }
 .M_Window h2 {
-	color: @blue4;
+	color: @blue;
 	// font-weight: bold;
 	// font-style: italic;
-}
-.M_FormCaret {
-	background-color: @blue3;
-	color: white;
 }
 
 
@@ -796,7 +665,7 @@ strong {
 	float: left;
 	width: calc(100% - 35px - @arrow-size);
 	padding: 10px;
-	background-color: @gray1;
+	background-color: @grey;
 	position: relative;
 }
 .messageContent.right {
@@ -814,7 +683,7 @@ strong {
 	height: 0;
 	border-top: @arrow-size solid transparent;
 	border-bottom: @arrow-size solid transparent;
-	border-left: @arrow-size solid @gray1;
+	border-left: @arrow-size solid @grey;
 	position: absolute;
 	right: -@arrow-size;
 }
@@ -823,7 +692,7 @@ strong {
 	height: 0;
 	border-top: @arrow-size solid transparent;
 	border-bottom: @arrow-size solid transparent;
-	border-right: @arrow-size solid @gray1;
+	border-right: @arrow-size solid @grey;
 	position: absolute;
 	left: -@arrow-size;
 }
@@ -846,13 +715,10 @@ strong {
 .contactsdetail_frame .contactsdetail_frame_nb {
 	font-size: 30px;
 	line-height: 20px;
-	color: @blue1;
+	color: @blue;
 	padding-top: 10px;
 	// font-weight: bold;
 }
-// .M_Col4.M_MarginRight.contactsdetail_frame {
-//   padding: 10px 10px;
-// }
 .contacts_details_maindiv .M_TableList td {
 	// font-size: 13px;
 	height: auto;
@@ -864,18 +730,6 @@ strong {
 .contacts_details_maindiv h1 + h2 {
 	margin-top: 0;
 }
-.contacts_details_maindiv h3, #rooms_col_details h3, #forms_details h3 {
-	color: @blue3;
-}
-.contacts_details_maindiv .bg_col6 h3 {
-	color: @font-default-color;
-}
-// .M_TabButton {
-// 	font-size: 12px;
-// 	text-transform: uppercase;
-// 	color: @gray2;
-// }
-
 
 #contacts_btsettings, #contacts_btsearch,
 #rooms_btsettings, #rooms_btsearch,
@@ -885,9 +739,9 @@ strong {
 	margin: 5px 10px 0 0;
 	font-size: 15px;
 	cursor: pointer;
-	color: @gray2;
+	color: @grey;
 	&:hover {
-		color: @gray1;
+		color: @grey;
 	}
 }
 
@@ -910,59 +764,59 @@ strong {
 	color: white;
 }
 .txt_col1 {
-	color: @blue3;
+	color: @blue;
 }
 .txt_col2 {
-	color: @green3;
+	color: @green;
 }
 .txt_col3 {
-	color: @red3;
+	color: @red;
 }
 .txt_col4 {
-	color: @purple3;
+	color: @purple;
 }
 .txt_col5 {
-	color: @yellow3;
+	color: @yellow;
 }
 .txt_col6 {
-	color: @monogray3;
+	color: @grey;
 }
 
 .bg_col1 {
-	background-color: @blue1;
+	background-color: @blue-100;
 }
 .bg_col2 {
-	background-color: @green3;
+	background-color: @green;
 }
 .bg_col3 {
-	background-color: @red3;
+	background-color: @red;
 	color: white;
 }
 .m_gantt-task.bg_col3 {
 	color: @font-default-color;
 }
 .bg_col4 {
-	background-color: @purple3;
+	background-color: @purple;
 	color: white;
 }
 .m_gantt-task.bg_col4 {
 	color: @font-default-color;
 }
 .bg_col5 {
-	background-color: @yellow3;
+	background-color: @yellow;
 }
 .bg_col6 {
-	background-color: @monogray2;
+	background-color: @bluegrey-100;
 }
 .bg_col7 {
-	background-color: @blue3;
+	background-color: @blue;
 	color: white;
 }
 .m_gantt-task.bg_col7 {
 	color: @font-default-color;
 }
 .bg_col8 {
-	background-color: @blue2;
+	background-color: @blue;
 }
 
 
@@ -1036,7 +890,7 @@ strong {
     font-size: 18px;
 }
 .loginAlertLi {
-	border-bottom: 1px solid @gray1;
+	border-bottom: 1px solid @grey;
 	span {
 		float: left;
 		font-size: 20px;
@@ -1059,7 +913,7 @@ strong {
 	}
 	.loginAlertLiLittle {
 		font-size: 10px;
-		color: @monogray4;
+		color: @grey;
 		line-height: 14px;
 	}
 }
@@ -1069,10 +923,10 @@ strong {
 .c3-circle {
 	r: 3px;
 	stroke-width: 1px;
-	stroke: @gray1;
+	stroke: @grey;
 }
 .c3-chart-arc text {
-	fill: @gray5;
+	fill: @grey;
 }
 
 #candidates_dd {
@@ -1084,10 +938,10 @@ strong {
 	vertical-align: top;
 	width: 20%;
 	padding: 0 10px;
-	border-right: 1px solid @gray1;
+	border-right: 1px solid @grey;
 }
 .candidates_dditem {
-	// background-color: @red3;
+	// background-color: @red;
 	padding: 5px 10px;
 	margin: 0 0 10px 0;
 	cursor: pointer;
@@ -1136,19 +990,19 @@ a.agency_selector.checked {
   cursor: pointer;
 }
 .agency_allbt {
-	background-color: @green2;
+	background-color: @green;
 }
 .agency_picker.checked {
-  background-color: @blue3;
+  background-color: @blue;
 }
 
 #mainbtmenus {
 	width: 35px;
 	height: 35px;
 	border-radius: 50%;
-	background-color: red;
+	background-color: @red;
 	padding: 8px 0 0 0;
-	background-color: @gray2;
+	background-color: @grey;
 	text-align: center;
 }
 .M_WindowBody {
@@ -1181,22 +1035,22 @@ a.agency_selector.checked {
 	background-repeat: no-repeat;
 }
 .agencywithred {
-	background-color: @red3;
+	background-color: @red;
 	color: white;
 }
 
 
 .M_Button.primary {
-	background-color: @orange1;
+	background-color: @orange;
 }
 .M_Button.primary:hover {
-	background-color: @orange2;
+	background-color: @orange-700;
 }
 .M_Button.primary.M_ModalSave {
-	background-color: @blue3;
+	background-color: @blue;
 }
 .M_Button.primary.M_ModalSave:hover {
-	background-color: @blue2;
+	background-color: @blue-700;
 }
 .M_Button.primary.M_ModalSave[disabled], .M_Button.primary.M_ModalSave:disabled, .M_Button.primary.M_ModalSave:hover[disabled] {
 	background-color: transparent;
@@ -1214,16 +1068,16 @@ a.agency_selector.checked {
 }
 
 .m_gantt-task.error {
-	background-color: @red2;
+	background-color: @red;
 }
 .m_gantt-task.green {
-	background-color: @green2;
+	background-color: @green;
 }
 .m_gantt-task.yellow {
-	background-color: @yellow2;
+	background-color: @yellow;
 }
 .m_gantt-task.purple {
-	background-color: @purple2;
+	background-color: @purple;
 }
 
 

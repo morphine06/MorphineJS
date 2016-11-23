@@ -1,38 +1,49 @@
-<div class="M_FlexCols">
-	<div style="max-height:55px;">
+<div class="M_FlexCol">
+	<div class="M_FlexGrow0">
 		<h3>Les contacts</h3>
 		<h1>Tous mes contacts</h1>
 	</div>
-	<div class="M_Flex M_FlexMargin M_FlexGrow1">
-		<div style="max-width:200px;" class="M_FlexCols M_Panel M_FlexNoPadding ">
-			<div class="M_Toolbar2">
-				<div class="M_FloatRight M_Pointer">
-					<button id="contacts_btaddgroup" type="button" class="M_FloatRight M_Button primary little" id="home_bt_action" style="margin-top:-4px;"><i class="fa fa-plus M_IconFa"></i></button>
-				</div>
-				<h3 id="contacts_header_groups"></h3>
-			</div>
-			<div style="height:34px; padding:5px 0 0 0;" id="contacts_bases"></div>
-			<div id="contacts_list_groups" style="" class="M_FlexGrow1"></div>
-		</div>
-		<div style="max-width:200px;" class="M_FlexCols M_Panel M_FlexNoPadding">
-			<div class="M_Toolbar2">
-				<div class="M_FloatRight M_Pointer" style="margin-top:-4px;">
-					<button id="contacts_btaddcontact" type="button" class="M_FloatRight M_Button primary little" style="margin-top:2px;"><i class="fa fa-plus M_IconFa"></i></button>
-					<div class="M_FloatRight M_Pointer" id="contacts_btsearch">
-						<i class="fa fa-search"></i>
+	<div class="M_FlexRow M_FlexGrow1">
+		<div class="M_FlexCol" style="max-width:250px;">
+			<div class="M_Panel M_NoPadding M_FlexCol">
+				<div class="M_FlexGrow0 M_Padding" style="padding-bottom:5px;">
+					<div class="M_FloatRight M_Pointer">
+						<button id="contacts_btaddgroup" type="button" class="M_FloatRight M_Button primary little" id="home_bt_action" style="margin-top:-4px;"><i class="fa fa-plus M_IconFa"></i></button>
 					</div>
-					<div class="M_FloatRight M_Pointer" id="contacts_btsettings">
-						<i class="fa fa-gear"></i>
-					</div>
+					<h3 id="contacts_header_groups"></h3>
 				</div>
-				<h3 id="contacts_header_contacts"></h3>
+				<div class="M_FlexGrow0" style="padding:5px 0 0 0;" id="contacts_bases"></div>
+				<div class="M_FlexGrow1 M_NoPadding M_Scroll">
+					<div id="contacts_list_groups" style="" class=""></div>
+				</div>
+
 			</div>
-			<div style="height:34px; padding:5px 0 0 0;" id="contacts_simplesearch"></div>
-			<div id="contacts_list_contacts" class="M_FlexGrow1"></div>
-			<div style="height:34px; text-align:right;" class="M_Pad"><a id="contacts_selectall" href='javascript:void(0);'>Tout sélectioner</a></div>
 		</div>
-		<div class="M_Panel">
-			<div id="contacts_details_content" class="M_PanelScroller"></div>
+		<div class="M_FlexCol" style="max-width:250px;">
+			<div class="M_Panel M_NoPadding M_FlexCol">
+				<div class="M_FlexGrow0 M_Padding" style="padding-bottom:5px;">
+					<div class="M_FloatRight M_Pointer" style="margin-top:-4px;">
+						<button id="contacts_btaddcontact" type="button" class="M_FloatRight M_Button primary little" style="margin-top:2px;"><i class="fa fa-plus M_IconFa"></i></button>
+						<div class="M_FloatRight M_Pointer" id="contacts_btsearch">
+							<i class="fa fa-search"></i>
+						</div>
+						<div class="M_FloatRight M_Pointer" id="contacts_btsettings">
+							<i class="fa fa-gear"></i>
+						</div>
+					</div>
+					<h3 id="contacts_header_contacts"></h3>
+				</div>
+				<div class="M_FlexGrow0" style="padding:5px 0 0 0;" id="contacts_simplesearch"></div>
+				<div class="M_FlexGrow1 M_NoPadding M_Scroll">
+					<div id="contacts_list_contacts" class="M_FlexGrow1"></div>
+				</div>
+				<div class="M_FlexGrow0 M_Padding" style="text-align:right;"><a id="contacts_selectall" href='javascript:void(0);'>Tout sélectioner</a></div>
+			</div>
+		</div>
+		<div class="M_FlexCol">
+			<div class="M_Panel">
+				<div id="contacts_details_content" class=""></div>
+			</div>
 		</div>
 	</div>
 

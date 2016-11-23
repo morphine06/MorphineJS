@@ -172,6 +172,12 @@ module.exports = {
             type: 'boolean',
             defaultsTo: 0
         },
+        createdCo: {
+            model: 'Contacts'
+        },
+        modifiedCo: {
+            model: 'Contacts'
+        },
     }
 };
 

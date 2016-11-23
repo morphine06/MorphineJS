@@ -9,12 +9,12 @@ export var Services = {
 	drawCreatedModified: function(row_co) {
 		var html = "" ;
 		if (row_co.createdAt) {
-			html += "Créé le "+moment(row_co.createdAt).format('DD/MM/YYYY \à HH\\Hmm') ;
+			html += "Créé le "+moment(row_co.createdAt).format('DD/MM/YYYY [à] HH[H]mm') ;
 			if (row_co.createdCo) html += " par "+Shared.completeName(row_co.createdCo) ;
 			html += " - " ;
 		}
 		if (row_co.updatedAt) {
-			html += "Modifié le "+moment(row_co.updatedAt).format('DD/MM/YYYY \à HH\\Hmm') ;
+			html += "Modifié le "+moment(row_co.updatedAt).format('DD/MM/YYYY [à] HH[H]mm') ;
 			if (row_co.updatedCo) html += " par "+Shared.completeName(row_co.updatedCo) ;
 		}
 		return html ;

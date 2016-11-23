@@ -2,18 +2,23 @@
 <div class="M_WindowContent" id="">
 	<div class="M_WindowHeader">
 		<!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>-->
-		<div style="position:absolute; right:0; width:350px;">
+		<!-- <div style="position:absolute; right:0; width:350px;">
 			<div id="contactedit_co_avatar"></div>
 			<div id="contactedit_co_avatarauto"></div>
-		</div>
+		</div> -->
 		<h1 id="contactedit_title">Edition d'un contact</h1>
 		<!-- <div>Pouvoir directement sélectionner une tâche, et le combobox tache afficherai les tâches oM_ModalOKù on est assigné</div> -->
 	</div>
 	<div class="M_WindowBody">
 		<div id="contactedit_calendartest"></div>
 		<div class="" style="overflow:hidden;">
-			<div class="M_Flex">
+			<div class="M_FlexRow">
 				<div class="M_FlexCol3" id="contactedit_co_type"></div>
+				<div class="M_FlexCol6"></div>
+				<div class="M_FlexCol3">
+					<div id="contactedit_co_avatar"></div>
+					<div id="contactedit_co_avatarauto"></div>
+				</div>
 			</div>
 		</div>
 
@@ -21,19 +26,19 @@
 
 		<hr/>
 		<div class="" style="overflow:hidden;">
-			<div class="M_Flex">
+			<div class="M_FlexRow">
 				<h2>Etat civil</h2>
 			</div>
-			<div class="M_Flex" id="contactedit_panuser2">
+			<div class="M_FlexRow" id="contactedit_panuser2">
 				<div id="contactedit_co_society"></div>
 				<div id="contactedit_co_siret"></div>
 			</div>
-			<div class="M_Flex">
+			<div class="M_FlexRow">
 				<div class="M_FlexCol3" id="contactedit_co_civility"></div>
 				<div class="" id="contactedit_co_firstname"></div>
 				<div class="" id="contactedit_co_name"></div>
 			</div>
-			<div class="M_Flex">
+			<div class="M_FlexRow">
 				<div class="M_FlexCol3" id="contactedit_co_function"></div>
 				<div class="M_FlexCol3"><div id="contactedit_co_birthday"></div></div>
 				<div class="M_FlexCol6" id="contactedit_co_keywords" style="padding-top:10px;"></div>
@@ -41,7 +46,7 @@
 		</div>
 		<hr/>
 		<div class="" style="overflow:hidden;">
-			<div class="M_Flex M_MarginBottom" cellspacing="0" cellpadding="0">
+			<div class="M_FlexRow M_MarginBottom" cellspacing="0" cellpadding="0">
 				<div class="">
 					<h2>Coordonnées</h2>
 					<div id="contactedit_co_email1"></div>
@@ -68,7 +73,7 @@
 					<div id="contactedit_co_address1"></div>
 					<div id="contactedit_co_address2"></div>
 					<div id="contactedit_co_address3"></div>
-					<div class="M_Flex">
+					<div class="M_FlexRow">
 						<div class="" id="contactedit_co_zip"></div>
 						<div class="M_FlexGrow2" id="contactedit_co_city"></div>
 					</div>
@@ -80,39 +85,28 @@
 					<div id="contactedit_co_linkedin"></div>
 					<div id="contactedit_co_viadeo"></div>
 					<div id="contactedit_co_receive_emailing"></div>
-
-<!--
-					<h2>Adresse de livraison</h2>
-					<div id="contactedit_co_address_liv1"></div>
-					<div id="contactedit_co_address_liv2"></div>
-					<div id="contactedit_co_address_liv3"></div>
-					<div class="M_Row">
-						<div id="contactedit_co_zip_liv" class="M_Col4 M_MarginRight"></div>
-						<div id="contactedit_co_city_liv" class="M_Col8"></div>
-					</div>
-					<div id="contactedit_co_country_liv"></div>
--->
 				</div>
 			</div>
 		</div>
 		<hr>
 		<div class="" id="contactedit_panuser" style="overflow:hidden;">
 			<h2>Identifants</h2>
-			<div class="M_Flex">
+			<div class="M_FlexRow">
+				<input style="display:none" class="fake-autofill-fields" type="text" name="fakeusernameremembered"/>
+				<input style="display:none" class="fake-autofill-fields" type="password" name="fakepasswordremembered"/>
 				<div id="contactedit_co_login"></div>
 				<div id="contactedit_co_password"></div>
 				<div id="contactedit_co_idpld"></div>
 			</div>
-			<div class="M_Flex">
+			<div class="M_FlexRow">
 				<div id="contactedit_co_codetiers"></div>
 				<div id="contactedit_co_comptecollectif"></div>
 				<div id="contactedit_co_comptecomptable"></div>
 			</div>
-			<div class="M_Flex">
+			<div class="M_FlexRow">
 				<div id="contactedit_co_matricule"></div>
 				<div id="contactedit_co_date_start_society"></div>
 				<div id="contactedit_co_date_end_society"></div>
-				<!-- <div id="">&nbsp;</div> -->
 			</div>
 			<div id="contactedit_notforsearch" style="overflow:hidden;">
 				<div id="contactedit_rightscontainer">
@@ -126,7 +120,6 @@
 				</div>
 			</div>
 		</div>
-
 	</div>
 	<div class="M_WindowFooter">
 		<div class="M_FloatRight"><button type="button" class="M_ModalSave M_Button primary">Enregistrer</button></div>

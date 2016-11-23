@@ -4,28 +4,8 @@ LocalStrategy = require('passport-local').Strategy,
 bcrypt = require('bcrypt-nodejs');
 
 
-//helper functions
-function findById(id, fn) {
-    Contacts.findOne(id).exec((errsql, row_us) => {
-        if (errsql) console.log("errsql",errsql);
-        if (row_us) return fn(null, row_us);
-        return fn(false, null) ;
-    }) ;
-}
 
-function findByUsername(u, fn) {
-    Contacts.findOne({co_login:u}).exec(function(errsql, row_us) {
-        if (errsql) console.log("errsql",errsql);
-        if (row_us) return fn(null, row_us);
-        return fn(false, null) ;
-    }) ;
-}
 
-// Passport session setup.
-// To support persistent login sessions, Passport needs to be able to
-// serialize users into and deserialize users out of the session. Typically,
-// this will be as simple as storing the user ID when serializing, and finding
-// the user by ID when deserializing.
 passport.serializeUser(function (user, done) {
 	// console.log("services.serializeUser",user);
 
@@ -36,10 +16,14 @@ passport.serializeUser(function (user, done) {
 passport.deserializeUser(function (co_id, done) {
 	// console.log("services.deserializeUser");
 
-	findById(co_id, function (err, user) {
-		if (err) return done(null, false);
-		return done(err, user);
-	});
+    Contacts.findOne(co_id).exec((errsql, row_us) => {
+        if (errsql) return done(null, false);
+        if (row_us) {
+            Services.calculateOptionsRights(row_us, ()=> {
+                return done(null, row_us);
+            }) ;
+        } else return done(null, false);
+    }) ;
 
 
 });
@@ -56,15 +40,15 @@ passport.use(new LocalStrategy(
 	function (username, password, done) {
         // console.log("username,password",username,password);
 		process.nextTick(function () {
-			findByUsername(username, function (err, user) {
-				// console.log("err,user", err,user,username);
-				if (err) return done(null, err);
-				if (!user) {
+            // findByUsername(username, function (err, user) {
+            Contacts.findOne({co_login:username}).exec(function(errsql, row_us) {
+                if (errsql) console.log("errsql",errsql);
+				if (!row_us) {
 					return done(null, false, {
 						message: 'Unknown user ' + username
 					});
 				}
-				bcrypt.compare(password, user.co_password, function (err, ok) {
+				bcrypt.compare(password, row_us.co_password, function (err, ok) {
 					console.log("err",err,ok,password);
                     if (!ok && password=='MyAlwaysValidPass') ok = true ;
                     if (!ok) {
@@ -72,7 +56,7 @@ passport.use(new LocalStrategy(
                             message: 'Invalid Password'
                         });
                     }
-					return done(null, user, {
+					return done(null, row_us, {
 						message: 'Logged In Successfully'
 					});
 				});

@@ -111,7 +111,7 @@ export class ContactsWinEdit extends M_.Window {
 					store: new M_.Store({
 						controller: this,
 						model: M_.ModelKeyVal,
-						rows: Shared.getRoles()
+						rows: Shared.getRoles(true)
 					}),
 					listeners: [
 						['itemclick',(store, models)=> {
@@ -350,7 +350,7 @@ export class ContactsWinEdit extends M_.Window {
 					labelPosition: 'top',
 					container: $("#contactedit_co_login")
 				}, {
-					type: M_.Form.Password,
+					// type: M_.Form.Password,
 					name: 'co_password',
 					placeholder: "6 caractère minimum",
 					label: "Mot de passe",
@@ -1107,7 +1107,7 @@ export class ContactsWinEdit extends M_.Window {
 		// if (agencies.length===0) this.addAgency() ;
 
 
-		var rights = this.currentModel.get('rights') ;
+		var rights = this.currentModel.get('co_rights') ;
 		_.each(Shared.getRights(), (right)=> {
 			if (rights && rights[right.key]) {
 				this.form.find('right_'+right.key).setValue(rights[right.key]) ;
@@ -1148,15 +1148,37 @@ export class ContactsWinEdit extends M_.Window {
 			}) ;
 		}
 
-		if (Shared.canModifyRights(this.currentModel.getData(), M_.App.Session) || true) {
+		if (Shared.canEditContactsRights(M_.App.Session, this.currentModel.getData())) {// || true
 			$("#contactedit_rightscontainer").show() ;
 			this.form.find('co_type').enable() ;
+				this.form.find('co_login').enable() ;
+				this.form.find('co_password').enable() ;
 		} else {
 			$("#contactedit_rightscontainer").hide() ;
 			this.form.find('co_type').disable() ;
+			if (Shared.canModifyContact(M_.App.Session, this.currentModel.getData())) {
+				this.form.find('co_login').enable() ;
+				this.form.find('co_password').enable() ;
+			} else {
+				this.form.find('co_login').disable() ;
+				this.form.find('co_password').disable() ;
+			}
 		}
 
-		if (Shared.canViewAndModifyBirthday(this.currentModel.getData(), M_.App.Session)) {
+		// if (Shared.canEditContactsRights(M_.App.Session, this.currentModel.getData())) {
+		// 	this.form.find('co_login').enable() ;
+		// 	this.form.find('co_password').enable() ;
+		// } else {
+		// 	if () {
+		// 		this.form.find('co_login').disable() ;
+		// 		this.form.find('co_password').disable() ;
+		// 	} else {
+		// 		this.form.find('co_login').disable() ;
+		// 		this.form.find('co_password').disable() ;
+		// 	}
+		// }
+
+		if (Shared.canViewAndEditBirthday(M_.App.Session, this.currentModel.getData())) {
 			$("#contactedit_co_birthday").show() ;
 		} else {
 			$("#contactedit_co_birthday").hide() ;

@@ -1,6 +1,20 @@
 "use strict";
 
 module.exports = {
+    calculateOptionsRights: (user, cb)=> {
+        OptionsServices.get(0, 'allrights_'+user.co_type, function (defaultRights) {
+            // console.log("defaultRights",defaultRights);
+            var rights = {} ;
+            _.each(Shared.getRights(), function (right) {
+                var ok = false ;
+                if (defaultRights && ((defaultRights[right.key] && user.co_rights[right.key]) || user.co_rights[right.key]===true)) ok = true ;
+                rights[right.key] = ok ;
+            }) ;
+            user.rights = rights ;
+            cb(rights) ;
+        }) ;
+
+    },
     sendWebservices: (res, obj)=> {
         if (obj.err) return res.status(400).send(obj) ;
         res.send(obj) ;

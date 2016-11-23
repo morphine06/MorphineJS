@@ -25,6 +25,7 @@ module.exports = class {
         this.res.render(page, params);
     }
     send(res, data) {
+        if (_.isObject(data) && data.err) return res.status(400).send({err:data.err}) ;
         res.send(data) ;
     }
 } ;

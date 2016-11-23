@@ -369,7 +369,7 @@ class M_TableExec {
                 query = this._createSelectQuery() ;
             }
 
-            // console.log("query",query, this.whereData);
+            console.log("query",query, this.whereData);
             if (this.def.debug) console.log("query",query, this.whereData);
             this.connection.query({
                 sql: query,
@@ -377,7 +377,7 @@ class M_TableExec {
                 nestTables: false
             }, (err, rows, fields)=> {
                 let res ;
-                // if (err) throw err;
+                if (err) console.log('err0',err);
                 switch (this.command) {
                     case 'QUERY':
                     res = rows ;

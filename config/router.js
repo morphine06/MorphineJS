@@ -62,5 +62,19 @@ module.exports = {
             action: 'avatar',
             policies: ['accessBackend']
         },
+
+
+        'POST /ws/preferences/rights': {
+            controller: 'backend/PreferencesController',
+            action: 'saverights',
+            policies: ['accessBackend']
+        },
+        'GET /ws/preferences/rights/:xxx': {
+            controller: 'backend/PreferencesController',
+            action: 'loadrights',
+            policies: ['accessBackend']
+        },
+
+
     }
 } ;

@@ -39,6 +39,7 @@
 		"PasswordStrength": false,
 
 		"Logs": false,
+		"Options": false,
 		"Vacations": false,
 		"VacationsTypes": false,
 		"Contacts": false,

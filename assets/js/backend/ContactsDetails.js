@@ -23,7 +23,7 @@ export var ContactsDetails = new (class {
 			else row_co.presentations2.push(visit) ;
 		}) ;
 
-		var canModify = Shared.canModifyContact(row_co, M_.App.Session) ;
+		var canModify = Shared.canModifyContact(M_.App.Session, row_co) ;
 		// console.log("row_co",row_co);
 
 		M_.App.renderMustacheTo(

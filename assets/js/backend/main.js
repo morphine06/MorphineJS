@@ -1,19 +1,31 @@
 'use strict';
 
 import {M_} from './../../../libs-client/M_.js' ;
+
 import {Home} from './Home.js' ;
 import {Contacts} from './Contacts.js' ;
+import {Preferences} from './Preferences.js' ;
+
 import {Services} from './Services.js' ;
 import {Shared} from './../../compiled/Shared.js' ;
 
 
+
+
 M_.registerModule('Home',Home) ;
 M_.registerModule('Contacts',Contacts) ;
+M_.registerModule('Preferences',Preferences) ;
+
 
 // for access of M_ and Services in templates, we set this objects in lowdash !!!
 window.M_ = M_ ;
 window.M_.Services = Services ;
 window.M_.Shared = Shared ;
+// window.i18n = {
+// 	trans: (txt)=> {
+// 		return 'trans'+txt ;
+// 	}
+// } ;
 // _.M_ = M_ ;
 // _.Services = M_.App.Services = Services ;
 // _.Shared = Shared ;
@@ -44,33 +56,33 @@ M_.App
 	beforeModuleChange: (module, oldModule)=> {
 		var m = _.find(modules, {key:module}) ;
 		// console.log("module, oldModule", module, oldModule, m);
-		// if (m.right==='' || Services.getUserRight(m.right)) return true ;
-		return true ;
+		if (m.right==='' || Services.getUserRight(m.right)) return true ;
+		return false ;
 	}
 })
-.beforeReady(function(next) {
+.beforeReady((next)=> {
 	// console.log("Services",Services);
-	this.drawMenus = function() {
+	let drawMenus = ()=> {
 		var html = "" ;
 		_.each(modules, (module)=> {
 			if (module.hideInMenu) return ;
-			// if (module.right==='' || Services.getUserRight(module.right)) {
+			if (module.right==='' || Services.getUserRight(module.right)) {
 				html += '<a href="#/'+module.key+'"><li class="menumodule_'+module.key+'"><span class=""></span><p>'+module.label+'</p><div class="M_Clear"></div></li></a>' ;
-			// }
+			}
 		}) ;
 		$("#mainnavcontent").html(html) ;
 	};
-	this.loadSessionInfos = function() {
+	let loadSessionInfos = ()=> {
 		M_.Utils.getJson('/ws/infos', {}, (data)=> {
 			M_.App.Session = data.user ;
-			this.drawMenus() ;
+			drawMenus() ;
 			next() ;
 		}) ;
 	} ;
-	this.loadSessionInfos() ;
+	loadSessionInfos() ;
 
 })
-.ready(function() {
+.ready(()=> {
 
 
 	// Services.updateDates() ;
@@ -123,7 +135,7 @@ M_.App
 	}) ;
 
 
-	this.appIsFullScreen = false ;
+	// this.appIsFullScreen = false ;
 	$('#loginFullScreen').click(()=> {
 		M_.Utils.toggleAppFullScreen() ;
 	}) ;
@@ -133,7 +145,7 @@ M_.App
 	}) ;
 
 
-	function hideMenu() {
+	let hideMenu = function() {
 		if ($('#mainnav').is(':visible')) {
 			var l = -1*$('#mainnav').width() ;
 			$('#mainnav').transition({
@@ -144,8 +156,8 @@ M_.App
 			$('#mainbtmenus span').addClass('fa-reorder') ;
 			$('#mainbtmenus span').removeClass('fa-close') ;
 		}
-	}
-	function showMenu() {
+	} ;
+	let showMenu = function() {
 		if (!$('#mainnav').is(':visible')) {
 			$('#mainnav')
 			.css('left', -1*$('#mainnav').width())
@@ -157,7 +169,7 @@ M_.App
 			$('#mainbtmenus span').removeClass('fa-reorder') ;
 			$('#mainbtmenus span').addClass('fa-close') ;
 		}
-	}
+	} ;
 	$('#mainbtmenus').mouseenter(showMenu) ;
 	$(document)
 	.on('click', '#mainbtmenus', (evt)=> {

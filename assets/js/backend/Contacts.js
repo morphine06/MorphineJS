@@ -160,7 +160,7 @@ export class Contacts extends M_.Controller {
 			name: 'filtergroup',
 			container: $("#contacts_bases"),
 			help: "Recherche sur les groupes ; les groupes automatique ne sont pas filtrés.",
-			styleInput: 'height:25px; border-radius:0;',
+			styleInput: 'border-radius:0; border-left:0; border-right:0;',
 			stylePicker: 'border-radius:0;',
 				listeners: [
 					['update', (tf, val)=> {
@@ -216,7 +216,7 @@ export class Contacts extends M_.Controller {
 			value: '',
 			placeholder: "Rechercher sur les contacts",
 			help: "Recherche sur le nom, prénom, fonction, code client, email, téléphone, fax, adresse, commentaire.",
-			styleInput: 'height:25px; border-radius:0;',
+			styleInput: 'border-radius:0; border-left:0; border-right:0;',
 			listeners: [
 				['update', (tf, val)=> {
 					M_.Utils.delay(()=> {
