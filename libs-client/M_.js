@@ -3855,6 +3855,13 @@ M_.CRUD = {
 		if (this.trigger("beforeLoad", this, {url: this.url, args:okArgs})===false) return false ;
 		//this.lastLoadArgs = okArgs ;
 		var url = this.url ;
+		var method = 'GET' ;
+		if (this.urls) {
+			let aaurl = this._analyseUrl(this.urls.findone) ;
+			method = aaurl.method ;
+			url = aaurl.url ;
+		}
+		// console.log("method, url",method, url);
 		if (id) url += "/"+id ;
 		// alert("this.useWebsocket",this.useWebsocket)
 		if (this.useWebsocket) {
@@ -3862,23 +3869,10 @@ M_.CRUD = {
 				this._treatDataCrud(data, callback) ;
 			});
 		} else {
-			if (this.ajaxLoad) {
-				this.ajaxLoad.abort() ;
-				// console.log("abord");
-			}
-			this.ajaxLoad = M_.Utils.getJson(url, okArgs, (data)=> {
+			if (this.ajaxLoad) this.ajaxLoad.abort() ;
+			this.ajaxLoad = M_.Utils.ajaxJson(url, okArgs, method, (data)=> {
 				this._treatDataCrud(data, callback) ;
 			}) ;
-			// this.ajaxLoad = $.ajax({
-			// 	url: url,
-			// 	type: 'GET',
-			// 	//contentType: 'application/json',
-			// 	data: okArgs,
-			// 	dataType: 'json',
-			// 	success: (data)=> {
-			// 		this._treatDataCrud(data, callback) ;
-			// 	}
-			// });
 		}
 	},
 	_treatDataCrud(data, callback) {
@@ -3898,6 +3892,12 @@ M_.CRUD = {
 		if (this.onLoad) this.onLoad(m) ;
 		this.trigger("load", this, m);
 		if (callback) callback(m) ;
+	},
+	_analyseUrl(theurl) {
+		if (theurl.indexOf(' ')>=0) {
+			var [method, url] = theurl.split(' ') ;
+			return {method:method, url:url} ;
+		} else return {method:'POST', url:theurl} ;
 	},
 	/**
 	 * @param  {type}
@@ -3929,9 +3929,11 @@ M_.CRUD = {
 				}
 			}
 			// log("data", data)
+
 			var okArgs = {action: 'save'} ;
 			$.extend(okArgs, this.args, args, data) ;
-			if (this.trigger("beforeSave", this, {url: this.url, args:okArgs})===false) return false ;
+
+
 			// log("okArgs",okArgs);
 
 			/*var fields=this.fields ;
@@ -3945,23 +3947,37 @@ M_.CRUD = {
 			if (this.trigger("beforeLoad", this, {url: this.url, args:okArgs})===false) return false ;
 			this.lastLoadArgs = okArgs ;
 			*/
+			var url = this.url ;
 			var method = 'POST' ;
+			if (this.urls) {
+				let aaurl = this._analyseUrl(this.urls.create) ;
+				method = aaurl.method ;
+				url = aaurl.url ;
+			}
 			var moreUrl = '' ;
 			if (this.model) {
 				var modelTemp = new this.model({row:{}}) ;
 				if (!_.isEmpty(okArgs[modelTemp.primaryKey])) {
 					method = 'PUT' ;
 					moreUrl = '/'+okArgs[modelTemp.primaryKey] ;
+					if (this.urls) {
+						let aaurl = this._analyseUrl(this.urls.update) ;
+						method = aaurl.method ;
+						url = aaurl.url ;
+					}
 				}
 				// log("this.model.primaryKey",modelTemp.primaryKey,okArgs)
 			}
+
+			if (this.trigger("beforeSave", this, {url: url, method:method, args:okArgs})===false) return false ;
+
 			// return ;
 			// var formData = new FormData() ;
 			// for(key in okArgs) {
 			// 	formData.append(key, okArgs[key]) ;
 			// }
 
-			M_.Utils.ajaxJson(this.url+moreUrl, okArgs, method, (data)=> {
+			M_.Utils.ajaxJson(url+moreUrl, okArgs, method, (data)=> {
 				// log("dataaaaa",data)
 				if (data.error) {
 					let errTxt = "" ;
@@ -4009,8 +4025,17 @@ M_.CRUD = {
 		this._callbackFormDelete = callback ;
 		var okArgs = {} ;
 		$.extend(okArgs, this.args, args) ;
-		if (this.trigger("beforeDelete", this, {url: this.url, args:okArgs})===false) return false ;
-		M_.Utils.deleteJson(this.url+"/"+id, okArgs, (data)=> {
+
+		var url = this.url ;
+		var method = 'DELETE' ;
+		if (this.urls) {
+			let aaurl = this._analyseUrl(this.urls.destroy) ;
+			method = aaurl.method ;
+			url = aaurl.url ;
+		}
+
+		if (this.trigger("beforeDelete", this, {url: url, args:okArgs})===false) return false ;
+		M_.Utils.ajaxJson(url+"/"+id, okArgs, method, (data)=> {
 			this.trigger("delete", this, data);
 			if (this._callbackFormDelete) this._callbackFormDelete(data) ;
 		}) ;
@@ -5714,6 +5739,7 @@ M_.Form.Form = class {
 			_currentModel: null,
 			model: null,
 			url: '',
+			urls: null,
 			validBeforeSave: true
 		};
 		opts = (opts)?opts:{} ;

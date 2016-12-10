@@ -39,7 +39,11 @@ module.exports = class MorphineServer {
         // config.packages = require(process.cwd()+'/assets/packages.js');
         try {
             var ok = fs.accessSync(process.cwd()+'/config/local.js', fs.R_OK) ;
-            Object.assign(config, require(process.cwd()+'/config/local')) ;
+            var configTemp = require(process.cwd()+'/config/local') ;
+            // _.each(configTemp, (obj)=> {
+            //     Object.assign(config, obj) ;
+            // }) ;
+            Object.assign(config, configTemp) ;
         } catch (err) {
             // console.log("err",err);
         }

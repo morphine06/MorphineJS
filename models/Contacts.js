@@ -79,6 +79,11 @@ module.exports = {
             defaultsTo: '',
             index: true
         },
+        co_function: {
+            type: 'string',
+            limit: 10,
+            defaultsTo: '',
+        },
         co_birthday: {
             type: 'date'
         },

@@ -1,6 +1,6 @@
 'use strict' ;
 
-import {M_} from '../../../libs-client/M_.js' ;
+import {M_} from './../../../libs-client/M_.js' ;
 import {Shared} from './../../compiled/Shared.js' ;
 
 

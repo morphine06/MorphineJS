@@ -13,7 +13,15 @@ module.exports = (cb)=> {
     async.eachOfSeries(packages, (mypackage, mypackagename, nextPackage)=> {
         // console.log("mypackagename",mypackagename);
         if (!mypackage.scripts) mypackage.scripts = [] ;
+        var packagesjsModified = false ;
         async.series([
+            // check if tasks/packages.js modified
+            (nextTask)=> {
+                taskutils.checkFilesModified('tasks/packages.js', (modified1)=> {
+                    packagesjsModified = modified1 ;
+                    nextTask() ;
+                }) ;
+            },
 
             // copy scripts
             (nextTask)=> {
@@ -21,7 +29,7 @@ module.exports = (cb)=> {
                     if (script.indexOf('|')>=0) {
                         let t = script.split('|') ;
                         taskutils.checkFilesModified(t[1], (modified)=> {
-                            if (!modified) return nextScript() ;
+                            if (!modified && !packagesjsModified) return nextScript() ;
                             fs.copy(t[1], 'assets/'+t[0], function (err) {
                                 if (err) console.error(err);
                                 // console.log("success!");

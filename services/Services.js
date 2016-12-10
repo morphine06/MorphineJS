@@ -7,7 +7,8 @@ module.exports = {
             var rights = {} ;
             _.each(Shared.getRights(), function (right) {
                 var ok = false ;
-                if (defaultRights && ((defaultRights[right.key] && user.co_rights[right.key]) || user.co_rights[right.key]===true)) ok = true ;
+                if (defaultRights && ((defaultRights[right.key] && user.co_rights[right.key]))) ok = true ;
+                if (user.co_rights[right.key]===true) ok = true ;
                 rights[right.key] = ok ;
             }) ;
             user.rights = rights ;

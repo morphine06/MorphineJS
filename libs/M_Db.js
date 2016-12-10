@@ -349,6 +349,7 @@ class M_TableExec {
     exec(cb, returnCompleteRow) {
         // console.log("this.command,this.data",this.command,this.data);
         this._beforeQuery(() => {
+            // console.log("after");
             let query ;
             switch (this.command) {
                 case 'QUERY':
@@ -369,7 +370,7 @@ class M_TableExec {
                 query = this._createSelectQuery() ;
             }
 
-            console.log("query",query, this.whereData);
+            // console.log("query",query, this.whereData);
             if (this.def.debug) console.log("query",query, this.whereData);
             this.connection.query({
                 sql: query,
@@ -377,7 +378,12 @@ class M_TableExec {
                 nestTables: false
             }, (err, rows, fields)=> {
                 let res ;
-                if (err) console.log('err0',err);
+                if (err) {
+                    console.log('query',query);
+                    console.log('whereData',this.whereData);
+                    console.log('err',err);
+                    return cb(err, res) ;
+                }
                 switch (this.command) {
                     case 'QUERY':
                     res = rows ;
@@ -404,7 +410,6 @@ class M_TableExec {
                 // console.log("res",res);
                 if (this.def.debug) console.log("res",res);
                 // console.log('The solution is: ', rows);
-                if (err) return cb(err, res) ;
                 if (returnCompleteRow && (this.command=='UPDATE' || this.command=='INSERT')) {
                     // console.log("this.command",this.command);
                     if (this.command=='UPDATE') {
@@ -444,6 +449,8 @@ class M_Table {
     createEmpty() {
         var row = {} ;
         _.each(this.def.attributes, (field, fieldName)=> {
+            if (field.model) return ;
+            // console.log("field",field);
             row[fieldName] = '' ;
             let typejs = M_Db._ormTypeToDatabaseType(field.type, '', 'typejs') ;
             if (typejs=='number') row[fieldName] = 0 ;
@@ -534,6 +541,7 @@ var M_Db = new (class {
         cb() ;
     }
     _ormTypeToDatabaseType(ormtype, length, info) {
+        // console.log("ormtype,length",ormtype,length);
         if (!info) info = 'type' ;
         let typeJS = '' ;
         ormtype = ormtype.toLowerCase() ;
@@ -703,7 +711,7 @@ var M_Db = new (class {
                                     nextField() ;
                                 }) ;
                             } else if (type1 && type2 && type1.toLowerCase()!=type2.toLowerCase()) {
-                                // console.log("field3",field);
+                                // console.log("field3",field,fieldName);
                                 let q = "ALTER TABLE "+def.tableName+" CHANGE "+fieldName+" "+fieldName+" "+this._ormTypeToDatabaseType(field.type, field.length)+this._getNotnull(field)+this._getDefault(field) ;
                                 console.log("q",q);
                                 this.connection.query(q, (errsql, rows)=> {

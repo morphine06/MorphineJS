@@ -1,6 +1,6 @@
 'use strict';
 
-import {M_} from '../../../libs-client/M_.js' ;
+import {M_} from './../../../libs-client/M_.js' ;
 import {Services} from './Services.js' ;
 import {Shared} from './../../compiled/Shared.js' ;
 
@@ -60,7 +60,7 @@ export class Preferences extends M_.Controller {
 			// model: MT_Events,
 			// container: this.jEl.find('.calendarwinedit_form'),
 			// containerAlert: this.jEl.find('.calendarwinedit_alertgroup'),
-			url: '/ws/preferences/rights',
+			url: '/1.0/preferences/rights',
 			listeners: [
 				['save', $.proxy(function(store, model) {
 					// M_.Dialog.alert("Information", "Les droits ont été sauvegardés.<br/><br/><b>Le programme va redémarrer pour prendre en compte les modifications.</b>", ()=> {

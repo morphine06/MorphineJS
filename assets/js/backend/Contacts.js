@@ -55,7 +55,7 @@ export class Contacts extends M_.Controller {
 			store: new M_.Store({
 				controller: this,
 				model: MT_Groups,
-				url: "/ws/groups",
+				url: "/1.0/groups/find",
 				limit: 1000,
 				unshiftRows: this.getUnshiftGroups(),
 				listeners: [
@@ -97,7 +97,7 @@ export class Contacts extends M_.Controller {
 				if (model.get('ag_name')) {
 					return model.get('ag_name') ;
 				}
-				return dr+"<input type='checkbox' class='contacts_list_contactcb' style='float:left;'>"+'<div class="M_ImgRound" style="float:left; background-image:url(/ws/contacts/avatar/20/20/'+model.get('co_id')+'?d='+moment(model.get('updatedAt')).valueOf()+');width:20px;height:20px; margin-right:5px;"></div>'+Shared.completeName(model.getData(), true) ;
+				return dr+"<input type='checkbox' class='contacts_list_contactcb' style='float:left;'>"+'<div class="M_ImgRound" style="float:left; background-image:url(/1.0/contacts/avatar/20/20/'+model.get('co_id')+'?d='+moment(model.get('updatedAt')).valueOf()+');width:20px;height:20px; margin-right:5px;"></div>'+Shared.completeName(model.getData(), true) ;
 			},
 			itemKey: 'co_id',
 			currentSelection: this.currentContactId,
@@ -106,7 +106,7 @@ export class Contacts extends M_.Controller {
 			store: new M_.Store({
 				controller: this,
 				model: MT_Contacts,
-				url: "/ws/contacts",
+				url: "/1.0/contacts/find",
 				limit: 200,
 				listeners: [
 					// ['beforeLoad', (store, args)=> {
@@ -453,6 +453,7 @@ export class Contacts extends M_.Controller {
 		var win = ContactsWinEdit.getInstance(this) ;
 		var data = win.form.getValues() ;
 		data.gr_id = this.currentGroup ;
+		// console.log("data",data);
 		this.contacts.store.load(data) ;
 		win.hide() ;
 	}
@@ -463,7 +464,7 @@ export class Contacts extends M_.Controller {
 		M_.Utils.setSelectionRange(jEl, 0, group.get('gr_name').length) ;
 		jEl.blur(()=> {
 			// jEl.prop('contenteditable', false) ;
-			M_.Utils.putJson('/ws/groups/'+group.get('gr_id'), {gr_name:jEl.html()}, (data)=> {
+			M_.Utils.putJson('/1.0/groups/update/'+group.get('gr_id'), {gr_name:jEl.html()}, (data)=> {
 				this.groups.store.reload() ;
 			}) ;
 
@@ -471,7 +472,7 @@ export class Contacts extends M_.Controller {
 	}
 	createGroupNow() {
 		$(document).off('keypress', $.proxy(this.listenGroupKeyDown, this));
-		M_.Utils.postJson('/ws/groups', {gr_name:this.jElGroup.html()}, (data)=> {
+		M_.Utils.postJson('/1.0/groups/create', {gr_name:this.jElGroup.html()}, (data)=> {
 			this.groups.store.reload() ;
 		}) ;
 	}
@@ -496,7 +497,7 @@ export class Contacts extends M_.Controller {
 	emptyGroup() {
 		var group = this.groups.store.getRow(this.currentGroup) ;
 		M_.Dialog.confirm("Confirmation", "Etes-vous certain de vouloir vider le groupe <i>"+group.get('gr_name')+"</i><br/>Les contacts ne seront pas effacés.", ()=> {
-			M_.Utils.postJson('/ws/contacts/emptygroup/'+group.get('gr_id'), {}, (data)=> {
+			M_.Utils.postJson('/1.0/groups/emptygroup/'+group.get('gr_id'), {}, (data)=> {
 				this.contacts.store.reload() ;
 			}) ;
 
@@ -505,7 +506,7 @@ export class Contacts extends M_.Controller {
 	deleteGroup() {
 		var group = this.groups.store.getRow(this.currentGroup) ;
 		M_.Dialog.confirm("Confirmation", "Etes-vous certain de vouloir supprimer le groupe <i>"+group.get('gr_name')+"</i><br/>Les contacts ne seront pas effacés.", ()=> {
-			M_.Utils.deleteJson('/ws/groups/'+group.get('gr_id'), {}, (data)=> {
+			M_.Utils.deleteJson('/1.0/groups/destroy/'+group.get('gr_id'), {}, (data)=> {
 				this.groups.store.reload() ;
 			}) ;
 
@@ -593,13 +594,13 @@ export class Contacts extends M_.Controller {
 		this.dropdownRowActions.show() ;
 	}
 	addContactsToGroup(contacts, gr_id, gr_name) {
-		M_.Utils.postJson('/ws/contacts/addcontactstogroup', {contacts:contacts, gr_id:gr_id}, (data)=> {
+		M_.Utils.postJson('/1.0/groups/addcontactstogroup', {contacts:contacts, gr_id:gr_id}, (data)=> {
 			this.contacts.store.reload() ;
 			M_.Dialog.notify("<b>Information</b><br/>"+M_.Utils.plural(contacts.length,'contact ajouté', 'contacts ajoutés')+" au groupe <i>"+gr_name+"</i>") ;
 		}) ;
 	}
 	removeContactsToGroup(contacts, gr_id, gr_name) {
-		M_.Utils.postJson('/ws/contacts/removecontactstogroup', {contacts:contacts, gr_id:gr_id}, (data)=> {
+		M_.Utils.postJson('/1.0/groups/removecontactstogroup', {contacts:contacts, gr_id:gr_id}, (data)=> {
 			this.contacts.store.reload() ;
 			M_.Dialog.notify("<b>Information</b><br/>"+M_.Utils.plural(contacts.length,'contact enlevé', 'contacts enlevés')+" du groupe <i>"+gr_name+"</i>") ;
 		}) ;
@@ -609,7 +610,7 @@ export class Contacts extends M_.Controller {
 			this.winGroupChoose = new (class extends M_.Window {
 				constructor(opts) {
 					var defaults = {
-						tpl: JST.ContactsWinGroupChoose,
+						tpl: JST['assets/templates/backend/ContactsWinGroupChoose.html'],
 						// tplData: {},
 						modal: true,
 						// controller: this,
@@ -646,7 +647,7 @@ export class Contacts extends M_.Controller {
 						store: new M_.Store({
 							controller: this,
 							model: MT_Groups,
-							url: "/ws/groups",
+							url: "/1.0/groups/find",
 							limit: 200
 						})
 
@@ -684,7 +685,7 @@ export class Contacts extends M_.Controller {
 				create() {
 					super.create() ;
 					this.jEl.find('.winexport_bt_save').click(()=> {
-						M_.Utils.downloadFile('/ws/contacts/export', {gr_id:this.comboGroup.getValue()}, 'GET') ;
+						M_.Utils.downloadFile('/1.0/contacts/export', {gr_id:this.comboGroup.getValue()}, 'GET') ;
 						this.hide() ;
 					}) ;
 					this.jEl.find('.winexport_bt_cancel').click(()=> {
@@ -705,7 +706,7 @@ export class Contacts extends M_.Controller {
 							unshiftRows: this.controller.getUnshiftGroups(),
 							controller: this,
 							model: MT_Groups,
-							url: "/ws/groups",
+							url: "/1.0/groups/find",
 							limit: 200
 						})
 
@@ -727,7 +728,7 @@ export class Contacts extends M_.Controller {
 	getUnshiftGroups() {
 		var tab = [
 			{gr_id:-6, gr_name:"<span class='fa fa-user-times'></span>&nbsp;<i>Contacts supprimées</i>", special:true},
-			{gr_id:'lastimport', gr_name:"<span class='fa fa-clock-o'></span>&nbsp;<i>Dernier import</i>", special:true},
+			// {gr_id:'lastimport', gr_name:"<span class='fa fa-clock-o'></span>&nbsp;<i>Dernier import</i>", special:true},
 			{gr_id:'caddy', gr_name:"<span class='fa fa-shopping-cart'></span>&nbsp;<i>Mon panier</i>", special:true},
 			{gr_id:-4, gr_name:"<span class='fa fa-user'></span>&nbsp;<i>Tous les contacts</i>", special:true},
 			{gr_id:-5, gr_name:"<span class='fa fa-user-plus'></span>&nbsp;<i>Tous les clients</i>", special:true},

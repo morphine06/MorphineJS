@@ -3,7 +3,7 @@
 	<div id="home_bg" class="M_MarginBottom" style="background-image:url(/images/bg_login1.jpg)">
 		<div id="home_bg2" style="padding:120px 0 0 60%; color:white;">
 			<h1 style="font-size:50px; padding:0; margin:0; line-height:60px;">Bienvenue</h1>
-			<h3 style="color:white; padding:0 0 6px 0; margin:0;" id="home_namefirstname"><%= M_.Shared.completeName(M_.App.Session, false, true) %>, dans votre extranet</h3>
+			<h3 style="color:white; padding:0 0 6px 0; margin:0;" id="home_namefirstname"><%= M_.Shared.completeName(M_.App.Session, false, true) %>, dans votre extranet.<br />Vous avez les droits <%= _.find(M_.Shared.getRoles(), {key:M_.App.Session.co_type}).val %></h3>
 			<img style="display:block; float:left; margin-top:10px; width:130px;" src="/images/ill_monster1.png" alt=""></p>
 		</div>
 	</div>

@@ -1,7 +1,9 @@
 'use strict';
 
+// Write javascript 4 code, not ES6
+
 module.exports = {
-    canCreateContact: function(user) {
+    canCreateContact: (user)=> {
         var rights = user.rights ;
         return rights.contacts_mine ;
     },
@@ -11,7 +13,7 @@ module.exports = {
     },
     canViewAndEditBirthday: function (user, row_co) {
         var rights = user.rights ;
-		if (row_co.co_id==user.co_id || rights.contacts_rightsusers) return true ;
+		if (row_co.co_id==user.co_id || rights.contacts_seebirthday) return true ;
 		return false ;
 	},
     canEditPreferencesRights: function(user) {
@@ -19,15 +21,15 @@ module.exports = {
         // return true ;
         return rights.preferences_rights ;
     },
-    canEditContactsRights: function (user, row_co) {
+    canEditContactsRights: function (user) {
 		var rights = user.rights ;
-		return rights.contacts_rightsusers ;
+		return rights.contacts_modifyusers ;
 	},
     canImportContact: function (user) {
         var rights = user.rights ;
 		return rights.contacts_import ;
 	},
-    canModifyContact: function (user, row_co) {
+    canEditContact: function (user, row_co) {
 		var rights = user.rights ;
 		if (
 			row_co.co_id==user.co_id
@@ -35,29 +37,16 @@ module.exports = {
 		if (
 			rights.contacts_mine &&
 			row_co.createdCo &&
-			row_co.createdCo.co_id==user.co_id
+			row_co.createdCo.co_id==user.co_id &&
+            _.find(this.getRoles(true), {key:row_co.co_type})
 		) return true ;
 		if (
 			rights.contacts_modifycontacts &&
-			// row_co.ag_id &&
-			// row_co.ag_id.ag_id == user.ag_id.ag_id &&
-			this.agencyInAgency(row_co.agencies, user.agencies) &&
-			(row_co.co_type=='contact' || row_co.co_type=='candidate')
+			_.find(this.getRoles(true), {key:row_co.co_type})
 		) return true ;
 		if (
 			rights.contacts_modifyusers &&
-			// row_co.ag_id &&
-			// row_co.ag_id.ag_id == user.ag_id.ag_id &&
-			this.agencyInAgency(row_co.agencies, user.agencies) &&
-			(row_co.co_type!='contact' && row_co.co_type!='candidate')
-		) return true ;
-		if (
-			rights.contacts_modifyallcontacts &&
-			(row_co.co_type=='contact' || row_co.co_type=='candidate')
-		) return true ;
-		if (
-			rights.contacts_modifyallusers &&
-			(row_co.co_type!='contact' && row_co.co_type!='candidate')
+			!_.find(this.getRoles(true), {key:row_co.co_type})
 		) return true ;
 		return false ;
 
@@ -89,7 +78,7 @@ module.exports = {
  			{ key: 'contacts_mine', label: "Contacts > Créer/modifier MES contacts" },
  			{ key: 'contacts_modifycontacts', label: "Contacts > Modifier tous les contacts" },
             { key: 'contacts_modifyusers', label: "Contacts > Modifier tous les utilisateurs (danger !!!)" },
-            { key: 'contacts_rightsusers', label: "Contacts > Modifier les droits des utilisateurs" },
+            { key: 'contacts_seebirthday', label: "Contacts > Voir les âges" },
 
  			{ key: 'contacts_viewalltodos', label: "Contacts > Voir le “travail à faire“ de tous les utilsateurs" },
 

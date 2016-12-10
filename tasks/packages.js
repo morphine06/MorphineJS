@@ -28,8 +28,8 @@ module.exports = {
             'compiled/lodash.js|node_modules/lodash/lodash.js',
             'compiled/moment.js|node_modules/moment/min/moment-with-locales.js',
             'compiled/jquery.transit.js|node_modules/jquery.transit/jquery.transit.js',
-            'compiled/d3.js|node_modules/d3/d3.js',
-            'compiled/c3.js|node_modules/c3/c3.js',
+            'compiled/d3.js|node_modules/d3/build/d3.js',
+            // 'compiled/c3.js|node_modules/c3/c3.js',
             'jst',
             'es6'
         ],

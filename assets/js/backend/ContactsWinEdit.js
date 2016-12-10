@@ -40,7 +40,13 @@ export class ContactsWinEdit extends M_.Window {
 
 
 		this.form = new M_.Form.Form({
-			url: '/ws/contacts',
+			// url: '/1.0/contacts',
+			urls: {
+				findone: 'GET /1.0/contacts/findone',
+				create: 'POST /1.0/contacts/create',
+				update: 'PUT /1.0/contacts/update',
+				destroy: 'DELETE /1.0/contacts/destroy',
+			},
 			model: MT_Contacts,
 			controller: this,
 			processData: function(data) {
@@ -69,7 +75,7 @@ export class ContactsWinEdit extends M_.Window {
 					this.hide() ;
 					if (this.controller.currentModelContact) this.controller.currentModelContact.set('co_id', data.co_id) ;
 					if (form.find('co_avatar_send').getValue()!=='') {
-						M_.Utils.saveFiles([form.find('co_avatar_send').jEl.get(0)], '/ws/contacts/updateavatar', {co_id:data.co_id}, (data)=> {
+						M_.Utils.saveFiles([form.find('co_avatar_send').jEl.get(0)], '/1.0/contacts/updateavatar', {co_id:data.co_id}, (data)=> {
 							form.deleteItem('co_avatar_send') ;
 							Services.updateAvatar() ;
 							if (this.controller.onSaveContactsWinEdit) this.controller.onSaveContactsWinEdit(data.data) ;
@@ -111,7 +117,7 @@ export class ContactsWinEdit extends M_.Window {
 					store: new M_.Store({
 						controller: this,
 						model: M_.ModelKeyVal,
-						rows: Shared.getRoles(true)
+						rows: Shared.getRoles(!Shared.canEditContactsRights(M_.App.Session))
 					}),
 					listeners: [
 						['itemclick',(store, models)=> {
@@ -166,11 +172,11 @@ export class ContactsWinEdit extends M_.Window {
 				// 	store: new M_.Store({
 				// 		controller: this,
 				// 		model: MT_Agencies,
-				// 		url: "/ws/agencies",
+				// 		url: "/1.0/agencies",
 				// 		limit: 200,
 				// 		args: ()=> {
 				// 			var r = {} ;
-				// 			if (!Shared.canModifyContactForOtherAgencies(M_.App.Session)) r.onlymine = true ;
+				// 			if (!Shared.canEditContactForOtherAgencies(M_.App.Session)) r.onlymine = true ;
 				// 			return r ;
 				// 		}
 				// 	})
@@ -286,7 +292,7 @@ export class ContactsWinEdit extends M_.Window {
 					store: new M_.Store({
 						controller: this,
 						model: M_.ModelKeyVal,
-						url: '/ws/combo/contacts/co_function'
+						url: '/1.0/contacts/combo/co_function'
 					})
 
 
@@ -479,7 +485,7 @@ export class ContactsWinEdit extends M_.Window {
 					store: new M_.Store({
 						controller: this,
 						model: M_.ModelKeyVal,
-						url: '/ws/combo/contacts/co_country'
+						url: '/1.0/combo/contacts/co_country'
 					})
 				}, {
 					name: 'co_city',
@@ -989,7 +995,7 @@ export class ContactsWinEdit extends M_.Window {
 	deleteContact() {
 		if (this.currentModel.get('deleted')) {
 			M_.Dialog.confirm("Confirmation effacement", "Etes-vous certain de vouloir à nouveau activer ce contact ?", ()=> {
-				M_.Utils.getJson('/ws/contacts/undestroy/'+this.currentModel.get('co_id'), {deleted:false}, ()=> {
+				M_.Utils.getJson('/1.0/contacts/undestroy/'+this.currentModel.get('co_id'), {deleted:false}, ()=> {
 					this.hide() ;
 					if (this.controller.onDeleteContactsWinEdit) this.controller.onDeleteContactsWinEdit() ;
 				}) ;
@@ -1045,7 +1051,7 @@ export class ContactsWinEdit extends M_.Window {
 			store: new M_.Store({
 				controller: this,
 				model: MT_Agencies,
-				url: "/ws/agencies",
+				url: "/1.0/agencies",
 				limit: 200,
 				unshiftRows: [{
 					ag_id: '',
@@ -1056,7 +1062,7 @@ export class ContactsWinEdit extends M_.Window {
 				}],
 				args: ()=> {
 					var r = {} ;
-					if (!Shared.canModifyContactForOtherAgencies(M_.App.Session)) r.onlymine = true ;
+					if (!Shared.canEditContactForOtherAgencies(M_.App.Session)) r.onlymine = true ;
 					return r ;
 				}
 			})
@@ -1148,15 +1154,16 @@ export class ContactsWinEdit extends M_.Window {
 			}) ;
 		}
 
-		if (Shared.canEditContactsRights(M_.App.Session, this.currentModel.getData())) {// || true
+		if (Shared.canEditContactsRights(M_.App.Session)) {// || true
 			$("#contactedit_rightscontainer").show() ;
 			this.form.find('co_type').enable() ;
 				this.form.find('co_login').enable() ;
 				this.form.find('co_password').enable() ;
 		} else {
 			$("#contactedit_rightscontainer").hide() ;
-			this.form.find('co_type').disable() ;
-			if (Shared.canModifyContact(M_.App.Session, this.currentModel.getData())) {
+			if (this.currentModel.get('co_id')==='') this.form.find('co_type').enable() ;
+			else this.form.find('co_type').disable() ;
+			if (Shared.canEditContact(M_.App.Session, this.currentModel.getData())) {
 				this.form.find('co_login').enable() ;
 				this.form.find('co_password').enable() ;
 			} else {
@@ -1274,7 +1281,7 @@ export class ContactsWinEdit extends M_.Window {
 					this.store = new M_.Store({
 						controller: this,
 						model: MT_Keywords,
-						url: "/ws/keywords",
+						url: "/1.0/keywords",
 						limit: 200,
 						currentSort: ['kw_name', 'asc'],
 						listeners: [
@@ -1302,7 +1309,7 @@ export class ContactsWinEdit extends M_.Window {
 						]
 					}) ;
 					this.form = new M_.Form.Form({
-						url: '/ws/keywords',
+						url: '/1.0/keywords',
 						model: MT_Keywords,
 						controller: this,
 						processData: function(data) {

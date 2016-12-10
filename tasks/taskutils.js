@@ -4,6 +4,7 @@ var fs = require('fs-extra') ;
 
 module.exports = {
     checkFilesModified: (file, cb)=> {
+        if (!fs.existsSync(morphineserver.rootDir+'/'+file)) return cb(false) ;
         // check files modified
         // let tabFilesToCheck = ['assets', ''] ;
         // let allFiles = [] ;

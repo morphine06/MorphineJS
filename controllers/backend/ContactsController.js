@@ -113,8 +113,8 @@ function filterContacts(req, cb) {
 			} else {
 				query = "select t1.* from co_contacts t1 where 1 " + whereQ1 + " group by t1.co_id order by co_name, co_firstname, co_society";
 			}
-			Contacts.query(query, whereQ2).exec((err, _rows)=> {
-				if(err) console.log(err);
+			Contacts.query(query, whereQ2).exec((errsql, _rows)=> {
+				if(errsql) console.log(errsql);
 				rows = _rows ;
                 // console.log("query,whereQ2",query,whereQ2,rows);
 				next() ;
@@ -125,7 +125,7 @@ function filterContacts(req, cb) {
 	}) ;
 }
 function analyseImport(filename, tabfields) {
-	var fs = require('fs'),
+	var fs = require('fs-extra'),
 		path = require('path'),
 		fn = path.basename(filename),
 		root = sails.config.appPath,
@@ -168,7 +168,7 @@ function savePhoto(req, co_id, next) {
 		if(err || req.file('co_avatar_send').isNoop || uploadedFiles.length === 0) {
 			return next(err);
 		}
-		var fs = require('fs'),
+		var fs = require('fs-extra'),
 			path = require('path'),
 			fn = path.basename(uploadedFiles[0].fd),
 			root = sails.config.appPath,
@@ -191,6 +191,29 @@ function savePhoto(req, co_id, next) {
 }
 
 module.exports = class extends BaseController {
+	combo(req, res) {
+		if (req.params.field!='co_function') return this.send(res, {err: "Deny"}) ;
+		var where = "1" ;
+		var queryArgs = [] ;
+		if (req.query.query) {
+			where = req.params.field+" like ?" ;
+			queryArgs = ['%'+req.query.query+'%'] ;
+		}
+		var query = "select "+req.params.field+" from co_contacts where "+where+" group by "+req.params.field+" order by "+req.params.field ; //where "+req.params.field+" like ?
+		var data = [] ;
+		Contacts.query(query, queryArgs).exec((errsql, rows_co)=> {
+			if (errsql) console.log("err", errsql);
+			console.log("rows_co", rows_co, query, queryArgs);
+			_.each(rows_co, (row_co)=> {
+				if (row_co[req.params.field]) data.push({
+					key: row_co[req.params.field],
+					val: row_co[req.params.field]
+				}) ;
+			}) ;
+			this.send(res, {data: data}) ;
+		}) ;
+
+	}
     findOne(req, res) {
         if(req.params.co_id == -1 || req.params.co_id == -2) {
 			var row_co = Contacts.createEmpty();
@@ -218,7 +241,7 @@ module.exports = class extends BaseController {
 				row_co.contracts = [] ;
 				async.parallel([
 					(next)=> {
-						OptionsServices.get('', 'allrights_'+row_co.co_type, function (defaultRights) {
+						OptionsServices.get('', 'allrights_'+row_co.co_type, (defaultRights)=> {
 							row_co.defaultRights = defaultRights ;
 							next() ;
 						}) ;
@@ -348,54 +371,14 @@ module.exports = class extends BaseController {
 	undestroy(req, res) {
 		Contacts.update({co_id:req.params.co_id}, {deleted:false}).exec((errsql)=> {
 			if(errsql) console.log("errsql",errsql) ;
-			res.ok({success: true});
+			this.send(res, {success: true});
 		}) ;
 	}
 	destroy(req, res) {
-		Contacts.update({co_id:req.params.id}, {deleted:true}).exec((errsql)=> {
+		Contacts.update({co_id:req.params.co_id}, {deleted:true}).exec((errsql)=> {
 			if(errsql) console.log("errsql",errsql) ;
-			res.ok({success: true});
+			this.send(res, {success: true});
 		}) ;
-	}
-	addcontactstogroup(req, res) {
-		async.eachSeries(req.body.contacts, (co_id, next)=> {
-			ContactsGroups.replace({
-				gr_id: req.body.gr_id,
-				co_id: co_id
-			}, [], {
-				gr_id: req.body.gr_id,
-				co_id: co_id
-			}, ()=> {
-				next();
-			});
-		}, ()=> {
-			res.ok({
-				success: true
-			});
-		});
-	}
-	removecontactstogroup(req, res) {
-		async.eachSeries(req.body.contacts, (co_id, next)=> {
-			ContactsGroups.destroy({
-				gr_id: req.body.gr_id,
-				co_id: co_id
-			}, ()=> {
-				next();
-			});
-		}, ()=> {
-			res.ok({
-				success: true
-			});
-		});
-	}
-	emptygroup(req, res) {
-		ContactsGroups.destroy({
-			gr_id: req.params.gr_id
-		}, (err, rows)=> {
-			res.ok({
-				success: true
-			});
-		});
 	}
 	import1(req, res) {
 		req.file('fileimport').upload({
@@ -407,7 +390,7 @@ module.exports = class extends BaseController {
 					success: false
 				});
 			}
-			var fs = require('fs'),
+			var fs = require('fs-extra'),
 				path = require('path'),
 				fn = path.basename(uploadedFiles[0].fd),
 				root = sails.config.appPath,
@@ -447,7 +430,7 @@ module.exports = class extends BaseController {
 
         // res.header('Cache-Control', 'public, max-age='+sails.config.http.cache);
 
-        var fs = require('fs'),
+        var fs = require('fs-extra'),
             path = require('path'),
             // root = morphineserver.rootDir,
             // uploadPathDir = root+path.sep+"uploads",
@@ -455,19 +438,21 @@ module.exports = class extends BaseController {
 
 
 
-        Contacts.findOne({co_id:req.params.id}).exec(function (err, row_co){
+        Contacts.findOne({co_id:req.params.id}).exec((err, row_co)=> {
             if (err) row_co.co_avatar = null ;
             if (!row_co) row_co = {co_avatar:null} ;
 
             req.params.w = req.params.w*1 ;
             req.params.h = req.params.h*1 ;
 
+			fs.ensureDirSync(morphineserver.rootDir+'/uploads') ;
+
             var src = morphineserver.rootDir+"/assets/images/ill_monster1.png" ;
             var dest = morphineserver.rootDir+"/uploads/"+req.params.w+"-"+req.params.h+"_default" ;
             var hasAvatarImg = false ;
             if (row_co.co_avatar) {
-                src = morphineserver.rootDir+"uploads/orig_"+user.co_id ;
-                dest = morphineserver.rootDir+"uploads/"+req.params.w+"-"+req.params.h+"_"+user.co_id ;
+                src = morphineserver.rootDir+"uploads/orig_"+row_co.co_id ;
+                dest = morphineserver.rootDir+"uploads/"+req.params.w+"-"+req.params.h+"_"+row_co.co_id ;
                 // pictureOk = uploadPathDir+path.sep+req.params.w+"-"+req.params.h+"_"+user.co_avatar ;
                 // fn = user.co_avatar ;
                 // fnprefix = "orig_" ;
@@ -485,21 +470,21 @@ module.exports = class extends BaseController {
             //     fnprefix = "" ;
             // }
             async.series([
-                function(next) {
+                (next)=> {
                     if (!fs.existsSync(dest)) {
                         gm(src)
                         .gravity('Center')
                         .resize(req.params.w, req.params.h, "^")
                         .crop(req.params.w, req.params.h)
                         .noProfile()
-                        .write(dest, function (err) {
+                        .write(dest, (err)=> {
                             if (err) console.log("err",err) ;
                             next() ;
                         }) ;
 
                     } else next() ;
                 },
-                function(next) {
+                (next)=> {
                     var stat = fs.statSync(dest);
                     // console.log("If-Modified-Since", req.get('If-Modified-Since'));
                     res.writeHead(200, {

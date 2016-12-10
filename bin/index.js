@@ -72,7 +72,7 @@ function newAction() {
         },
         (next) => {
             let data = fs.readFileSync(dirCurrent+'tasks/copy.js', {encoding: 'utf-8'}) ;
-            data = data.replace('./../../../libs-client/M_.js','./../../../node_modules/morphinejs/libs/M_.js') ;
+            data = data.replace('./../../../libs-client/M_.js','./../../../node_modules/morphinejs/libs-client/M_.js') ;
             fs.writeFileSync(dirCurrent+'tasks/copy.js', data) ;
 
             var items = [] ;
@@ -84,7 +84,7 @@ function newAction() {
                 async.eachSeries(items, (item, nextItem)=> {
                     if (item.stats.isFile()) {
                         let data = fs.readFileSync(item.path, {encoding: 'utf-8'}) ;
-                        data = data.replace('./../../../libs-client/M_.js','./../../../node_modules/morphinejs/libs/M_.js') ;
+                        data = data.replace('./../../../libs-client/M_.js','./../../../node_modules/morphinejs/libs-client/M_.js') ;
                         fs.writeFileSync(item.path, data) ;
                     }
                     nextItem() ;
@@ -106,7 +106,7 @@ function newAction() {
             // }) ;
         }
     ], ()=> {
-        console.log(chalk.green("Now execute : \"npm install\"... then :\n'node dev' for launch development.\n'node prod' for production mode."));
+        console.log(chalk.green("Now execute : \n1) \"npm install\"\n2) configure your database connection in file /config/models.js\n3) 'node dev' for launch development"));
 
     }) ;
 }

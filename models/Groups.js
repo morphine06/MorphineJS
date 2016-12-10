@@ -6,17 +6,13 @@ var uuid = require('node-uuid');
 
 module.exports = {
 
-    beforeCreate: function(values, next) {
-        values.gr_id = uuid.v1() ;
-    },
-
     tableName: 'gr_groups',
 
     attributes: {
         gr_id: {
-            type: 'string',
+            type: 'integer',
+            autoincrement: true,
             primary: true,
-            // unique: true
         },
         gr_name: {
             type: 'string',

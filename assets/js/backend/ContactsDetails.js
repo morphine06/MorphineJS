@@ -23,7 +23,7 @@ export var ContactsDetails = new (class {
 			else row_co.presentations2.push(visit) ;
 		}) ;
 
-		var canModify = Shared.canModifyContact(M_.App.Session, row_co) ;
+		var canModify = Shared.canEditContact(M_.App.Session, row_co) ;
 		// console.log("row_co",row_co);
 
 		M_.App.renderMustacheTo(
@@ -53,7 +53,7 @@ export var ContactsDetails = new (class {
 					controller: this,
 					// model: MT_Actions,
 					primaryKey: 'td_id',
-					url: "/ws/todo",
+					url: "/1.0/todo/find",
 					limit: 20000,
 					listeners: [
 						['update',(store, models)=> {
@@ -133,7 +133,7 @@ export var ContactsDetails = new (class {
 		this.container.find(".contactsdetail_co_status2").html(_.result(_.find(t, {key:val}), 'val')) ;
 		if (setBar) this.slider.noUiSlider.set(val) ;
 		if (save) {
-			M_.Utils.postJson('/ws/contacts/savestatus', {
+			M_.Utils.postJson('/1.0/contacts/savestatus', {
 				co_id: this.row_co.co_id,
 				co_status: val
 			}, ()=> {

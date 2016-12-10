@@ -73,7 +73,7 @@ M_.App
 		$("#mainnavcontent").html(html) ;
 	};
 	let loadSessionInfos = ()=> {
-		M_.Utils.getJson('/ws/infos', {}, (data)=> {
+		M_.Utils.getJson('/1.0/infos', {}, (data)=> {
 			M_.App.Session = data.user ;
 			drawMenus() ;
 			next() ;
