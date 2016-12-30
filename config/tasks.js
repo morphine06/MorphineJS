@@ -1,5 +1,5 @@
 module.exports = {
-    livereloadPort: 35729,
+    livereloadPort: 35730,
     livereloadExtensions: ['ejs', 'html', 'css', 'js', 'es6', 'png', 'gif', 'jpg', 'php', 'php5', 'py', 'rb', 'erb', 'coffee'],
     tasksOnStartDev: ['copy', 'jst', 'less', 'webpack', 'watch'], // 'delete', 'copy', 'webpack', 'jst', 'less', 'ifempty:webpack'
     tasksOnStartProd: ['delete', 'copy', 'jst', 'less', 'webpack', 'compile-scripts', 'compile-styles'],

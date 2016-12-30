@@ -31,7 +31,7 @@ module.exports = (cb)=> {
                                             {
                                                 test: /\.js$/,
                                                 // exclude: /node_modules/,
-                                                loader: 'babel-loader'
+                                                loader: 'babel-loader?cacheDirectory=true'
                                             // }, {
                                             //     test: /\/js\/.+\.js$/,
                                             //     // exclude: /node_modules/,

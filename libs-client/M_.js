@@ -1184,6 +1184,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	 */
 	static strip_tags(input, allowed) {
 		//From: http://phpjs.org/functions
+		// console.log("input",input);
+		input += '' ;
 		if (!input) return "" ;
 		allowed = (((allowed || "") + "").toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join('');
 		var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
@@ -3612,7 +3614,8 @@ M_.TableList = class extends M_.SimpleList {
 			lessText: "Masquer les lignes supplémentaires",
 			withMouseOverRaw: true,
 			headerHeight: 30,
-			_colsToHide: []
+			_colsToHide: [],
+			draggableRows: false
 		};
 		opts = (opts)?opts:{} ;
 		var optsTemp = $.extend({}, defaults, opts) ;
@@ -3723,7 +3726,9 @@ M_.TableList = class extends M_.SimpleList {
 				if (indexTemp%2===0) clsTr += " M_TableListOdd" ;
 				else clsTr += " M_TableListEven" ;
 			}
-			html += "<tr class='"+clsTr+"'>" ;
+			var draggable = "" ;
+			if (this.draggableRows) draggable = "draggable='true'" ;
+			html += "<tr class='"+clsTr+"' "+draggable+">" ;
 			for(var i=0 ; i<colsDef.length ; i++) {
 				let val = "",
 					cls = this.classItems+" M_Noselectable" ;
@@ -3968,6 +3973,7 @@ M_.CRUD = {
 				}
 				// log("this.model.primaryKey",modelTemp.primaryKey,okArgs)
 			}
+			console.log("url,method",url,method,this.model,okArgs);
 
 			if (this.trigger("beforeSave", this, {url: url, method:method, args:okArgs})===false) return false ;
 
@@ -4717,17 +4723,17 @@ M_.Dialog = new (class {
 						</div>
 						<div class='M_Clear'></div>
 					</div>` ;
-		this.win = new M_.Window({
+		this.winConfirm = new M_.Window({
 			html: html
 		}) ;
-		this.win.show() ;
-		this.win.jEl.find('.M_DialogOK').click(()=> {
+		this.winConfirm.show() ;
+		this.winConfirm.jEl.find('.M_DialogOK').click(()=> {
+			this.winConfirm.hide() ;
 			if (callbackOk) callbackOk.apply(this) ;
-			this.win.hide() ;
 		}) ;
-		this.win.jEl.find('.M_DialogCancel').click(()=> {
+		this.winConfirm.jEl.find('.M_DialogCancel').click(()=> {
+			this.winConfirm.hide() ;
 			if (callbackCancel) callbackCancel.apply(this) ;
-			this.win.hide() ;
 		}) ;
 	}
 	hide() {
@@ -5766,12 +5772,26 @@ M_.Form.Form = class {
 	/**
 	 * @return {type}
 	 */
-	reset() {
+	 reset() {
+ 		var _items = this._items ;
+ 		for(var i=0 ; i<_items.length ; i++) {
+ 			_items[i].reset() ;
+ 		}
+ 		this.trigger("reset", this) ;
+ 	}
+	disable() {
 		var _items = this._items ;
 		for(var i=0 ; i<_items.length ; i++) {
-			_items[i].reset() ;
+			_items[i].disable() ;
 		}
-		this.trigger("reset", this) ;
+		this.trigger("disable", this) ;
+	}
+	enable() {
+		var _items = this._items ;
+		for(var i=0 ; i<_items.length ; i++) {
+			_items[i].enable() ;
+		}
+		this.trigger("disable", this) ;
 	}
 	/**
 	 * @return {type}
@@ -6374,7 +6394,7 @@ M_.Form.Slider = class extends M_.Form.Input {
 
 		this.jEl.css('width', 'calc(100% - '+wLabels+'px)');
 
-		this.jElCursor.width((this.jEl.width() - this._spaceCursor*2)/this.steps);
+		// this.jElCursor.width((this.jEl.width() - this._spaceCursor*2)/this.steps);
 		this.jEl.click((evt)=> {
 			var pos = 0 ;
 			if (this.steps==2) {
@@ -6394,7 +6414,7 @@ M_.Form.Slider = class extends M_.Form.Input {
 	}
 	setPosition(pos) {
 		var w = this.jEl.width();
-		var l = pos*(w/this.steps) ;
+		var l = pos*(w/this.steps)+3 ;
 		if (pos===0) l += this._spaceCursor ;
 		this.jElCursor.transition({left:l});
 	}
@@ -6625,6 +6645,10 @@ M_.Form.File = class extends M_.Form.Input {
 		opts = (opts)?opts:{} ;
 		opts = $.extend({}, defaults, opts) ;
 		super(opts) ;
+
+		this.jEl.on('change', (evt)=> {
+			this.trigger("change", this, evt) ;
+		}) ;
 	}
 	/**
 	 * @param  {Boolean}
@@ -6643,7 +6667,24 @@ M_.Form.File = class extends M_.Form.Input {
 		this.previousValue = this.value ;
 		this.value = val ;
 	}
+	reset() {
+		if (!this.jEl) return ;
+		var par = this.jEl.parent() ;
+		this.jEl.remove() ;
+		// this.container.empty() ;
 
+		var tabindex = "" ;
+		var readOnly = "" ;
+		if (this.tabindex) tabindex = 'tabindex="'+this.tabindex+'"' ;
+		if (!this.editable) readOnly = "readonly" ;
+		var multiple = "" ;
+		if (this.multiple) multiple = "multiple" ;
+		this.jEl = $(`<input ${tabindex} ${readOnly} id="${this.id}" type="${this.inputType}" style="${this.styleInput}" ${multiple} class="M_Input ${this.clsInput}" name="${this.name}" value="" placeholder="${this.placeholder}">`) ;
+		par.append(this.jEl) ;
+		this.jEl.on('change', (evt)=> {
+			this.trigger("change", this, evt) ;
+		}) ;
+	}
 };
 
 
