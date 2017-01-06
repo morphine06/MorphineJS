@@ -4244,7 +4244,8 @@ M_.Modal = class {
 			clickHide: false,
 			alpha: 0.5,
 			zindex: 500,
-			isLoading: null
+			isLoading: null,
+			text: ''
 		} ;
 		opts = (opts)?opts:{} ;
 		$.extend(this, defaults, opts) ;
@@ -4275,7 +4276,7 @@ M_.Modal = class {
 				this.jEl4.click(()=> { this.hide() ; }) ;
 			}
 		} else {
-			this.jEl = $("<div class='M_Modal'></div>") ;
+			this.jEl = $("<div class='M_Modal'><p>"+this.text+"</p></div>") ;
 			$("body").append(this.jEl) ;
 			if (this.clickHide) {
 				this.jEl.click(()=> {
@@ -4694,13 +4695,13 @@ M_.Dialog = new (class {
 						</div>
 						<div class='M_Clear'></div>
 					</div>` ;
-		this.win = new M_.Window({
+		var win = new M_.Window({
 			html: html
 		}) ;
-		this.win.show() ;
-		this.win.jEl.find('.M_DialogOK').click(()=> {
+		win.show() ;
+		win.jEl.find('.M_DialogOK').click(()=> {
 			if (callbackOk) callbackOk() ;
-			this.win.hide() ;
+			win.hide() ;
 		}) ;
 	}
 	/**
@@ -4723,16 +4724,16 @@ M_.Dialog = new (class {
 						</div>
 						<div class='M_Clear'></div>
 					</div>` ;
-		this.winConfirm = new M_.Window({
+		var winConfirm = new M_.Window({
 			html: html
 		}) ;
-		this.winConfirm.show() ;
-		this.winConfirm.jEl.find('.M_DialogOK').click(()=> {
-			this.winConfirm.hide() ;
+		winConfirm.show() ;
+		winConfirm.jEl.find('.M_DialogOK').click(()=> {
+			winConfirm.hide() ;
 			if (callbackOk) callbackOk.apply(this) ;
 		}) ;
-		this.winConfirm.jEl.find('.M_DialogCancel').click(()=> {
-			this.winConfirm.hide() ;
+		winConfirm.jEl.find('.M_DialogCancel').click(()=> {
+			winConfirm.hide() ;
 			if (callbackCancel) callbackCancel.apply(this) ;
 		}) ;
 	}
@@ -4751,19 +4752,19 @@ M_.Dialog = new (class {
 		html += 	`<div class="">
 							${text}
 						</div>` ;
-		this.win = new M_.Window({
+		var win = new M_.Window({
 			html: html,
 			modal: false,
 			position: 'top'
 		}) ;
-		this.win.jEl.click(()=> {
-			this.win.hide() ;
+		win.jEl.click(()=> {
+			win.hide() ;
 		}) ;
 		window.setTimeout(()=> {
 			if (callbackClose) callbackClose() ;
-			this.win.hide() ;
+			win.hide() ;
 		}, time) ;
-		this.win.show() ;
+		win.show() ;
 
 	}
 })() ;
@@ -6302,6 +6303,7 @@ M_.Form.Input = class extends M_.Outlet {
 			ok = false ;
 			err = "La longeur maximum est de "+this.maxLength+" pour ce champs\n" ;
 		}
+		// console.log("this.maxLength",this.maxLength);
 		this.informValid(ok) ;
 		return ok ;
 	}
@@ -6364,6 +6366,8 @@ M_.Form.Slider = class extends M_.Form.Input {
 			value: 0,
 			labelLeft: "Left",
 			labelRight: "Right",
+			colorLeft: 'red',
+			colorRight: 'green',
 			labelWidth: 50,
 		} ;
 		opts = (opts)?opts:{} ;
@@ -6413,9 +6417,19 @@ M_.Form.Slider = class extends M_.Form.Input {
 		});
 	}
 	setPosition(pos) {
+		// console.log("pos",pos);
+		if (pos===false) pos = 0 ;
+		if (pos===true) pos = 1 ;
 		var w = this.jEl.width();
 		var l = pos*(w/this.steps)+3 ;
-		if (pos===0) l += this._spaceCursor ;
+		if (pos===0) {
+			this.jEl.removeClass('step1') ;
+			l += this._spaceCursor ;
+		} else {
+			this.jEl.addClass('step1') ;
+		}
+		// if (pos===0) this.jEl.css('background-color',this.colorLeft) ;
+		// else this.jEl.css('background-color',this.colorRight) ;
 		this.jElCursor.transition({left:l});
 	}
 	setValue(val) {
@@ -7193,14 +7207,16 @@ M_.Form.Number = class extends M_.Form.Text {
 		if (this.allowComparison)
 			re += "|\>|\<|\=" ;
 		this.regxValidChar = re;
-		return super.validChar(txt);
+		var ok = super.validChar(txt);
+		if (this.maxLength && (this.jEl.val()+'').length>=this.maxLength) ok = false ;
+		return ok ;
 	}
 	/**
 	 * @param {type}
 	 */
 	setValue(v) {
 		// log("setValue",v)
-		if (v==='' && this.startEmpty) return this.jEl.val('');
+		if (this.startEmpty && (v==='' || v===null || typeof v ==='undefined')) return this.jEl.val('');
 		v = v * 1;
 		this.value = v;
 		var v2 = v;
@@ -7220,6 +7236,7 @@ M_.Form.Number = class extends M_.Form.Text {
 	 * @return {type}
 	 */
 	getValue(serialized=false) {
+		if (this.startEmpty && this.jEl.val()==='') return null ;
 		var v = (this.jEl.val() + "").replace(this.decimalSeparator, ".");
 		this.value = v * 1;
 		if (this.allowComparison) this.value = v ;
