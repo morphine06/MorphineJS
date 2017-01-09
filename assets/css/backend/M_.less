@@ -1638,7 +1638,11 @@ textarea {
 	cursor: pointer;
 
 	border-radius: (@SliderHeight / 2);
-	background-color: @green;
+	background-color: @red;
+	transition: background-color 0.5s ease;
+	&.step1 {
+		background-color: @green;
+	}
 }
 .M_SliderCursor {
 	position: absolute;
