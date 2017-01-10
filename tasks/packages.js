@@ -23,12 +23,12 @@ module.exports = {
     packageBackend: {
         /* don't include .es6 file */
         scripts: [
-            'compiled/socket.io.js|node_modules/socket.io-client/socket.io.js',
+            'compiled/socket.io.js|node_modules/socket.io-client/dist/socket.io.js',
             'compiled/jquery.js|node_modules/jquery/dist/jquery.js',
             'compiled/lodash.js|node_modules/lodash/lodash.js',
             'compiled/moment.js|node_modules/moment/min/moment-with-locales.js',
             'compiled/jquery.transit.js|node_modules/jquery.transit/jquery.transit.js',
-            'compiled/d3.js|node_modules/d3/build/d3.js',
+            // 'compiled/d3.js|node_modules/d3/build/d3.js',
             // 'compiled/c3.js|node_modules/c3/c3.js',
             'jst',
             'es6'
@@ -40,7 +40,7 @@ module.exports = {
         ],
         styles: [
             'compiled/font-awesome.css|node_modules/font-awesome/css/font-awesome.css',
-            'compiled/c3.css|node_modules/c3/c3.css',
+            // 'compiled/c3.css|node_modules/c3/c3.css',
             'less'
         ],
         less: [

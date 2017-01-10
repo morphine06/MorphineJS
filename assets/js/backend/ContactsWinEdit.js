@@ -73,9 +73,9 @@ export class ContactsWinEdit extends M_.Window {
 				}],
 				['save', (form, data)=> {
 					this.hide() ;
-					if (this.controller.currentModelContact) this.controller.currentModelContact.set('co_id', data.co_id) ;
+					if (this.controller.currentModelContact) this.controller.currentModelContact.set('co_id', data.data.co_id) ;
 					if (form.find('co_avatar_send').getValue()!=='') {
-						M_.Utils.saveFiles([form.find('co_avatar_send').jEl.get(0)], '/1.0/contacts/updateavatar', {co_id:data.co_id}, (data)=> {
+						M_.Utils.saveFiles([form.find('co_avatar_send').jEl.get(0)], '/1.0/contacts/updateavatar', {co_id:data.data.co_id}, (data)=> {
 							form.deleteItem('co_avatar_send') ;
 							Services.updateAvatar() ;
 							if (this.controller.onSaveContactsWinEdit) this.controller.onSaveContactsWinEdit(data.data) ;

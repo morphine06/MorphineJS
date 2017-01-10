@@ -3731,10 +3731,11 @@ M_.TableList = class extends M_.SimpleList {
 			html += "<tr class='"+clsTr+"' "+draggable+">" ;
 			for(var i=0 ; i<colsDef.length ; i++) {
 				let val = "",
-					cls = this.classItems+" M_Noselectable" ;
+					cls = this.classItems+" M_Noselectable",
+					mystyle = {cls:'', style:''} ;
 				if ($.isFunction(colsDef[i].val)) {
 					// console.log("model", model);
-					val = colsDef[i].val(model) ;
+					val = colsDef[i].val(model, mystyle) ;
 				} else {
 					if (model instanceof M_.Model) val = model.get(colsDef[i].val) ;
 					else val = model[colsDef[i].val] ;
@@ -3742,10 +3743,11 @@ M_.TableList = class extends M_.SimpleList {
 				if (colsDef[i].align && colsDef[i].align=='right') cls += " M_AlignRight" ;
 				if (colsDef[i].align && colsDef[i].align=='center') cls += " M_AlignCenter" ;
 				if (colsDef[i].align && colsDef[i].align=='left') cls += " M_AlignLeft" ;
+				cls += " "+mystyle.cls ;
 				let datamid = "" ;
 				if (model instanceof M_.Model) datamid = model.get(mid) ;
 				else datamid = model[mid] ;
-				html += "<td class='"+cls+"' data-m_id='"+datamid+"'>"+val+"</td>" ;
+				html += "<td class='"+cls+"' style='"+mystyle.style+"' data-m_id='"+datamid+"'>"+val+"</td>" ;
 			}
 			html += "</tr>" ;
 		}) ;
@@ -6433,6 +6435,8 @@ M_.Form.Slider = class extends M_.Form.Input {
 		this.jElCursor.transition({left:l});
 	}
 	setValue(val) {
+		if (val==='') return ;
+		// console.log("this.name,val",this.name,val);
 		this.previousValue = this.value ;
 		this.value = val ;
 		this.setPosition(val) ;

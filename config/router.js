@@ -64,6 +64,11 @@ module.exports = {
             action: 'avatar',
             policies: ['accessBackend']
         },
+        'POST /1.0/contacts/updateavatar': {
+            controller: 'backend/ContactsController',
+            action: 'updateavatar',
+            policies: ['accessBackend']
+        },
         'GET /1.0/groups/find': {
             controller: 'backend/GroupsController',
             action: 'find',

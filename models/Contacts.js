@@ -69,6 +69,9 @@ module.exports = {
             type: 'varchar',
             defaultsTo: ''
         },
+        co_avatar: {
+            type: 'string'
+        },
         co_name: {
             type: 'varchar',
             defaultsTo: '',

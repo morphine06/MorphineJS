@@ -530,6 +530,12 @@ input[disabled].M_Input, textarea[disabled].M_Input {
 	color: white;
 	background-color: @grey;
 }
+input:read-only {
+	background-color: @bluegrey-50;
+}
+input.M_Combobox:read-only {
+	background-color: white;
+}
 
 .M_InputLeft {
 	float: left;
@@ -896,13 +902,12 @@ input[type="checkbox"].M_InputLeft {
 }
 .M_TableList .M_TableListOdd, .M_SimpleList .M_TableListOdd {
 	transition: background-color 0.5s ease 0s;
-
 	background-color: @grey-100;
 }
 .M_TableList .M_TableListEven, .M_SimpleList .M_TableListEven {
 	transition: background-color 0.5s ease 0s;
 
-	background-color: transparent;
+	background-color: white;
 }
 
 

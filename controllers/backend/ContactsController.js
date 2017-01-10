@@ -302,7 +302,7 @@ module.exports = class extends BaseController {
 	_updateOrCreate(req, next) {
 		var row_co = null ;
 		var row_co_old = null ;
-		if (req.body.co_avatarauto) req.body.co_avatar = "" ;
+		if (req.body.co_avatarauto) req.body.co_avatar = req.body.co_avatarauto ;
 		async.series([
 
 			(nextSerie)=> {
@@ -425,7 +425,7 @@ module.exports = class extends BaseController {
 			});
 		});
 	}
-    avatar(req, res) {
+	avatar(req, res) {
         // return this.send(res, "OK");
 
         // res.header('Cache-Control', 'public, max-age='+sails.config.http.cache);
@@ -438,9 +438,10 @@ module.exports = class extends BaseController {
 
 
 
-        Contacts.findOne({co_id:req.params.id}).exec((err, row_co)=> {
+        Contacts.findOne({co_id:req.params.co_id}).exec((err, row_co)=> {
             if (err) row_co.co_avatar = null ;
             if (!row_co) row_co = {co_avatar:null} ;
+			console.log("row_co.co_avatar",row_co.co_avatar);
 
             req.params.w = req.params.w*1 ;
             req.params.h = req.params.h*1 ;
@@ -451,13 +452,15 @@ module.exports = class extends BaseController {
             var dest = morphineserver.rootDir+"/uploads/"+req.params.w+"-"+req.params.h+"_default" ;
             var hasAvatarImg = false ;
             if (row_co.co_avatar) {
-                src = morphineserver.rootDir+"uploads/orig_"+row_co.co_id ;
-                dest = morphineserver.rootDir+"uploads/"+req.params.w+"-"+req.params.h+"_"+row_co.co_id ;
+                src = morphineserver.rootDir+"/uploads/orig_"+row_co.co_avatar ;
+                dest = morphineserver.rootDir+"/uploads/"+req.params.w+"-"+req.params.h+"_"+row_co.co_id ;
                 // pictureOk = uploadPathDir+path.sep+req.params.w+"-"+req.params.h+"_"+user.co_avatar ;
                 // fn = user.co_avatar ;
                 // fnprefix = "orig_" ;
                 // hasAvatarImg = true ;
-                // if (!fs.existsSync(path.dirname(pictureOk)+path.sep+fnprefix+fn)) hasAvatarImg = false ;
+                if (!fs.existsSync(src)) {
+					src = morphineserver.rootDir+"/assets/images/"+row_co.co_avatar ;
+				}
             }
             // if (!hasAvatarImg) {
             //     pictureOk = root+"/assets/images/"+req.params.w+"-"+req.params.h+"_default.png" ;
@@ -471,7 +474,7 @@ module.exports = class extends BaseController {
             // }
             async.series([
                 (next)=> {
-                    if (!fs.existsSync(dest)) {
+                    // if (!fs.existsSync(dest)) {
                         gm(src)
                         .gravity('Center')
                         .resize(req.params.w, req.params.h, "^")
@@ -482,7 +485,7 @@ module.exports = class extends BaseController {
                             next() ;
                         }) ;
 
-                    } else next() ;
+                    // } else next() ;
                 },
                 (next)=> {
                     var stat = fs.statSync(dest);
