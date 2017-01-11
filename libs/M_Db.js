@@ -489,20 +489,20 @@ class M_Table {
         let whereData2 = _.cloneDeep(whereData) ;
         // console.log("whereData,whereData2",whereData,whereData2);
         // let data2 = _.cloneDeep(data) ;
-        this.findOne(where, whereData).exec((errsql, _row)=> {
+        this.findOne(where, whereData).exec((errsql, _rowold)=> {
             // console.log("where, whereData, _row",where, whereData, _row);
             if (errsql) console.log("errsql",errsql);
-            if (!_row) this.create(data).exec((errsql, idTemp)=> {
+            if (!_rowold) this.create(data).exec((errsql, idTemp)=> {
                 if (returnCompleteRow) {
                     this.findOne(idTemp).exec((errsql, _row)=> {
-                        cb(errsql, _row) ;
+                        cb(errsql, _row, _rowold) ;
                     }) ;
-                } else cb(errsql, idTemp) ;
+                } else cb(errsql, idTemp, _rowold) ;
             }) ;
             else this.update(where2, whereData2, data).exec((errsql, rows)=> {
                 // console.log("where2, whereData2, data, rows",where2, whereData2, data, rows);
-                if (returnCompleteRow && rows.length) return cb(errsql, rows[0]) ;
-                cb(errsql, rows) ;
+                if (returnCompleteRow && rows.length) return cb(errsql, rows[0], _rowold) ;
+                cb(errsql, rows, _rowold) ;
                 // if (returnCompleteRow) {
                 //     this.findOne(where2, whereData2).exec((errsql, _row)=> {
                 //         cb(errsql, _row) ;

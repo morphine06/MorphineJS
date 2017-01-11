@@ -547,6 +547,24 @@ M_.Controller = class {
  */
 M_.Utils = class {
 
+	static preloadImages(preload, cb) {
+		// var preload = ["a.gif", "b.gif", "c.gif"];
+		var promises = [];
+		for (var i = 0; i < preload.length; i++) {
+			(function(url, promise) {
+				var img = new Image();
+				img.onload = function() {
+					promise.resolve();
+				};
+				img.src = url;
+			})(preload[i], promises[i] = $.Deferred());
+		}
+		$.when.apply($, promises).done(function() {
+			// alert("All images ready sir!");
+			cb() ;
+		});
+	}
+
 	static isEventSupported(eventName) {
 		var TAGNAMES = {
 			'select':'input','change':'input','search':'input',
