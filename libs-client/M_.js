@@ -3993,7 +3993,7 @@ M_.CRUD = {
 				}
 				// log("this.model.primaryKey",modelTemp.primaryKey,okArgs)
 			}
-			console.log("url,method",url,method,this.model,okArgs);
+			// console.log("url,method",url,method,this.model,okArgs);
 
 			if (this.trigger("beforeSave", this, {url: url, method:method, args:okArgs})===false) return false ;
 
@@ -6258,7 +6258,7 @@ M_.Form.Input = class extends M_.Outlet {
 			var multiple = "" ;
 			if (this.multiple) multiple = "multiple" ;
 			if (this.inputType=='file') {
-				html += `<input ${tabindex} ${readOnly} id="${this.id}" type="${this.inputType}" style="${this.styleInput}" ${multiple} class="M_Input ${this.clsInput}" name="${this.name}" value="${v}" placeholder="${this.placeholder}">` ;
+				html += `<input ${tabindex} ${readOnly} id="${this.id}" type="${this.inputType}" style="${this.styleInput}" ${multiple} class="M_Input M_InputFile ${this.clsInput}" name="${this.name}" value="${v}" placeholder="${this.placeholder}"><label class='M_InputFileLabel' for="${this.id}">${this.txtChooseFile}</label>` ;
 			} else if (this.inputType=='textarea') {
 				if (!this.height) this.height = 100;
 				this.styleInput += ' height:'+this.height+'px;' ;
@@ -6675,6 +6675,7 @@ M_.Form.File = class extends M_.Form.Input {
 		var defaults = {
 			placeholder: "",
 			inputType: 'file',
+			txtChooseFile: "Choisir un fichier",
 			multiple: false,
 			regxValidChar: null
 		} ;
@@ -6682,7 +6683,15 @@ M_.Form.File = class extends M_.Form.Input {
 		opts = $.extend({}, defaults, opts) ;
 		super(opts) ;
 
+		this._labelButton = $(this.jEl.get(0).nextElementSibling) ;
+
 		this.jEl.on('change', (evt)=> {
+			let fileName = '' ;
+			if( this.jEl.files && this.jEl.files.length > 1 ) fileName = ( this.jEl.getAttribute( 'data-multiple-caption' ) || '' ).replace( '{count}', this.jEl.files.length );
+			else fileName = evt.target.value.split( '\\' ).pop();
+			if( fileName ) this._labelButton.html(fileName) ;
+			else this._labelButton.html(this.txtChooseFile) ;
+
 			this.trigger("change", this, evt) ;
 		}) ;
 	}
@@ -6703,24 +6712,30 @@ M_.Form.File = class extends M_.Form.Input {
 		this.previousValue = this.value ;
 		this.value = val ;
 	}
-	reset() {
-		if (!this.jEl) return ;
-		var par = this.jEl.parent() ;
-		this.jEl.remove() ;
-		// this.container.empty() ;
-
-		var tabindex = "" ;
-		var readOnly = "" ;
-		if (this.tabindex) tabindex = 'tabindex="'+this.tabindex+'"' ;
-		if (!this.editable) readOnly = "readonly" ;
-		var multiple = "" ;
-		if (this.multiple) multiple = "multiple" ;
-		this.jEl = $(`<input ${tabindex} ${readOnly} id="${this.id}" type="${this.inputType}" style="${this.styleInput}" ${multiple} class="M_Input ${this.clsInput}" name="${this.name}" value="" placeholder="${this.placeholder}">`) ;
-		par.append(this.jEl) ;
-		this.jEl.on('change', (evt)=> {
-			this.trigger("change", this, evt) ;
-		}) ;
+	setLabelButton(txt) {
+		this._labelButton.html(txt) ;
 	}
+	reset() {
+		this._labelButton.html(this.txtChooseFile) ;
+	}
+	// reset() {
+	// 	if (!this.jEl) return ;
+	// 	var par = this.jEl.parent() ;
+	// 	this.jEl.remove() ;
+	// 	// this.container.empty() ;
+	//
+	// 	var tabindex = "" ;
+	// 	var readOnly = "" ;
+	// 	if (this.tabindex) tabindex = 'tabindex="'+this.tabindex+'"' ;
+	// 	if (!this.editable) readOnly = "readonly" ;
+	// 	var multiple = "" ;
+	// 	if (this.multiple) multiple = "multiple" ;
+	// 	this.jEl = $(`<input ${tabindex} ${readOnly} id="${this.id}" type="${this.inputType}" style="${this.styleInput}" ${multiple} class="M_Input ${this.clsInput}" name="${this.name}" value="" placeholder="${this.placeholder}">`) ;
+	// 	par.append(this.jEl) ;
+	// 	this.jEl.on('change', (evt)=> {
+	// 		this.trigger("change", this, evt) ;
+	// 	}) ;
+	// }
 };
 
 
