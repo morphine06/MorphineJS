@@ -2,6 +2,7 @@ module.exports = {
     migrate: 'alter', // alter / recreate / safe
     debug: false,
     mysql: {
+        disabled: false,
         client: 'mysql2',
         connection: {
             host     : 'localhost',
@@ -12,6 +13,7 @@ module.exports = {
         }
     },
     redis: {
+        disabled: false,
         host: 'localhost',
         // port: 6379,
         db: 1,

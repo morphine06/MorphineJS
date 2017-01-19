@@ -242,7 +242,11 @@ module.exports = class MorphineServer {
         //     app.set('trust proxy', 1) ; // trust first proxy
         //     sess.cookie.secure = true ; // serve secure cookies
         // }
-        sess.store = new RedisStore(morphineserver.config.models.redis) ;
+        if (morphineserver.config.models && morphineserver.config.models.redis && morphineserver.config.models.redis.disabled) {
+
+        } else {
+            sess.store = new RedisStore(morphineserver.config.models.redis) ;
+        }
         app.use(session(sess)) ;
 
 
@@ -336,14 +340,13 @@ module.exports = class MorphineServer {
 
             },
             (nextinit) => {
+                if (morphineserver.config.models && morphineserver.config.models.mysql && morphineserver.config.models.mysql.disabled) return nextinit() ;
                 M_Db.init(this.config, ()=> {
                     async.eachOfSeries(M_Db.models, (model, modelname, next)=> {
                         M_Db.createTable(model, next) ;
                     }, ()=> {
                         nextinit() ;
                     }) ;
-
-
                 }) ;
             },
             (nextinit) => {
