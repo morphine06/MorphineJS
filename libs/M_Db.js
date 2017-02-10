@@ -280,7 +280,11 @@ class M_TableExec {
                     }
                 }
                 if (field.type=='boolean') {
-                    if (row[fieldName]) row[fieldName] = true ;
+                    if (row[fieldName]===true ||
+                        row[fieldName]==='true' ||
+                        row[fieldName]===1 ||
+                        row[fieldName]==='1'
+                    ) row[fieldName] = true ;
                     else row[fieldName] = false ;
                 }
             }) ;
