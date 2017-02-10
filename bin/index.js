@@ -41,10 +41,10 @@ function newAction() {
         if (file.substr(0,1)!='.') empty = false ;
     }) ;
     if (!empty) {
-        console.log(chalk.white.bgRed("Directory not empty. Please create a new directory and re-execute \"morphine new\"")) ;
+        console.log(chalk.white.bgRed("Directory not empty. Please create a new directory and re-execute \"morphinejs new\"")) ;
         return ;
     }
-    console.log("Please wait, copy directories and files.");
+    console.log("Please wait, copying directories and files.");
     let tabCopy = ['assets', 'config', 'controllers', 'models', 'services', 'tasks', 'views', '.babelrc', '.gitignore', '.jshintrc', 'dev.js', 'prod.js'] ;//, 'node_modules'
     async.series([
         (next) => {

@@ -6,6 +6,8 @@ var async = require('async');
 var fs = require('fs') ;
 var mysql = require('mysql2') ;
 
+var request = require('request') ;
+
 class M_TableExec {
     constructor(table) {
         this.table = table ;
@@ -369,65 +371,94 @@ class M_TableExec {
                 default:
                 query = this._createSelectQuery() ;
             }
+            if (this.def.proxysql) {
 
-            // console.log("query",query, this.whereData);
-            if (this.def.debug) console.log("query",query, this.whereData);
-            this.connection.query({
-                sql: query,
-                values: this.whereData,
-                nestTables: false
-            }, (err, rows, fields)=> {
-                let res ;
-                if (err) {
-                    console.log('query',query);
-                    console.log('whereData',this.whereData);
-                    console.log('err',err);
-                    return cb(err, res) ;
-                }
-                switch (this.command) {
-                    case 'QUERY':
-                    res = rows ;
-                    break;
-                    case 'UPDATE':
-                    res = rows.affectedRows ;
-                    // console.log("rows",rows);
-                    break;
-                    case 'DELETE':
-                    res = rows.affectedRows ;
-                    break;
-                    case 'INSERT':
-                    this.data[this.primary] = rows.insertId ;
-                    // res = this.data ;
-                    res = rows.insertId ;
-                    break;
-                    default:
-                    this._postTreatment(rows) ;
-                    if (this.onlyOne) {
-                        if (rows.length) res = rows[0] ;
-                        else res = null ;
-                    } else res = rows ;
-                }
-                // console.log("res",res);
-                if (this.def.debug) console.log("res",res);
-                // console.log('The solution is: ', rows);
-                if (returnCompleteRow && (this.command=='UPDATE' || this.command=='INSERT')) {
-                    // console.log("this.command",this.command);
-                    if (this.command=='UPDATE') {
-                        this.table.find(this.original_where, this.original_whereData).exec((errsql, rows2)=> {
-                            if (errsql) console.log("errsql",errsql);
-                            cb(errsql, rows2) ;
-                        }) ;
-                    } else {
-                        this.table.findOne(res).exec((errsql, rows2)=> {
-                            if (errsql) console.log("errsql",errsql);
-                            cb(errsql, rows2) ;
-                        }) ;
+                let sql = this.connection.format(query, this.whereData);
+                // console.log("sql",sql);
+                request.post({url:this.def.proxysql, formData: {
+                    query: sql,
+                    command: this.command,
+                    // data: JSON.stringify(this.whereData)
+                }}, (err, httpResponse, body)=> {
+                  if (err) {
+                    return cb(err);
+                  }
+                //   console.log("on envoie:", query);
+                //   console.log('Server responded with:', body);
+                  let d = {} ;
+                  try {
+                      d = JSON.parse(body) ;
+                    //   console.log('Parsed:', d);
+                  } catch (e) {
+                      return cb(err);
+                  }
+                  this.postTreatmentMain(null, d, returnCompleteRow, cb) ;
+                });
 
-                    }
-                } else return cb(err, res) ;
-            });
+
+            } else {
+                if (this.def.debug) console.log("query",query, this.whereData);
+                this.connection.query({
+                    sql: query,
+                    values: this.whereData,
+                    nestTables: false
+                }, (err, rows, fields)=> {
+                    this.postTreatmentMain(err, rows, returnCompleteRow, cb) ;
+                });
+
+            }
         }) ;
 
+    }
+    postTreatmentMain(err, rows, returnCompleteRow, cb) {
+        let res ;
+        if (err) {
+            // console.log('query',query);
+            // console.log('whereData',this.whereData);
+            console.log('err',err);
+            return cb(err, res) ;
+        }
+        switch (this.command) {
+            case 'QUERY':
+            res = rows ;
+            break;
+            case 'UPDATE':
+            res = rows.affectedRows ;
+            // console.log("rows",rows);
+            break;
+            case 'DELETE':
+            res = rows.affectedRows ;
+            break;
+            case 'INSERT':
+            this.data[this.primary] = rows.insertId ;
+            // res = this.data ;
+            res = rows.insertId ;
+            break;
+            default:
+            this._postTreatment(rows) ;
+            if (this.onlyOne) {
+                if (rows.length) res = rows[0] ;
+                else res = null ;
+            } else res = rows ;
+        }
+        // console.log("res",res);
+        if (this.def.debug) console.log("res",res);
+        // console.log('The solution is: ', rows);
+        if (returnCompleteRow && (this.command=='UPDATE' || this.command=='INSERT')) {
+            // console.log("this.command",this.command);
+            if (this.command=='UPDATE') {
+                this.table.find(this.original_where, this.original_whereData).exec((errsql, rows2)=> {
+                    if (errsql) console.log("errsql",errsql);
+                    cb(errsql, rows2) ;
+                }) ;
+            } else {
+                this.table.findOne(res).exec((errsql, rows2)=> {
+                    if (errsql) console.log("errsql",errsql);
+                    cb(errsql, rows2) ;
+                }) ;
+
+            }
+        } else return cb(err, res) ;
     }
 }
 class M_Table {
