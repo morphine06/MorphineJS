@@ -1,6 +1,6 @@
 {
   "name": "morphinejs",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "",
   "main": "libs/M_App.js",
   "bin": {
