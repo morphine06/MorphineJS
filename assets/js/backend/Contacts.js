@@ -735,7 +735,7 @@ export class Contacts extends M_.Controller {
 			{gr_id:-2, gr_name:"<span class='fa fa-user-secret'></span>&nbsp;<i>Tous les utilisateurs</i>", special:true},
 			{gr_id:-1, gr_name:"<span class='fa fa-group'></span>&nbsp;<i>Tous</i>", special:true},
 		] ;
-		if (!Services.getUserRight('contacts_rightsusers')) tab.shift() ;
+		// if (!Services.getUserRight('contacts_rightsusers')) tab.shift() ;
 
 		// if (Shared.canAccessCandidate(M_.App.Session)) tab.unshift({gr_id:-3, gr_name:"<span class='fa fa-user-plus'></span>&nbsp;<i>Tous les candidats</i>", special:true}) ;
 

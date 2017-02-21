@@ -199,6 +199,11 @@ module.exports = class MorphineServer {
 
     }
 
+    initMorphineMiddleware(req, res, next) {
+        if (morphineserver.config.middleware && morphineserver.config.middleware.transform) {
+            morphineserver.config.middleware.transform(req, res, next) ;
+        } else next() ;
+    }
     initMiddleware(nextinit) {
 
 
@@ -260,6 +265,7 @@ module.exports = class MorphineServer {
         app.use(Passport.session());
 
         app.use(compression()) ;
+        app.use(this.initMorphineMiddleware) ;
 
         if (this.config.sockets.config.useSockets) {
             app.use((req, res, next)=> {

@@ -75,6 +75,9 @@ M_.App
 	let loadSessionInfos = ()=> {
 		M_.Utils.getJson('/1.0/infos', {}, (data)=> {
 			M_.App.Session = data.user ;
+			$('#mainavatar').css('background-image', 'url(/1.0/contacts/avatar/100/100/'+M_.App.Session.co_id+'?d='+(new Date()).getTime()+')') ;
+			$('#loginInfosBt_name').html(M_.App.Session.co_firstname+' '+M_.App.Session.co_name) ;
+			$('#loginInfosBt_role').html(M_.Services.displayRight(M_.App.Session)) ;
 			drawMenus() ;
 			next() ;
 		}) ;

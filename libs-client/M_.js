@@ -2665,15 +2665,15 @@ M_.Store = class {
 //		 log("this.unshiftRows",this.unshiftRows)
 		if (this.unshiftRows.length>0) {
 			for(i=0 ; i<this.unshiftRows.length ; i++)
-				data.data.unshift(this.unshiftRows[i]) ;
+				data[this.rootData].unshift(this.unshiftRows[i]) ;
 		}
 		if (this.pushRows.length>0) {
 			for(i=0 ; i<this.pushRows.length ; i++)
-				data.data.push(this.pushRows[i]) ;
+				data[this.rootData].push(this.pushRows[i]) ;
 		}
 		//if (this.lastLoadArgs.add)  ;
 		//else
-		this.rows = data.data ;
+		this.rows = data[this.rootData] ;
 		// this.lastLoadArgs.add = false ;
 
 		this.useModel() ;
@@ -3903,7 +3903,7 @@ M_.CRUD = {
 	_treatDataCrud(data, callback) {
 		// log("_treatDataCrud",data)
 		var row = null ;
-		if (data && data.data) row = data.data ;
+		if (data && data[this.rootData]) row = data[this.rootData] ;
 		else row = data ;
 		this.trigger("loadraw", this, row);
 		if (this.processData) this.processData(row) ;
@@ -5767,6 +5767,7 @@ M_.Form.Form = class {
 			model: null,
 			url: '',
 			urls: null,
+			rootData: 'data',
 			validBeforeSave: true
 		};
 		opts = (opts)?opts:{} ;
