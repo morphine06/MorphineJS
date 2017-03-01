@@ -1,5 +1,9 @@
+"use strict";
+
+
 module.exports = function(next) {
-    "use strict";
+
+    console.log("morphineserver.config.environment",morphineserver.config.environment);
 
     var data = {co_id:1, co_name:'Miglior', co_firstname:'David', co_email:'david@miglior.fr', co_login:'david@miglior.fr', co_password:'xxxxx', co_type:'admin', co_active:1, co_geo_lat:'43.709464', co_geo_lng:'7.258434', co_address1:'5 rue Castel', co_address2:'', co_zip:'06000', co_city:'Nice', co_admin:1, co_apikey:'1111', co_apisecret:'1111'} ;//gps nice
 

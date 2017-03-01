@@ -186,11 +186,13 @@ module.exports = class MorphineServer {
         }
 
         var livereload = require('livereload');
-        this.livereloadServer = livereload.createServer({
-            port: morphineserver.config.tasks.livereloadPort,
-            exts: morphineserver.config.tasks.livereloadExtensions,
-            // debug: true
-        });
+        if (morphineserver.config.tasks.livereloadPort) {
+            this.livereloadServer = livereload.createServer({
+                port: morphineserver.config.tasks.livereloadPort,
+                exts: morphineserver.config.tasks.livereloadExtensions,
+                // debug: true
+            });
+        }
 
 
         require(process.cwd()+'/tasks/on-start')(()=> {
@@ -268,6 +270,7 @@ module.exports = class MorphineServer {
         app.use(this.initMorphineMiddleware) ;
 
         if (this.config.sockets.config.useSockets) {
+            morphineserver.io = io ;
             app.use((req, res, next)=> {
                 req.io = io ;
                 next() ;
