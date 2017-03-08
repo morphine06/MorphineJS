@@ -402,11 +402,12 @@ class M_TableExec {
 
             } else {
                 if (this.def.debug) console.log("query",query, this.whereData);
-                this.connection.query({
-                    sql: query,
-                    values: this.whereData,
-                    nestTables: false
-                }, (err, rows, fields)=> {
+                // {
+                //     sql: query,
+                //     values: this.whereData,
+                //     nestTables: false
+                // }
+                this.connection.query(query, this.whereData, (err, rows, fields)=> {
                     this.postTreatmentMain(err, rows, returnCompleteRow, cb) ;
                 });
 
@@ -556,13 +557,50 @@ class M_Table {
     }
 }
 
+
+
 var M_Db = new (class {
     init(config, cb) {
         this.config = config.models ;
         // console.log("this.config",this.config);
         // this.config.mysql.connection.debug = true ;
-        this.connection = mysql.createConnection(this.config.mysql.connection);
-        this.connection.connect();
+
+        // this.connection = mysql.createConnection(this.config.mysql.connection);
+        // this.connection.connect();
+        var pool = mysql.createPool(this.config.mysql.connection) ;
+        this.connection = {
+            pool: pool,
+            // this.connection = mysql.createConnection(this.config.mysql.connection);
+            // this.connection.connect();
+            query: function() {
+                var sql_args = [];
+                var args = [];
+                for(var i=0; i<arguments.length; i++){
+                    args.push(arguments[i]);
+                }
+                var callback = args[args.length-1]; //last arg is callback
+                this.pool.getConnection(function(err, connection) {
+                    // console.log("err,connection",err,connection);
+                    if(err) {
+                        console.log(err);
+                        return callback(err);
+                    }
+                    if(args.length > 2){
+                        sql_args = args[1];
+                    }
+                    // console.log("args[0],sql_args",args[0],sql_args);
+                    connection.query(args[0], sql_args, function(err, results) {
+                        connection.release(); // always put connection back in pool after last query
+                        if(err){
+                            console.log("errrrrrr",err);
+                            return callback(err);
+                        }
+                        callback(null, results);
+                    });
+                });
+            }
+        } ;
+
 
         let files = fs.readdirSync(process.cwd()+'/models') ;
         this.models = {} ;
