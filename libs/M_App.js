@@ -28,6 +28,10 @@ var skipper  = require('skipper');
 
 module.exports = class MorphineServer {
 
+    constructor(morphineJsInDev) {
+        this.morphineJsInDev = morphineJsInDev ;
+    }
+
     initConfig() {
         let config = {} ;
         let files = fs.readdirSync(process.cwd()+'/config') ;

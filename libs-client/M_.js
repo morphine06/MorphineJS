@@ -2960,6 +2960,7 @@ M_.Tabs = class extends M_.Outlet {
 			this.buttons.find('.M_TabButton').each((ind, el)=> {
 				$(el).click((evt)=> {
 					var jEl = $(evt.target) ;
+					if (jEl.hasClass('disabled')) return ;
 					// console.log("jEl.attr('for')", jEl.attr('for'));
 					this.show(jEl.attr('for'), (next)=> {
 						if (this.onChange) {

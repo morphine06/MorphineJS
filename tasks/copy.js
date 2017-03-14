@@ -116,8 +116,10 @@ module.exports = (cb)=> {
                         //     if (!modified) return nextModel() ;
                             model = model.substring(0,model.length-3) ;
                             var def = require(morphineserver.rootDir+'/models/'+model) ;
+                            let dir = './../../../node_modules/morphinejs/libs-client/' ;
+                            if (morphineserver.morphineJsInDev) dir = './../../../libs-client/' ;
                             var mods = "" ;
-                            mods += "'use strict';\nimport {M_} from './../../../node_modules/morphinejs/libs-client/M_.js';\nexport class MT_"+model+" extends M_.Model {\ngetDefinition() {\nreturn {\n" ;
+                            mods += "'use strict';\nimport {M_} from '"+dir+"M_.js';\nexport class MT_"+model+" extends M_.Model {\ngetDefinition() {\nreturn {\n" ;
                             // mods += '"name": "co_contacts",\n' ;
                             // mods += '"autoIncrement": false,\n' ;
                             let tabOk = [] ;
