@@ -19,7 +19,9 @@ var _ = require('lodash') ;
 var async = require('async') ;
 var moment = require('moment') ;
 
-var http = require('http').Server(app);
+// var http = require('http').Server(app);
+var https = require('https');
+var http = require('http');
 var io = require('socket.io')(http);
 var colors = require('colors');
 var skipper  = require('skipper');
@@ -378,32 +380,43 @@ module.exports = class MorphineServer {
 
         ], () => {
 
+            if (this.config.use_https) {
+                https.createServer({
+                    key: fs.readFileSync(__dirname+this.config.use_https.key),
+                    cert: fs.readFileSync(__dirname+this.config.use_https.cert)
+                }, app).listen(this.config.port,  ()=> {
+                    this._justStarted() ;
+                });
+            } else {
+                http.createServer(app).listen(this.config.port,  ()=> {
+                    this._justStarted() ;
+                });
+            }
 
-            http.listen(this.config.port,  ()=> {
-                console.log(('Listen on port '+(this.config.port+'').bold+' in '+this.config.environment.bold+' environment').bgGreen);
-                console.log(('Date : '+moment().format('DD MMMM YYYY HH:mm:ss').green));
-                console.log(
-`
-         _.._..,_,_
-        (          )
-         ]~,"-.-~~[
-       .=])' (;  ([
-       | ]:: '    [
-       '=]): .)  ([
-         |:: '    |
-          ~~----~~
-`
-                );
 
-                if (this.livereloadServer) {
-                    setTimeout(()=> {
-                        this.livereloadServer.refresh('') ;
-                    }, 1000) ;
-                }
-            });
         }) ;
+    }
+    _justStarted() {
+        console.log(('Listen on port '+(this.config.port+'').bold+' in '+this.config.environment.bold+' environment').bgGreen);
+        console.log(('Date : '+moment().format('DD MMMM YYYY HH:mm:ss').green));
+        console.log(
+`
+ _.._..,_,_
+(          )
+ ]~,"-.-~~[
+.=])' (;  ([
+| ]:: '    [
+'=]): .)  ([
+ |:: '    |
+  ~~----~~
+`
+        );
 
-
+        if (this.livereloadServer) {
+            setTimeout(()=> {
+                this.livereloadServer.refresh('') ;
+            }, 1000) ;
+        }
     }
 
 

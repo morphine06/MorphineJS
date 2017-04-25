@@ -592,7 +592,7 @@ var M_Db = new (class {
                     connection.query(args[0], sql_args, function(err, results) {
                         connection.release(); // always put connection back in pool after last query
                         if(err){
-                            console.log("errrrrrr",err);
+                            console.log("errrrrrr",err,args[0],sql_args);
                             return callback(err);
                         }
                         callback(null, results);
