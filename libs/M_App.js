@@ -21,7 +21,7 @@ var moment = require('moment') ;
 
 // var http = require('http').Server(app);
 var https = require('https');
-var http = require('http');
+var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var colors = require('colors');
 var skipper  = require('skipper');
@@ -382,13 +382,13 @@ module.exports = class MorphineServer {
 
             if (this.config.use_https) {
                 https.createServer({
-                    key: fs.readFileSync(__dirname+this.config.use_https.key),
-                    cert: fs.readFileSync(__dirname+this.config.use_https.cert)
+                    key: fs.readFileSync(process.cwd()+this.config.use_https.key),
+                    cert: fs.readFileSync(process.cwd()+this.config.use_https.cert)
                 }, app).listen(this.config.port,  ()=> {
                     this._justStarted() ;
                 });
             } else {
-                http.createServer(app).listen(this.config.port,  ()=> {
+                http.listen(this.config.port,  ()=> {
                     this._justStarted() ;
                 });
             }
