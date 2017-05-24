@@ -345,10 +345,12 @@ export class ContactsWinEdit extends M_.Window {
 					type: M_.Form.Multi,
 					name: 'co_keywords',
 					label: "Mots clés",
+					labelPosition: 'top',
 					container: $("#contactedit_co_keywords"),
-					onClickBtAdd: (formEl, vals)=> {
-						this.openWinKeywords(vals) ;
-					}
+					chooseValues: [{key:1, val:"toto"}, {key:2, val:"tutu"}, {key:3, val:"tyty"}],
+					// onClickBtAdd: (formEl, vals)=> {
+					// 	this.openWinKeywords(vals) ;
+					// }
 				}, {
 					name: 'co_login',
 					placeholder: "",
@@ -1225,6 +1227,7 @@ export class ContactsWinEdit extends M_.Window {
 			// $("#contacts_details_edit").show() ;
 			// $("#contacts_details").transition({opacity:1}, 100);
 			// this._beforeShowWin() ;
+			model.set('co_keywords', [1,3]) ;
 			this.form.setValues(model) ;
 			this.initWinNow() ;
 

@@ -6505,32 +6505,70 @@ M_.Form.Multi = class extends M_.Form.Input {
 			confirmDelete: false,
 			confirmDeleteMessage: "Etes-vous certain de vouloir supprimer ce mot clé ?",
 			value: [],
-			onClickBtAdd: null
+			onClickBtAdd: null,
+			chooseValues: null,
+			chooseValuesAreNumbers: true
 		} ;
-		var _idBtAddKeyword = M_.Utils.id() ;
-		if (opts.label) opts.label += " <span id='"+_idBtAddKeyword+"' class='fa fa-plus faa-pulse animated-hover'>" ;
+		opts._idBtAddKeyword = M_.Utils.id() ;
+		if (opts.label) opts.label += " <span id='"+opts._idBtAddKeyword+"' class='fa fa-plus faa-pulse animated-hover'>" ;
 		opts = (opts)?opts:{} ;
 		opts = $.extend({}, defaults, opts) ;
 		super(opts) ;
-		// this._idBtAddKeyword = _idBtAddKeyword ;
-		this.drawContainer() ;
-		$("#"+_idBtAddKeyword).click(()=> {
+		if (this.value.length) this.setValue(this.value) ;
+		$("#"+this._idBtAddKeyword).click((evt)=> {
+			evt.stopPropagation() ;
 			if (this.onClickBtAdd) this.onClickBtAdd(this, this.value) ;
+			else if (this.chooseValues) this.showChooseValues() ;
 		}) ;
+	}
+	showChooseValues() {
+		let html = '' ;
+		_.each(this.chooseValues, (c) => {
+			let idTemp = M_.Utils.id() ;
+			let checked = '' ;
+			if (_.indexOf(this.value, c.key)>=0) checked = 'checked' ;
+			html += `<div class="M_FormMultiItem"><label for="${idTemp}"><input type='checkbox' id='${idTemp}' name='${idTemp}' data-id="${c.key}" ${checked}>${c.val}</label></div>` ;
+		}) ;
+		this.dd = new M_.Dropdown({
+			autoShow: true,
+			alignTo: $("#"+this._idBtAddKeyword),
+			html: html
+		}) ;
+		this.dd.show() ;
+		this.dd.jEl.find('.M_FormMultiItem input').change((evt) => {
+			let ids = [] ;
+			this.dd.jEl.find('.M_FormMultiItem input:checked').each((ind, el) => {
+				let id = $(el).attr('data-id') ;
+				ids.push(id*1) ;
+			}) ;
+			this.setValue(ids) ;
+		}) ;
+
 	}
 	/**
 	 * @return {type}
 	 */
 	drawContainer() {
-		// log("this.value",this.value)
+		log("this.value",this.value,this.name);
 		this.jEl.empty() ;
 		_.each(this.value, (val)=> {
-			let html = `<div class="M_ComboboxMultiItem selected" data-kw-id="${val}">${val} <span class="fa fa-trash faa-pulse animated-hover"></span></div>` ;
+			let valtxt = '', valid = '' ;
+			if (this.chooseValues) {
+				let v = _.find(this.chooseValues, {key:val*1}) ;
+				if (v) {
+					valid = v.key ;
+					valtxt = v.val ;
+				} else return ;
+			} else {
+				valid = valtxt = val ;
+			}
+			let html = `<div class="M_ComboboxMultiItem selected" data-kw-id="${valid}">${valtxt} <span class="fa fa-trash faa-pulse animated-hover"></span></div>` ;
 			let jEl = $(html) ;
 			this.jEl.append(jEl) ;
 			jEl.find('.fa-trash').click((evt)=> {
 				if (this.confirmDelete) {
 					M_.Dialog.confirm("Confirmation effacement", this.confirmDeleteMessage, ()=> {
+						this.removeValue($(evt.target).parent().attr("data-kw-id")) ;
 					}) ;
 				} else {
 					this.removeValue($(evt.target).parent().attr("data-kw-id")) ;
@@ -6543,8 +6581,13 @@ M_.Form.Multi = class extends M_.Form.Input {
 	 * @param  {type}
 	 * @return {type}
 	 */
-	removeValue(val) {
-		_.pull(this.value, val);
+	removeValue(valtoremove) {
+		// _.pull(this.value, val);
+		let oks = [] ;
+		_.each(this.value, (val) => {
+			if (val!=valtoremove) oks.push(val) ;
+		}) ;
+		this.value = oks ;
 		this.drawContainer() ;
 	}
 	/**
@@ -6589,10 +6632,6 @@ M_.Form.Rating = class extends M_.Form.Input {
 		opts = (opts)?opts:{} ;
 		opts = $.extend({}, defaults, opts) ;
 		super(opts) ;
-		// this._idBtAddKeyword = _idBtAddKeyword ;
-		// $("#"+_idBtAddKeyword).click(()=> {
-		// 	if (this.onClickBtAdd) this.onClickBtAdd(this, this.value) ;
-		// }) ;
 		this.jEl.addClass('M_FormRate') ;
 		for(var i=0 ; i<this.nbStars ; i++) {
 			var el = $("<div class='M_FormRateItem'>"+i+"</div>") ;
