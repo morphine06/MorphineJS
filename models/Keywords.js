@@ -18,6 +18,10 @@ module.exports = {
             limit: 255,
             defaultsTo: '',
         },
+        kw_id_parent: {
+            type: 'integer',
+            index: true,
+        },
 
     }
 };

@@ -21,8 +21,8 @@ var moment = require('moment') ;
 
 // var http = require('http').Server(app);
 var https = require('https');
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var http = require('http');
+var io ;
 var colors = require('colors');
 var skipper  = require('skipper');
 
@@ -276,7 +276,6 @@ module.exports = class MorphineServer {
         app.use(this.initMorphineMiddleware) ;
 
         if (this.config.sockets.config.useSockets) {
-            morphineserver.io = io ;
             app.use((req, res, next)=> {
                 req.io = io ;
                 next() ;
@@ -313,10 +312,10 @@ module.exports = class MorphineServer {
                     nextinit() ;
                 }) ;
             },
-            (nextinit) => {
-                if (this.config.sockets.config.useSockets) this.initIoSocket() ;
-                nextinit() ;
-            },
+            // (nextinit) => {
+            //     if (this.config.sockets.config.useSockets) this.initIoSocket() ;
+            //     nextinit() ;
+            // },
 
 
             (nextinit) => {
@@ -380,17 +379,23 @@ module.exports = class MorphineServer {
 
         ], () => {
 
+            var server ;
             if (this.config.use_https) {
-                https.createServer({
+                server = https.createServer({
                     key: fs.readFileSync(process.cwd()+this.config.use_https.key),
                     cert: fs.readFileSync(process.cwd()+this.config.use_https.cert)
                 }, app).listen(this.config.port,  ()=> {
                     this._justStarted() ;
                 });
             } else {
-                http.listen(this.config.port,  ()=> {
+                server = http.createServer(app).listen(this.config.port,  ()=> {
                     this._justStarted() ;
                 });
+            }
+            if (this.config.sockets.config.useSockets) {
+                io = require('socket.io')(server);
+                morphineserver.io = io ;
+                this.initIoSocket() ;
             }
 
 

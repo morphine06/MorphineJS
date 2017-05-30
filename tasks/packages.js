@@ -28,6 +28,7 @@ module.exports = {
             'compiled/lodash.js|node_modules/lodash/lodash.js',
             'compiled/moment.js|node_modules/moment/min/moment-with-locales.js',
             'compiled/jquery.transit.js|node_modules/jquery.transit/jquery.transit.js',
+            'compiled/jstree.js|node_modules/jstree/dist/jstree.js',
             // 'compiled/d3.js|node_modules/d3/build/d3.js',
             // 'compiled/c3.js|node_modules/c3/c3.js',
             'jst',
@@ -40,6 +41,7 @@ module.exports = {
         ],
         styles: [
             'compiled/font-awesome.css|node_modules/font-awesome/css/font-awesome.css',
+            'compiled/jstree.css|node_modules/jstree/dist/themes/default/style.css',
             // 'compiled/c3.css|node_modules/c3/c3.css',
             'less'
         ],
