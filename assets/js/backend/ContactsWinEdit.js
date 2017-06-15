@@ -38,6 +38,61 @@ export class ContactsWinEdit extends M_.Window {
 	create() {
 		super.create() ;
 
+		this.tree = new M_.Tree({
+			name: 'mytree',
+			container: $("#contactedit_tree"),
+			listeners: [
+				['beforenodemove', (tree, nodeId, nodeDropId) => {
+					console.log("beforenodemove",nodeId, nodeDropId);
+					return true ;
+				} ]
+			],
+			rootNode: {
+				expended: true,
+				hidden: false,
+				label: "RootNode",
+				draggable: false,
+				droppable: true,
+				id: "rootnode",
+				nodes: [
+					{
+						expended: true,
+						hidden: false,
+						label: "Node 1",
+						draggable: true,
+						droppable: true,
+						id: "node1",
+					}, {
+						expended: true,
+						hidden: false,
+						label: "Node 2",
+						draggable: true,
+						droppable: true,
+						id: "node2",
+						nodes: [
+							{
+								expended: true,
+								hidden: false,
+								label: "Node 3",
+								draggable: true,
+								droppable: true,
+								id: "node3",
+							}, {
+								expended: true,
+								hidden: false,
+								label: "Node 4",
+								draggable: true,
+								droppable: true,
+								id: "node4",
+							}
+
+						]
+					}
+				]
+			},
+		}) ;
+
+
 
 		this.form = new M_.Form.Form({
 			// url: '/1.0/contacts',
@@ -105,6 +160,7 @@ export class ContactsWinEdit extends M_.Window {
 					type: M_.Form.Hidden,
 					name: 'co_id',
 					container: $("#contactedit_co_name")
+
 				}, {
 					type: M_.Form.Combobox,
 					name: 'co_type',

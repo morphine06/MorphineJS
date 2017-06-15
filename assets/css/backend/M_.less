@@ -1586,8 +1586,6 @@ textarea {
 }
 
 
-
-
 .M_Tree ul {
 	margin: 0 0 0 25px;
 	padding: 0;
@@ -1634,6 +1632,11 @@ textarea {
 
 	border: 1px solid #999999;
 	border-radius: 5px;
+	position: relative;
+
+	&.selected {
+		background-color: #e1bee7;
+	}
 }
 .M_Tree li.M_TreeParentLi > span {
 	cursor: pointer;
@@ -1643,6 +1646,13 @@ textarea {
 }
 .M_Tree li:last-child::before {
 	height: 25px;
+}
+.M_Tree i {
+	position: absolute;
+	left: -30px;
+	top: 7px;
+	// background-color: red;
+	// padding: 3px;
 }
 
 

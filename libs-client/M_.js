@@ -3060,207 +3060,291 @@ M_.Tabs = class extends M_.Outlet {
  * @property {String} autoLoad
  * @property {String} tpl
  */
-M_.Tree = class extends M_.Outlet {
-	constructor(opts) {
-		var defaults = {
-			autoLoad: false,
-			displayRootNode: true,
-			url: "",
-			cls: 'M_Tree',
-			retractable: true,
-			rootNode: {
-				expended: true,
-				hidden: false,
-				label: "RootNode",
-				id: "rootnode",
-				nodes: []
-			},
+ M_.Tree = class extends M_.Outlet {
+  	constructor(opts) {
+  		var defaults = {
+  			autoLoad: false,
+  			displayRootNode: true,
+  			url: "",
+  			cls: 'M_Tree',
+  			retractable: true,
+ 			movable: true,
+  			rootNode: {
+  				expended: true,
+  				hidden: false,
+  				label: "RootNode",
+  				id: "rootnode",
+  				draggable: false,
+  				droppable: true,
+  				nodes: []
+  			},
 
-		};
+  		};
 
-		opts = (opts)?opts:{} ;
-		opts = $.extend({}, defaults, opts) ;
-		super(opts) ;
+  		opts = (opts)?opts:{} ;
+  		opts = $.extend({}, defaults, opts) ;
+  		super(opts) ;
 
-	}
-	/**
-	 * @return {type}
-	 */
-	create() {
-		this.jEl = $("<div class='"+this.cls+"'></div>") ;
-		this.container.append(this.jEl) ;
-		this._drawNodes() ;
-	}
-	/**
-	 * Draw the tree
-	 */
-	draw() {
-		this._drawNodes() ;
-	}
-	_drawNodes() {
-		var html = "" ;
-		html += "<ul>" ;
-		html += this._createChildNodes(this.rootNode) ;
-		html += "</ul>" ;
-		this.jEl.html(html) ;
+  	}
+  	/**
+  	 * @return {type}
+  	 */
+  	create() {
+  		this.jEl = $("<div class='"+this.cls+"'></div>") ;
+  		this.container.append(this.jEl) ;
+  		this._drawNodes() ;
+  	}
+  	/**
+  	 * Draw the tree
+  	 */
+  	draw() {
+  		this._drawNodes() ;
+  	}
+  	_drawNodes() {
+  		var html = "" ;
+  		html += "<ul>" ;
+  		html += this._createChildNodes(this.rootNode) ;
+  		html += "</ul>" ;
+  		this.jEl.html(html) ;
 
-		$('.M_Tree li:has(ul)').addClass('M_TreeParentLi').find(' > span') ;//.attr('title', 'Collapse this branch')
-		if (this.retractable) {
-			$('.M_Tree li.M_TreeParentLi > span').on('click', (evt)=> {
-				var target = $(evt.target) ;
-				var children = target.closest('li.M_TreeParentLi').find(' > ul > li');
-				if (children.is(":visible")) {
-					children.slideUp();
-					target.find(' > i').addClass('icon-plus-sign').removeClass('icon-minus-sign'); //.attr('title', 'Expand this branch')
-				} else {
-					children.slideDown();
-					target.find(' > i').addClass('icon-minus-sign').removeClass('icon-plus-sign'); //.attr('title', 'Collapse this branch')
-				}
-				evt.stopPropagation();
-			});
-		}
-		$('.M_Tree li > span').on('click', (evt)=> {
-			var nodeId = $(evt.target).closest("li").attr("m_id") ;
-			var node = this.getNode(nodeId) ;
-			if (node.clickable!==false) this.trigger('nodeclick', this, nodeId, node) ;
-		}) ;
-		this._dragMID = null ;
-		$('.M_Tree li > span')
-		.attr('draggable', true)
-		.on('dragover', (evt)=> {
-			evt.preventDefault();
-		})
-		.on('drag', (evt, evt2)=> {
-			this._dragMID = $(evt.target).closest("li").attr("m_id") ;
-		})
-		.on('drop', (evt)=> {
-			evt.preventDefault();
-			var mid = this._dragMID ;
-			var nodeDrop = $(evt.target).closest("li").attr("m_id") ;
-			this.moveNode(mid, nodeDrop) ;
-			this.trigger('nodemove', this, mid, nodeDrop) ;
-		}) ;
+  		this.jEl.find('li:has(ul)').addClass('M_TreeParentLi').find(' > span') ;//.attr('title', 'Collapse this branch')
+  		if (this.retractable) {
+  			this.jEl.find('li.M_TreeParentLi > span > i').on('click', (evt)=> {
+  				var target = $(evt.target) ;
+  				var children = target.closest('li.M_TreeParentLi').find(' > ul > li');
+  				if (children.is(":visible")) {
+  					children.slideUp();
+  					target.find(' > i').addClass('fa-plus-square').removeClass('fa-minus-square'); //.attr('title', 'Expand this branch')
+  				} else {
+  					children.slideDown();
+  					target.find(' > i').addClass('fa-minus-square').removeClass('fa-plus-square'); //.attr('title', 'Collapse this branch')
+  				}
+  				evt.stopPropagation();
+  			});
+  		}
+  		this.jEl.find('li > span').on('click', (evt)=> {
+  			var nodeId = $(evt.target).closest("li").attr("m_id") ;
+ 			this.setSelected(nodeId) ;
 
-	}
-	_createChildNodes(parent) {
-		var html = "" ;
-		if (!parent.id) parent.id = M_.Utils.id() ;
-		html += "<li m_id='"+parent.id+"'>" ;
-		html += "<span>"+parent.label+"</span>" ;
-		if (parent.nodes && parent.nodes.length) {
-			html += "<ul>" ;
-			_.each(parent.nodes, (node, index)=> {
-				html += this._createChildNodes(node) ;
-			}) ;
-			html += "</ul>" ;
-		}
-		html += "</li>" ;
-		return html ;
-	}
-	_iter(parent, nodeId, action) {
-		// if (action=='path') this._nodepath.push(parent.id) ;
-		if (nodeId=='rootnode') {
-			if (action=='get') {
-				this._nodeparent = null ;
-				this._resNodeId = parent ;
-			}
-			if (action=='add') {
-				if (!parent.nodes) parent.nodes = [] ;
-				parent.nodes.push(this._nodeToAdd) ;
-			}
-			return ;
-		}
-		if (parent.nodes && parent.nodes.length) {
-			_.each(parent.nodes, (node, index)=> {
-				if (!node) return ;
-				if (node.id==nodeId) {
-					if (action=='remove') parent.nodes.splice(index, 1) ;
-					if (action=='get') {
-						this._nodeparent = parent ;
-						this._resNodeId = node ;
-					}
-					if (action=='add') {
-						if (!node.nodes) node.nodes = [] ;
-						node.nodes.push(this._nodeToAdd) ;
-					}
-				}
-				this._iter(node, nodeId, action) ;
-			}) ;
-		}
-		// return '' ;
-	}
-	/**
-	 * @param {NodeObject} node
-	 * @param {String} parentId
-	 */
-	addNode(node, parentId) {
-		this._nodeToAdd = node ;
-		this._iter(this.rootNode, parentId, 'add') ;
-		this._drawNodes() ;
-	}
-	/**
-	 * @param  {String}	nodeId
-	 * @param  {String}	parentId
-	 */
-	moveNode(nodeId, parentId) {
-		// log("nodeId, parentId",nodeId, parentId)
-		var node = this.getNode(nodeId) ;
-		this.removeNode(nodeId) ;
-		this.addNode(node, parentId) ;
-		this._drawNodes() ;
-	}
-	/**
-	 * @param  {type}
-	 * @return {Array}
-	 */
-	getNodePath(nodeId) {
-		var nodepath = [nodeId] ;
-		// this._iter(this.rootNode, nodeId, 'path') ;
-		var nodeIdStart = nodeId ;
-		for(var i=0 ; i<100 ; i++) {
-			var parentId = this.getNodeParent(nodeIdStart).id ;
-			nodepath.unshift(parentId) ;
-			nodeIdStart = parentId ;
-			if (parentId=='rootnode') break ;
-		}
-		return nodepath ;
-	}
-	getNodeParent(nodeId) {
-		this._nodeparent = null ;
-		this._iter(this.rootNode, nodeId, 'get') ;
-		// return M_.Utils.clone(this._nodeparent) ;
-		return (this._nodeparent) ;
-	}
-	isNodeChildOf(nodeId, childOfNodeId) {
-		return this.getNodePath(nodeId) ;
-	}
-	/**
-	 * @param  {String}	nodeId
-	 */
-	removeNode(nodeId) {
-		// this.jEl.find("li[m_id='"++"']").remove() ;
-		this._iter(this.rootNode, nodeId, 'remove') ;
-		this._drawNodes() ;
-	}
-	/**
-	 * @param  {String}	nodeId
-	 * @return {NodeObject}
-	 */
-	getNode(nodeId) {
-		this._resNodeId = null ;
-		this._iter(this.rootNode, nodeId, 'get') ;
-		// return M_.Utils.clone(this._resNodeId) ;
-		return (this._resNodeId) ;
-	}
-	/**
-	 * @param {NodeObject} rootNode
-	 */
-	setRootNode(rootNode) {
-		this.rootNode = rootNode ;
-		this._drawNodes() ;
-	}
+  			var node = this.getNode(nodeId) ;
+  			if (node.clickable!==false) this.trigger('nodeclick', this, nodeId, node) ;
 
-} ;
+  		}) ;
+  		this._dragMID = null ;
+ 		if (this.movable) {
+ 			this.jEl.find('li.draggable > span')
+ 	 		.attr('draggable', true)
+ 	 		.on('drag', (evt, evt2)=> {
+ 	 			// console.log("drag",evt);
+ 	 			this._dragMID = $(evt.target).closest("li").attr("m_id") ;
+ 	 		}) ;
+ 	 		this.jEl.find('li.droppable > span')
+ 	 		.on('dragover', (evt)=> {
+ 	 			// console.log("dragover",evt);
+ 	 			var nodeDrop = $(evt.target).closest("li").attr("m_id") ;
+ 	 			if (nodeDrop!=this._dragMID) evt.preventDefault();
+ 	 		})
+ 	 		.on('drop', (evt)=> {
+ 	 			// console.log("drop",evt);
+ 	 			evt.preventDefault();
+ 	 			var mid = this._dragMID ;
+ 	 			var nodeDrop = $(evt.target).closest("li").attr("m_id") ;
+ 	 			console.log("this.isNodeParentOf(mid, nodeDrop)",this.isNodeParentOf(mid, nodeDrop));
+ 	 			if (mid!=nodeDrop && !this.isNodeParentOf(mid, nodeDrop)) {
+ 	 				let ok = this.trigger('beforenodemove', this, mid, nodeDrop) ;
+ 	 				if (ok===false) return ;
+ 	 				this.moveNode(mid, nodeDrop) ;
+ 	 			}
+ 	 		}) ;
+ 		}
+
+  	}
+  	_createChildNodes(parent) {
+  		var html = "" ;
+  		if (!parent.id) parent.id = M_.Utils.id() ;
+  		let myclass = '' ;
+  		if (parent.draggable) myclass += ' draggable' ;
+  		if (parent.droppable) myclass += ' droppable' ;
+  		html += "<li m_id='"+parent.id+"' class='"+myclass+"'>" ;
+  		let fa = '' ;
+  		if (parent.nodes && parent.nodes.length) fa = 'fa fa-minus-square' ;
+  		html += "<span><i class='"+fa+"'></i>"+parent.label+"</span>" ;
+  		if (parent.nodes && parent.nodes.length) {
+  			html += "<ul>" ;
+  			_.each(parent.nodes, (node, index)=> {
+  				html += this._createChildNodes(node) ;
+  			}) ;
+  			html += "</ul>" ;
+  		}
+  		html += "</li>" ;
+  		return html ;
+  	}
+  	_iter(parent, nodeId, action) {
+  		// if (action=='path') this._nodepath.push(parent.id) ;
+  		if (nodeId=='rootnode') {
+  			if (action=='get') {
+  				this._nodeparent = null ;
+  				this._resNodeId = parent ;
+  			}
+  			if (action=='add') {
+  				if (!parent.nodes) parent.nodes = [] ;
+  				parent.nodes.push(this._nodeToAdd) ;
+  			}
+  			return ;
+  		}
+  		if (parent.nodes && parent.nodes.length) {
+  			_.each(parent.nodes, (node, index)=> {
+  				if (!node) return ;
+  				if (node.id==nodeId) {
+  					if (action=='remove') parent.nodes.splice(index, 1) ;
+  					if (action=='get') {
+  						this._nodeparent = parent ;
+  						this._resNodeId = node ;
+  					}
+  					if (action=='add') {
+  						if (!node.nodes) node.nodes = [] ;
+  						node.nodes.push(this._nodeToAdd) ;
+  					}
+  				}
+  				this._iter(node, nodeId, action) ;
+  			}) ;
+  		}
+  		// return '' ;
+  	}
+  	/**
+  	 * @param {NodeObject} node
+  	 * @param {String} parentId
+  	 */
+  	addNode(node, parentId, silently) {
+  		this._nodeToAdd = node ;
+  		this._iter(this.rootNode, parentId, 'add') ;
+  		this._drawNodes() ;
+ 		if (!silently) this.trigger('nodeadd', this, node, parentId) ;
+  	}
+  	/**
+  	 * @param  {String}	nodeId
+  	 * @param  {String}	parentId
+  	 */
+  	moveNode(nodeId, parentId, silently) {
+  		// log("nodeId, parentId",nodeId, parentId)
+  		var node = this.getNode(nodeId) ;
+  		this.removeNode(nodeId, true) ;
+  		this.addNode(node, parentId, true) ;
+  		this._drawNodes() ;
+ 		if (!silently) this.trigger('nodemove', this, nodeId, parentId) ;
+  	}
+  	/**
+  	 * @param  {type}
+  	 * @return {Array}
+  	 */
+  	getNodePath(nodeId, names) {
+  		// console.log("getNodePath",nodeId);
+  		var nodepath = [] ;
+ 		let node = this.getNode(nodeId) ;
+ 		if (!node) return nodepath ;
+ 		if (names) nodepath.push(node.label) ;
+ 		else nodepath.push(node.id) ;
+  		// this._iter(this.rootNode, nodeId, 'path') ;
+  		var nodeIdStart = nodeId ;
+  		if (nodeId=='rootnode') return nodepath ;
+  		for(var i=0 ; i<100 ; i++) {
+ 			var parentNode = this.getNodeParent(nodeIdStart) ;
+ 			if (names) {
+ 	 			nodepath.unshift(parentNode.label) ;
+ 			} else {
+ 	 			nodepath.unshift(parentNode.id) ;
+ 			}
+ 			nodeIdStart = parentNode.id ;
+  			if (parentNode.id=='rootnode') break ;
+  		}
+  		return nodepath ;
+  	}
+  	getNodeParent(nodeId) {
+  		this._nodeparent = null ;
+  		this._iter(this.rootNode, nodeId, 'get') ;
+  		// return M_.Utils.clone(this._nodeparent) ;
+  		return (this._nodeparent) ;
+  	}
+  	isNodeChildOf(nodeId, childOfNodeId) {
+  		let path1 = this.getNodePath(nodeId) ;
+  		let path2 = this.getNodePath(childOfNodeId) ;
+  	}
+  	isNodeParentOf(nodeId, childOfNodeId) {
+  		let path1 = this.getNodePath(nodeId) ;
+  		let path2 = this.getNodePath(childOfNodeId) ;
+  	// 	console.log("path1,path2",path1,path2);
+  		let dif = [] ;
+  		let ok = false ;
+  		_.each(path2, (p2, i2) => {
+  			if (!path1[i2]) {
+  				ok = true ;
+  				return false ;
+  			}
+  			if (p2==path1[i2]) return ;
+  			if (p2!=path1[i2]) return false ;
+  		}) ;
+  		return ok ;
+  	}
+  	/**
+  	 * @param  {String}	nodeId
+  	 */
+  	removeNode(nodeId, silently) {
+  		// this.jEl.find("li[m_id='"++"']").remove() ;
+  		this._iter(this.rootNode, nodeId, 'remove') ;
+  		this._drawNodes() ;
+ 		if (!silently) this.trigger('noderemove', this, nodeId) ;
+  	}
+  	/**
+  	 * @param  {String}	nodeId
+  	 * @return {NodeObject}
+  	 */
+  	getNode(nodeId) {
+  		this._resNodeId = null ;
+  		this._iter(this.rootNode, nodeId, 'get') ;
+  		// return M_.Utils.clone(this._resNodeId) ;
+  		return (this._resNodeId) ;
+  	}
+  	/**
+  	 * @param {NodeObject} rootNode
+  	 */
+  	setRootNode(rootNode) {
+  		this.rootNode = rootNode ;
+  		this._drawNodes() ;
+  	}
+ 	getSelected() {
+ 		let sel = 'rootnode' ;
+ 		if (this.jEl.find('span.selected').closest('li').length) sel = this.jEl.find('span.selected').closest('li').attr('m_id') ;
+ 		return sel ;
+ 	}
+ 	setSelected(nodeId) {
+ 		// console.log("nodeId",nodeId);
+ 		this.jEl.find('span.selected').removeClass('selected') ;
+ 		this.jEl.find('li[m_id="'+nodeId+'"] > span').addClass('selected') ;
+ 	}
+ 	_listenDocClick(evt) {
+ 		// console.log("_listenDocClick", this._currentRenameId, $(evt.target).closest('li'));
+ 		if ($(evt.target).closest('li').attr('m_id')==this._currentRenameId) return ;
+ 		this.jEl.find('li[m_id="'+this._currentRenameId+'"] span').attr('contenteditable', false) ;
+ 		$(document).off('click', $.proxy(this._listenDocClick, this));
+ 		let label = this.jEl.find('li[m_id="'+this._currentRenameId+'"] span').text() ;
+ 		this.trigger('noderename', this, this._currentRenameId, label) ;
+ 	}
+ 	renameNode(nodeId) {
+ 		this._currentRenameId = nodeId ;
+ 		let el = this.jEl.find('li[m_id="'+nodeId+'"] span') ;
+ 		el.attr('contenteditable', true) ;
+ 		var range = document.createRange();
+ 		range.selectNodeContents(el.get(0));
+ 		var txtsel = window.getSelection();
+ 		txtsel.removeAllRanges();
+ 		txtsel.addRange(range);
+ 		window.setTimeout(() => {
+ 			$(document).on('click', $.proxy(this._listenDocClick, this));
+ 		}, 200) ;
+
+ 	}
+
+  } ;
 
 /**
  * A graphical list to implement
