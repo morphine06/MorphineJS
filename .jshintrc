@@ -6,7 +6,7 @@
 		"jQuery": false,
 		"_": false,
 		"JST": false,
-		"GLOBAL": false,
+		"global": false,
 		"Sockets": false,
 		"morphineserver": false,
 		"$JssorThumbnailNavigator$": false,

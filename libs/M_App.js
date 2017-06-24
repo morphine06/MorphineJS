@@ -65,18 +65,18 @@ module.exports = class MorphineServer {
     }
 
     initGlobals() {
-        GLOBAL.morphineserver = this ;
+        global.morphineserver = this ;
         morphineserver.express = express ;
         morphineserver.app = app ;
 
         _.each(this.config.globals, (glob, globkey)=> {
-            if (glob=='lodash') GLOBAL[globkey] = _ ;
-            else if (glob=='async') GLOBAL[globkey] = async ;
-            else if (glob=='moment') GLOBAL[globkey] = moment ;
-            else GLOBAL[globkey] = require(glob) ;
+            if (glob=='lodash') global[globkey] = _ ;
+            else if (glob=='async') global[globkey] = async ;
+            else if (glob=='moment') global[globkey] = moment ;
+            else global[globkey] = require(glob) ;
         }) ;
 
-        GLOBAL.async = async ;
+        global.async = async ;
 
         morphineserver.rootDir = process.cwd() ;
         // console.log("morphineserver.rootDir",morphineserver.rootDir);
@@ -90,7 +90,7 @@ module.exports = class MorphineServer {
         _.each(files, (file)=> {
             file = file.substring(0,file.length-3) ;
             var c = require(process.cwd()+'/services/'+file);
-            GLOBAL[file] = c ;
+            global[file] = c ;
         }) ;
     }
 

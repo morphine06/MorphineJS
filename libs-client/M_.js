@@ -4080,7 +4080,8 @@ M_.CRUD = {
 			}
 			// console.log("url,method",url,method,this.model,okArgs);
 
-			if (this.trigger("beforeSave", this, {url: url, method:method, args:okArgs})===false) return false ;
+			var obj = {url: url+moreUrl, method:method, args:okArgs} ;
+			if (this.trigger("beforeSave", this, obj)===false) return false ;
 
 			// return ;
 			// var formData = new FormData() ;
@@ -4088,7 +4089,7 @@ M_.CRUD = {
 			// 	formData.append(key, okArgs[key]) ;
 			// }
 
-			M_.Utils.ajaxJson(url+moreUrl, okArgs, method, (data)=> {
+			M_.Utils.ajaxJson(obj.url, obj.args, obj.method, (data)=> {
 				// log("dataaaaa",data)
 				if (data.error) {
 					let errTxt = "" ;
@@ -6633,7 +6634,7 @@ M_.Form.Multi = class extends M_.Form.Input {
 	 * @return {type}
 	 */
 	drawContainer() {
-		log("this.value",this.value,this.name);
+		// log("this.value",this.value,this.name);
 		this.jEl.empty() ;
 		_.each(this.value, (val)=> {
 			let valtxt = '', valid = '' ;

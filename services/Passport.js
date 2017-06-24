@@ -19,7 +19,7 @@ passport.deserializeUser(function (co_id, done) {
     Contacts.findOne(co_id).exec((errsql, row_us) => {
         if (errsql) return done(null, false);
         if (row_us) {
-            Services.calculateOptionsRights(row_us, ()=> {
+            Policies.calculateOptionsRights(row_us, ()=> {
                 return done(null, row_us);
             }) ;
         } else return done(null, false);

@@ -3,6 +3,27 @@ if you return false to a policy, you must do something with "res"... res.redirec
 */
 
 module.exports = {
+    calculateOptionsRights: (user, cb)=> {
+        OptionsServices.get(0, 'allrights_'+user.co_type, function (defaultRights) {
+            // console.log("defaultRights",defaultRights);
+            var rights = {} ;
+            if (!user.co_rights) {
+                user.co_rights = {} ;
+                _.each(Shared.getRights(), function (right) {
+                    user.co_rights[right.key] = 2 ;
+                }) ;
+            }
+            _.each(Shared.getRights(), function (right) {
+                var ok = false ;
+                if (defaultRights && ((defaultRights[right.key] && user.co_rights[right.key]))) ok = true ;
+                if (user.co_rights[right.key]===true) ok = true ;
+                rights[right.key] = ok ;
+            }) ;
+            user.rights = rights ;
+            cb(rights) ;
+        }) ;
+
+    },
     accessBackend: function(req, res, next) {
         // console.log("test1bis",req.user);
         if (req.headers['x-auth-apikey']) {

@@ -614,7 +614,7 @@ var M_Db = new (class {
             if (!def.tableName) def.tableName = file.toLowerCase() ;
             def.modelname = file ;
             def.debug = this.config.debug ;
-            GLOBAL[file] = this.models[file] = new M_Table(def, this.connection) ;
+            global[file] = this.models[file] = new M_Table(def, this.connection) ;
         }) ;
         cb() ;
     }
