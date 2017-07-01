@@ -9,7 +9,8 @@ module.exports = {
             user     : 'morphineserver',
             password : 'morphineserver#0260',
             database : 'morphineserver',
-            charset  : 'utf8_general_ci'
+            charset  : 'utf8_general_ci',
+            dateStrings: true
         }
     },
     redis: {

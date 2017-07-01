@@ -26,6 +26,7 @@ var io ;
 var colors = require('colors');
 var skipper  = require('skipper');
 
+var responseTime = require('response-time') ;
 
 
 module.exports = class MorphineServer {
@@ -282,6 +283,8 @@ module.exports = class MorphineServer {
             }) ;
 
         }
+
+        app.use(responseTime()) ;
 
         // app.use(favicon(process.cwd() + '/assets/favicon.ico'));
 

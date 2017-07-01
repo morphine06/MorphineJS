@@ -106,7 +106,7 @@ class M_TableExec {
         }) ;
         return f ;
     }
-    populate(fieldJoin) {
+    populate(fieldJoin, fieldJoinName) {
         let tabFieldsJoins = fieldJoin.split('.') ;
         let previousModelName = this.modelname ;
         let previousModelAlias = 't1' ;
@@ -118,7 +118,7 @@ class M_TableExec {
             if (modelname) {
                 if (!this.tabAlreadyIncluded[modelname+'__'+tabOrigin.join('_')]) {
                     modelalias = 't'+(this.joinModels.length+1) ;
-                    this.joinModels.push({modelname:modelname, modelalias:modelalias, fieldJoin:join, modelnameto:previousModelName, modelaliasto:previousModelAlias, origin:tabOrigin.join('.')}) ;
+                    this.joinModels.push({modelname:modelname, modelalias:modelalias, fieldJoin:join, modelnameto:previousModelName, modelaliasto:previousModelAlias, origin:tabOrigin.join('.'), fieldJoinName:fieldJoinName}) ;
                     this.tabAlreadyIncluded[modelname+'__'+tabOrigin.join('_')] = modelalias ;
                 } else {
                     modelalias = this.tabAlreadyIncluded[modelname+'__'+tabOrigin.join('_')] ;
@@ -310,19 +310,23 @@ class M_TableExec {
                             delete row[f] ;
                         }
                     }) ;
-                    if (!obj[M_Db.models[model.modelname].primary]) {
-                        // console.log("M_Db.models[model.modelname].primary",M_Db.models[model.modelname].primary, obj);
-                        obj = null ;
+                    if (model.fieldJoinName) {
+                        row[model.fieldJoinName] = obj ;
+                    } else {
+                        if (!obj[M_Db.models[model.modelname].primary]) {
+                            // console.log("M_Db.models[model.modelname].primary",M_Db.models[model.modelname].primary, obj);
+                            obj = null ;
+                        }
+                        let tabFieldsJoins = model.origin.split('.') ;
+                        let previousObj = row ;
+                        let lastO = null ;
+                        _.each(tabFieldsJoins, (o, index)=> {
+                            lastO = o ;
+                            if (index>=tabFieldsJoins.length-1) return ;
+                            previousObj = previousObj[o] ;
+                        }) ;
+                        if (previousObj) previousObj[lastO] = obj ;
                     }
-                    let tabFieldsJoins = model.origin.split('.') ;
-                    let previousObj = row ;
-                    let lastO = null ;
-                    _.each(tabFieldsJoins, (o, index)=> {
-                        lastO = o ;
-                        if (index>=tabFieldsJoins.length-1) return ;
-                        previousObj = previousObj[o] ;
-                    }) ;
-                    if (previousObj) previousObj[lastO] = obj ;
                 }
             }) ;
         }) ;
