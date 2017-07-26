@@ -3962,9 +3962,10 @@ M_.CRUD = {
 		//okArgs[this.primaryKey] = id ;
 		$.extend(okArgs, this.args, args) ;
 		if (this.onBeforeLoad) this.onBeforeLoad() ;
-		if (this.trigger("beforeLoad", this, {url: this.url, args:okArgs})===false) return false ;
+		var obj = {url: this.url, args:okArgs} ;
+		if (this.trigger("beforeLoad", this, obj)===false) return false ;
 		//this.lastLoadArgs = okArgs ;
-		var url = this.url ;
+		var url = obj.url ;
 		var method = 'GET' ;
 		if (this.urls) {
 			let aaurl = this._analyseUrl(this.urls.findone) ;
