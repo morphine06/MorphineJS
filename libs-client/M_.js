@@ -3168,7 +3168,7 @@ M_.Tabs = class extends M_.Outlet {
   		html += "<li m_id='"+parent.id+"' class='"+myclass+"'>" ;
   		let fa = '' ;
   		if (parent.nodes && parent.nodes.length) fa = 'fa fa-minus-square' ;
-  		html += "<span><i class='"+fa+"'></i>"+parent.label+"</span>" ;
+  		html += "<span><i class='"+fa+"'></i><div class='txt'>"+parent.label+"</div></span>" ;
   		if (parent.nodes && parent.nodes.length) {
   			html += "<ul>" ;
   			_.each(parent.nodes, (node, index)=> {
@@ -3321,17 +3321,17 @@ M_.Tabs = class extends M_.Outlet {
  		this.jEl.find('span.selected').removeClass('selected') ;
  		this.jEl.find('li[m_id="'+nodeId+'"] > span').addClass('selected') ;
  	}
- 	_listenDocClick(evt) {
+	_listenDocClick(evt) {
  		// console.log("_listenDocClick", this._currentRenameId, $(evt.target).closest('li'));
  		if ($(evt.target).closest('li').attr('m_id')==this._currentRenameId) return ;
- 		this.jEl.find('li[m_id="'+this._currentRenameId+'"] span').attr('contenteditable', false) ;
+ 		this.jEl.find('li[m_id="'+this._currentRenameId+'"] > span > div').attr('contenteditable', false) ;
  		$(document).off('click', $.proxy(this._listenDocClick, this));
- 		let label = this.jEl.find('li[m_id="'+this._currentRenameId+'"] span').text() ;
+ 		let label = this.jEl.find('li[m_id="'+this._currentRenameId+'"] > span > div').text() ;
  		this.trigger('noderename', this, this._currentRenameId, label) ;
  	}
  	renameNode(nodeId) {
  		this._currentRenameId = nodeId ;
- 		let el = this.jEl.find('li[m_id="'+nodeId+'"] span') ;
+ 		let el = this.jEl.find('li[m_id="'+nodeId+'"] > span > div') ;
  		el.attr('contenteditable', true) ;
  		var range = document.createRange();
  		range.selectNodeContents(el.get(0));
