@@ -246,6 +246,11 @@ class M_TableExec {
             if (field.type=='json' && !_.isObject(val)) {
                 try {
                     this.data[key] = JSON.parse(this.data[key]) ;
+                    // console.log("this.data[key]",this.data[key]);
+                } catch(e) {
+                    // console.log("json stringify error",e);
+                }
+                try {
                     this.data[key] = JSON.stringify(this.data[key]) ;
                     // console.log("this.data[key]",this.data[key]);
                 } catch(e) {
