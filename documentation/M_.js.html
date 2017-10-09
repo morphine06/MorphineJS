@@ -1,4 +1,32 @@
-"use strict";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: M_.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: M_.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>"use strict";
 
 moment().localeData("fr");
 moment().utcOffset(0);
@@ -13,7 +41,7 @@ Array.prototype.m_remove = function(val) {
  * M_ is a javascript application framework to build single page web applications, rather graphic than theory.
  * @namespace M_
  * @version 1.0
- * @author David Miglior <david@miglior.fr>
+ * @author David Miglior &lt;david@miglior.fr>
  * @todo Renomer les balises HTML utilisés en "data-" (par convention)
  * @todo Si le dernier argument de M_.App.open est false alors ne pas appeler d'action (permet de faire un bouton cancel)
  * @todo  Donner un nom : Bootstrap commander
@@ -36,9 +64,10 @@ M_.registerModule = (name, module) => {
  * @property {string} name - application name
  * @property {type} routes - Todo
  * @property {string} defaultController - the first controller to call
- * @property {array} tabController - contains instancied controllers
- * @property {jquery} container - jQuery element where main application goes
- * @property {M_.Controller} currentController - the current controller
+ * @property {array} tabController -
+ * @property {type} tabOutlets
+ * @property {type} container
+ * @property {type} currentController
  * @property {type} namespace
  * @property {type} templates
  * @property {type} models
@@ -151,13 +180,13 @@ M_.App = new class {
 	 */
 	resize() {
 		var tabController = this.tabController;
-		for (var i = 0; i < tabController.length; i++) {
+		for (var i = 0; i &lt; tabController.length; i++) {
 			tabController[i].onResize();
 		}
 		return this;
 	}
 	/**
-	 * @param  {function}
+	 * @param  {Function}
 	 * @return {M_.App}
 	 */
 	beforeReady(fn) {
@@ -165,7 +194,7 @@ M_.App = new class {
 		return this;
 	}
 	/**
-	 * @param  {function}
+	 * @param  {Function}
 	 * @return {M_.App}
 	 */
 	ready(fn) {
@@ -192,8 +221,8 @@ M_.App = new class {
 	}
 	/**
 	 * Open a page
-	 * @param  {string} module
-	 * @param  {string} action
+	 * @param  {String} module
+	 * @param  {String} action
 	 * @return {M_.App}
 	 */
 	open(module, action) {
@@ -205,7 +234,7 @@ M_.App = new class {
 		if (module.substring(0, 1) == "/") {
 			url = "#" + module;
 		} else {
-			for (var i = 0; i < arguments.length; i++) {
+			for (var i = 0; i &lt; arguments.length; i++) {
 				if (arguments[i] !== false) args.push(arguments[i]);
 				else this.executeNextAction = false;
 			}
@@ -227,7 +256,7 @@ M_.App = new class {
 	_hashChanged() {
 		var args = this._getHashArgs();
 		var module = this.defaultController;
-		if (args[0] && args[0] !== "") module = args[0];
+		if (args[0] &amp;&amp; args[0] !== "") module = args[0];
 		var justCreated = false;
 		if (this[module] === undefined) {
 			// var Mod = System.get('js6/controllers/'+module+".js")[module] ;
@@ -252,7 +281,7 @@ M_.App = new class {
 	}
 	__hashChanged(justCreated) {
 		var tabController = this.tabController;
-		for (var i = 0; i < tabController.length; i++) {
+		for (var i = 0; i &lt; tabController.length; i++) {
 			tabController[i].onExit();
 		}
 
@@ -260,13 +289,13 @@ M_.App = new class {
 		// log("_hashChanged9")
 		var args = this._getHashArgs();
 		var module = this.defaultController;
-		if (args[0] && args[0] !== "") module = args[0];
+		if (args[0] &amp;&amp; args[0] !== "") module = args[0];
 		var action = "";
-		if (args[1] && args[1] !== "") action = args[1];
+		if (args[1] &amp;&amp; args[1] !== "") action = args[1];
 		// log("module2",module)
 
 		// log("currentController", this.currentController)
-		if (this.currentController && this.lastModule !== module) {
+		if (this.currentController &amp;&amp; this.lastModule !== module) {
 			var currentControllerNameSaved = this.currentController.controllerName;
 			$("#part_" + this.currentController.controllerName)
 				.css("left", 0)
@@ -295,7 +324,7 @@ M_.App = new class {
 				this[module]._onShow(false);
 			} else {
 				// var tabController = this.tabController ;
-				for (i = 0; i < tabController.length; i++) {
+				for (i = 0; i &lt; tabController.length; i++) {
 					if (this.currentController.controllerName == tabController[i].controllerName) continue;
 					// tabController[i].hide() ;
 					$("#part_" + tabController[i].controllerName).css("z-index", 0);
@@ -341,7 +370,7 @@ M_.App = new class {
 	/**
 	 * @param  {JSTemplate}	tpl
 	 * @param  {Object}		tplData
-	 * @return {string}
+	 * @return {String}
 	 */
 	renderMustache(tpl, tplData = {}) {
 		//, tplPartials={}
@@ -391,7 +420,7 @@ M_.Controller = class {
 	 */
 	init() {}
 	/**
-	 * @param  {function}
+	 * @param  {Function}
 	 */
 	resolve(next) {
 		next(true);
@@ -489,7 +518,7 @@ M_.Utils = class {
 	static preloadImages(preload, cb) {
 		// var preload = ["a.gif", "b.gif", "c.gif"];
 		var promises = [];
-		for (var i = 0; i < preload.length; i++) {
+		for (var i = 0; i &lt; preload.length; i++) {
 			(function(url, promise) {
 				var img = new Image();
 				img.onload = function() {
@@ -565,7 +594,7 @@ M_.Utils = class {
 		//        note: real constants, but strings instead. Integers are also supported if someone
 		//        note: chooses to create the constants themselves.
 		//   example 1: get_html_translation_table('HTML_SPECIALCHARS');
-		//   returns 1: {'"': '&quot;', '&': '&amp;', '<': '&lt;', '>': '&gt;'}
+		//   returns 1: {'"': '&amp;quot;', '&amp;': '&amp;amp;', '&lt;': '&amp;lt;', '>': '&amp;gt;'}
 
 		var entities = {},
 			hash_map = {},
@@ -585,119 +614,119 @@ M_.Utils = class {
 		useTable = !isNaN(table) ? constMappingTable[table] : table ? table.toUpperCase() : "HTML_SPECIALCHARS";
 		useQuoteStyle = !isNaN(quote_style) ? constMappingQuoteStyle[quote_style] : quote_style ? quote_style.toUpperCase() : "ENT_COMPAT";
 
-		if (useTable !== "HTML_SPECIALCHARS" && useTable !== "HTML_ENTITIES") {
+		if (useTable !== "HTML_SPECIALCHARS" &amp;&amp; useTable !== "HTML_ENTITIES") {
 			throw new Error("Table: " + useTable + " not supported");
 			// return false;
 		}
 
-		entities["38"] = "&amp;";
+		entities["38"] = "&amp;amp;";
 		if (useTable === "HTML_ENTITIES") {
-			entities["160"] = "&nbsp;";
-			entities["161"] = "&iexcl;";
-			entities["162"] = "&cent;";
-			entities["163"] = "&pound;";
-			entities["164"] = "&curren;";
-			entities["165"] = "&yen;";
-			entities["166"] = "&brvbar;";
-			entities["167"] = "&sect;";
-			entities["168"] = "&uml;";
-			entities["169"] = "&copy;";
-			entities["170"] = "&ordf;";
-			entities["171"] = "&laquo;";
-			entities["172"] = "&not;";
-			entities["173"] = "&shy;";
-			entities["174"] = "&reg;";
-			entities["175"] = "&macr;";
-			entities["176"] = "&deg;";
-			entities["177"] = "&plusmn;";
-			entities["178"] = "&sup2;";
-			entities["179"] = "&sup3;";
-			entities["180"] = "&acute;";
-			entities["181"] = "&micro;";
-			entities["182"] = "&para;";
-			entities["183"] = "&middot;";
-			entities["184"] = "&cedil;";
-			entities["185"] = "&sup1;";
-			entities["186"] = "&ordm;";
-			entities["187"] = "&raquo;";
-			entities["188"] = "&frac14;";
-			entities["189"] = "&frac12;";
-			entities["190"] = "&frac34;";
-			entities["191"] = "&iquest;";
-			entities["192"] = "&Agrave;";
-			entities["193"] = "&Aacute;";
-			entities["194"] = "&Acirc;";
-			entities["195"] = "&Atilde;";
-			entities["196"] = "&Auml;";
-			entities["197"] = "&Aring;";
-			entities["198"] = "&AElig;";
-			entities["199"] = "&Ccedil;";
-			entities["200"] = "&Egrave;";
-			entities["201"] = "&Eacute;";
-			entities["202"] = "&Ecirc;";
-			entities["203"] = "&Euml;";
-			entities["204"] = "&Igrave;";
-			entities["205"] = "&Iacute;";
-			entities["206"] = "&Icirc;";
-			entities["207"] = "&Iuml;";
-			entities["208"] = "&ETH;";
-			entities["209"] = "&Ntilde;";
-			entities["210"] = "&Ograve;";
-			entities["211"] = "&Oacute;";
-			entities["212"] = "&Ocirc;";
-			entities["213"] = "&Otilde;";
-			entities["214"] = "&Ouml;";
-			entities["215"] = "&times;";
-			entities["216"] = "&Oslash;";
-			entities["217"] = "&Ugrave;";
-			entities["218"] = "&Uacute;";
-			entities["219"] = "&Ucirc;";
-			entities["220"] = "&Uuml;";
-			entities["221"] = "&Yacute;";
-			entities["222"] = "&THORN;";
-			entities["223"] = "&szlig;";
-			entities["224"] = "&agrave;";
-			entities["225"] = "&aacute;";
-			entities["226"] = "&acirc;";
-			entities["227"] = "&atilde;";
-			entities["228"] = "&auml;";
-			entities["229"] = "&aring;";
-			entities["230"] = "&aelig;";
-			entities["231"] = "&ccedil;";
-			entities["232"] = "&egrave;";
-			entities["233"] = "&eacute;";
-			entities["234"] = "&ecirc;";
-			entities["235"] = "&euml;";
-			entities["236"] = "&igrave;";
-			entities["237"] = "&iacute;";
-			entities["238"] = "&icirc;";
-			entities["239"] = "&iuml;";
-			entities["240"] = "&eth;";
-			entities["241"] = "&ntilde;";
-			entities["242"] = "&ograve;";
-			entities["243"] = "&oacute;";
-			entities["244"] = "&ocirc;";
-			entities["245"] = "&otilde;";
-			entities["246"] = "&ouml;";
-			entities["247"] = "&divide;";
-			entities["248"] = "&oslash;";
-			entities["249"] = "&ugrave;";
-			entities["250"] = "&uacute;";
-			entities["251"] = "&ucirc;";
-			entities["252"] = "&uuml;";
-			entities["253"] = "&yacute;";
-			entities["254"] = "&thorn;";
-			entities["255"] = "&yuml;";
+			entities["160"] = "&amp;nbsp;";
+			entities["161"] = "&amp;iexcl;";
+			entities["162"] = "&amp;cent;";
+			entities["163"] = "&amp;pound;";
+			entities["164"] = "&amp;curren;";
+			entities["165"] = "&amp;yen;";
+			entities["166"] = "&amp;brvbar;";
+			entities["167"] = "&amp;sect;";
+			entities["168"] = "&amp;uml;";
+			entities["169"] = "&amp;copy;";
+			entities["170"] = "&amp;ordf;";
+			entities["171"] = "&amp;laquo;";
+			entities["172"] = "&amp;not;";
+			entities["173"] = "&amp;shy;";
+			entities["174"] = "&amp;reg;";
+			entities["175"] = "&amp;macr;";
+			entities["176"] = "&amp;deg;";
+			entities["177"] = "&amp;plusmn;";
+			entities["178"] = "&amp;sup2;";
+			entities["179"] = "&amp;sup3;";
+			entities["180"] = "&amp;acute;";
+			entities["181"] = "&amp;micro;";
+			entities["182"] = "&amp;para;";
+			entities["183"] = "&amp;middot;";
+			entities["184"] = "&amp;cedil;";
+			entities["185"] = "&amp;sup1;";
+			entities["186"] = "&amp;ordm;";
+			entities["187"] = "&amp;raquo;";
+			entities["188"] = "&amp;frac14;";
+			entities["189"] = "&amp;frac12;";
+			entities["190"] = "&amp;frac34;";
+			entities["191"] = "&amp;iquest;";
+			entities["192"] = "&amp;Agrave;";
+			entities["193"] = "&amp;Aacute;";
+			entities["194"] = "&amp;Acirc;";
+			entities["195"] = "&amp;Atilde;";
+			entities["196"] = "&amp;Auml;";
+			entities["197"] = "&amp;Aring;";
+			entities["198"] = "&amp;AElig;";
+			entities["199"] = "&amp;Ccedil;";
+			entities["200"] = "&amp;Egrave;";
+			entities["201"] = "&amp;Eacute;";
+			entities["202"] = "&amp;Ecirc;";
+			entities["203"] = "&amp;Euml;";
+			entities["204"] = "&amp;Igrave;";
+			entities["205"] = "&amp;Iacute;";
+			entities["206"] = "&amp;Icirc;";
+			entities["207"] = "&amp;Iuml;";
+			entities["208"] = "&amp;ETH;";
+			entities["209"] = "&amp;Ntilde;";
+			entities["210"] = "&amp;Ograve;";
+			entities["211"] = "&amp;Oacute;";
+			entities["212"] = "&amp;Ocirc;";
+			entities["213"] = "&amp;Otilde;";
+			entities["214"] = "&amp;Ouml;";
+			entities["215"] = "&amp;times;";
+			entities["216"] = "&amp;Oslash;";
+			entities["217"] = "&amp;Ugrave;";
+			entities["218"] = "&amp;Uacute;";
+			entities["219"] = "&amp;Ucirc;";
+			entities["220"] = "&amp;Uuml;";
+			entities["221"] = "&amp;Yacute;";
+			entities["222"] = "&amp;THORN;";
+			entities["223"] = "&amp;szlig;";
+			entities["224"] = "&amp;agrave;";
+			entities["225"] = "&amp;aacute;";
+			entities["226"] = "&amp;acirc;";
+			entities["227"] = "&amp;atilde;";
+			entities["228"] = "&amp;auml;";
+			entities["229"] = "&amp;aring;";
+			entities["230"] = "&amp;aelig;";
+			entities["231"] = "&amp;ccedil;";
+			entities["232"] = "&amp;egrave;";
+			entities["233"] = "&amp;eacute;";
+			entities["234"] = "&amp;ecirc;";
+			entities["235"] = "&amp;euml;";
+			entities["236"] = "&amp;igrave;";
+			entities["237"] = "&amp;iacute;";
+			entities["238"] = "&amp;icirc;";
+			entities["239"] = "&amp;iuml;";
+			entities["240"] = "&amp;eth;";
+			entities["241"] = "&amp;ntilde;";
+			entities["242"] = "&amp;ograve;";
+			entities["243"] = "&amp;oacute;";
+			entities["244"] = "&amp;ocirc;";
+			entities["245"] = "&amp;otilde;";
+			entities["246"] = "&amp;ouml;";
+			entities["247"] = "&amp;divide;";
+			entities["248"] = "&amp;oslash;";
+			entities["249"] = "&amp;ugrave;";
+			entities["250"] = "&amp;uacute;";
+			entities["251"] = "&amp;ucirc;";
+			entities["252"] = "&amp;uuml;";
+			entities["253"] = "&amp;yacute;";
+			entities["254"] = "&amp;thorn;";
+			entities["255"] = "&amp;yuml;";
 		}
 
 		if (useQuoteStyle !== "ENT_NOQUOTES") {
-			entities["34"] = "&quot;";
+			entities["34"] = "&amp;quot;";
 		}
 		if (useQuoteStyle === "ENT_QUOTES") {
-			entities["39"] = "&#39;";
+			entities["39"] = "&amp;#39;";
 		}
-		entities["60"] = "&lt;";
-		entities["62"] = "&gt;";
+		entities["60"] = "&amp;lt;";
+		entities["62"] = "&amp;gt;";
 
 		// ascii decimals to real symbols
 		for (decimal in entities) {
@@ -723,10 +752,10 @@ M_.Utils = class {
 		// bugfixed by: Brett Zamir (http://brett-zamir.me)
 		// bugfixed by: Fox
 		//  depends on: get_html_translation_table
-		//   example 1: html_entity_decode('Kevin &amp; van Zonneveld');
-		//   returns 1: 'Kevin & van Zonneveld'
-		//   example 2: html_entity_decode('&amp;lt;');
-		//   returns 2: '&lt;'
+		//   example 1: html_entity_decode('Kevin &amp;amp; van Zonneveld');
+		//   returns 1: 'Kevin &amp; van Zonneveld'
+		//   example 2: html_entity_decode('&amp;amp;lt;');
+		//   returns 2: '&amp;lt;'
 
 		var hash_map = {},
 			symbol = "",
@@ -738,16 +767,16 @@ M_.Utils = class {
 			return false;
 		}
 
-		// fix &amp; problem
+		// fix &amp;amp; problem
 		// http://phpjs.org/functions/get_html_translation_table:416#comment_97660
-		delete hash_map["&"];
-		hash_map["&"] = "&amp;";
+		delete hash_map["&amp;"];
+		hash_map["&amp;"] = "&amp;amp;";
 
 		for (symbol in hash_map) {
 			entity = hash_map[symbol];
 			tmp_str = tmp_str.split(entity).join(symbol);
 		}
-		tmp_str = tmp_str.split("&#039;").join("'");
+		tmp_str = tmp_str.split("&amp;#039;").join("'");
 
 		return tmp_str;
 	}
@@ -775,14 +804,14 @@ M_.Utils = class {
 	// }
 	static downloadFile(url, args = {}, method = "POST") {
 		$("#M_FileDownload").remove();
-		$(document.body).append("<iframe id='M_FileDownload' src='about:blank' style='display:none;'></iframe>");
+		$(document.body).append("&lt;iframe id='M_FileDownload' src='about:blank' style='display:none;'>&lt;/iframe>");
 		var html = "";
 		_.each(args, (val, key) => {
-			html += `<input type="hidden" name="${key}" value="${val}">`;
+			html += `&lt;input type="hidden" name="${key}" value="${val}">`;
 		});
 		var doc = this.getIframeDocument($("#M_FileDownload"));
 		// console.log("html", html);
-		doc.write("<html><head></head><body><form method='" + method + "' action='" + url + "'>" + html + "</form></body></html>");
+		doc.write("&lt;html>&lt;head>&lt;/head>&lt;body>&lt;form method='" + method + "' action='" + url + "'>" + html + "&lt;/form>&lt;/body>&lt;/html>");
 		var started = false;
 		$(doc)
 			.find("form")
@@ -790,7 +819,7 @@ M_.Utils = class {
 	}
 	static downloadFile2(url, args = {}, method = "POST") {
 		$("#M_FileDownload").remove();
-		$(document.body).append("<iframe id='M_FileDownload' src='" + url + "' style='display:block; width:100%; height:200px;'></iframe>");
+		$(document.body).append("&lt;iframe id='M_FileDownload' src='" + url + "' style='display:block; width:100%; height:200px;'>&lt;/iframe>");
 		window.setTimeout(() => {
 			var doc = this.getIframeDocument($("#M_FileDownload"));
 			var toto = doc.toString();
@@ -809,8 +838,8 @@ M_.Utils = class {
 	static limitText(str, n, useWordBoundary) {
 		var toLong = str.length > n,
 			s_ = toLong ? str.substr(0, n - 1) : this;
-		s_ = useWordBoundary && toLong ? s_.substr(0, s_.lastIndexOf(" ")) : s_;
-		return toLong ? s_ + "&hellip;" : s_;
+		s_ = useWordBoundary &amp;&amp; toLong ? s_.substr(0, s_.lastIndexOf(" ")) : s_;
+		return toLong ? s_ + "&amp;hellip;" : s_;
 	}
 	/**
 	 * toggleAppFullScreen description
@@ -879,8 +908,8 @@ M_.Utils = class {
 
 	/**
 	 * Return the extension of a path.
-	 * @param  {string} path The path
-	 * @return {string}      The extension or ''
+	 * @param  {String} path The path
+	 * @return {String}      The extension or ''
 	 * @example
 	 * var ext = M_.Utils.getExtensionFromPath("foo/bar/my_file.html") ;
 	 * // ext = "html"
@@ -891,8 +920,8 @@ M_.Utils = class {
 
 	/**
 	 * Return the base name of a path.
-	 * @param  {string} path The path
-	 * @return {string}      The name of the file
+	 * @param  {String} path The path
+	 * @return {String}      The name of the file
 	 * @example
 	 * var filename = getBaseNameFromPath("foo/bar/myfile.html") ;
 	 * // filename = "myfile.html"
@@ -903,8 +932,8 @@ M_.Utils = class {
 
 	/**
 	 * Return the directory of a path.
-	 * @param  {string} path The path
-	 * @return {string}      The name of the file
+	 * @param  {String} path The path
+	 * @return {String}      The name of the file
 	 * @example
 	 * var filename = getDirFromPath("foo/bar/myfile.html") ;
 	 * // filename = "foo/bar"
@@ -943,7 +972,7 @@ M_.Utils = class {
 	 * @return {number}   Number of hexadecimal
 	 */
 	static rgbToHex(r, g, b) {
-		return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+		return "#" + ((1 &lt;&lt; 24) + (r &lt;&lt; 16) + (g &lt;&lt; 8) + b).toString(16).slice(1);
 	}
 	/**
 	 * Convert RGB from css (like #FFFFFF) to Hexa
@@ -964,7 +993,7 @@ M_.Utils = class {
 	}
 	/**
 	 * Return a uniq ID
-	 * @return {string} A incremental number start from 1
+	 * @return {String} A incremental number start from 1
 	 */
 	static id() {
 		if (!this.cmpUniqId) this.cmpUniqId = 0;
@@ -983,14 +1012,14 @@ M_.Utils = class {
 			if (!tab) return;
 			var nb = 0;
 			var tabToRemove = [];
-			for (var i = 0; i < tab.length; i++) {
-				if (tab[i].selector && $(tab[i].selector).length === 0 && tab[i].selector.substring(0, 7) == "#_M_el_") {
+			for (var i = 0; i &lt; tab.length; i++) {
+				if (tab[i].selector &amp;&amp; $(tab[i].selector).length === 0 &amp;&amp; tab[i].selector.substring(0, 7) == "#_M_el_") {
 					nb++;
 					tabToRemove.push(tab[i].selector);
 				}
 			}
 			// log("tabToRemove",tabToRemove)
-			for (i = 0; i < tabToRemove.length; i++) {
+			for (i = 0; i &lt; tabToRemove.length; i++) {
 				$(document).off("click", tabToRemove[i]);
 			}
 			// log("nb", nb) ;
@@ -1033,12 +1062,12 @@ M_.Utils = class {
 	}
 	/**
 	 * Create a UUID with a random algorithme
-	 * @return {string} The number is like 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+	 * @return {String} The number is like 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
 	 */
 	static createUUID() {
 		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
 			var r = (Math.random() * 16) | 0,
-				v = c == "x" ? r : (r & 0x3) | 0x8;
+				v = c == "x" ? r : (r &amp; 0x3) | 0x8;
 			return v.toString(16);
 		});
 	}
@@ -1047,7 +1076,7 @@ M_.Utils = class {
 	 * Clone an object... simple level !!!!
 	 * @param  {object} nb
 	 * @param  {object} singular
-	 * @param  {object} [plural=null] - le pluriel d'une chaine, sinon rajoute un "s"
+	 * @param  {object} plural
 	 * @return {object} singular
 	 * @example
 var plural1 = M_.Utils.plural(3, "guitare")
@@ -1058,7 +1087,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 // plural3 = une des 3 guitares
 	 */
 	static plural(nb, singular, plural = null, withoutnumber = false) {
-		if (nb <= 1 && nb >= -1) {
+		if (nb &lt;= 1 &amp;&amp; nb >= -1) {
 			if (singular.indexOf("{{nb}}") >= 0) {
 				return singular.replace(/\{\{nb\}\}/, nb);
 			}
@@ -1070,13 +1099,13 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 			return plural.replace(/\{\{nb\}\}/, nb);
 		}
 		if (withoutnumber) return plural;
-		return nb + "&nbsp;" + plural;
+		return nb + "&amp;nbsp;" + plural;
 	}
 	/**
 	 * Create a delay
 	 * @param  {function} callback - une fonction à appeler
 	 * @param  {number} time - un temp en millisecondes
-	 * @param  {string} [arbitralName="arbitralName"] - donner de préférence un nom unique
+	 * @param  {String} [arbitralName="arbitralName"] - donner de préférence un nom unique
 	 */
 	static delay(callback, time, arbitralName = "arbitralName") {
 		if (!this.tabDelay) this.tabDelay = {};
@@ -1098,7 +1127,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 
 		if ($.type(obj) === "date") return false;
 
-		for (i = 0, len = emptyValues.length; i < len; i++) {
+		for (i = 0, len = emptyValues.length; i &lt; len; i++) {
 			if (obj === emptyValues[i] || obj == emptyValues[i]) {
 				return true;
 			}
@@ -1116,8 +1145,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Format a phone number... for french format !!! to update...
-	 * @param  {string} num
-	 * @return {string} the formated number
+	 * @param  {String} num
+	 * @return {String} the formated number
 	 */
 	static formatPhone(num) {
 		var ret = "";
@@ -1128,7 +1157,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 			toAdd = num.substr(0, 3) + " ";
 			num = num.substr(3);
 		}
-		for (let kk = 0; kk < num.length; kk++) {
+		for (let kk = 0; kk &lt; num.length; kk++) {
 			if (kk % 2 === 0) ret = " " + ret;
 			ret = num.substr(num.length - kk - 1, 1) + ret;
 		}
@@ -1142,26 +1171,26 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Strip html tags
-	 * @param  {string} num
-	 * @param  {string} allowed
-	 * @return {string} the new string
+	 * @param  {String} num
+	 * @param  {String} allowed
+	 * @return {String} the new string
 	 */
 	static strip_tags(input, allowed) {
 		//From: http://phpjs.org/functions
 		// console.log("input",input);
 		input += "";
 		if (!input) return "";
-		allowed = (((allowed || "") + "").toLowerCase().match(/<[a-z][a-z0-9]*>/g) || []).join("");
-		var tags = /<\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
-			commentsAndPhpTags = /<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi;
+		allowed = (((allowed || "") + "").toLowerCase().match(/&lt;[a-z][a-z0-9]*>/g) || []).join("");
+		var tags = /&lt;\/?([a-z][a-z0-9]*)\b[^>]*>/gi,
+			commentsAndPhpTags = /&lt;!--[\s\S]*?-->|&lt;\?(?:php)?[\s\S]*?\?>/gi;
 		return input.replace(commentsAndPhpTags, "").replace(tags, function($0, $1) {
-			return allowed.indexOf("<" + $1.toLowerCase() + ">") > -1 ? $0 : "";
+			return allowed.indexOf("&lt;" + $1.toLowerCase() + ">") > -1 ? $0 : "";
 		});
 	}
 	/**
 	 * First char to upper case
-	 * @param  {string} str
-	 * @return {string} the new string
+	 * @param  {String} str
+	 * @return {String} the new string
 	 */
 	static ucfirst(str) {
 		//  discuss at: http://phpjs.org/functions/ucfirst/
@@ -1179,27 +1208,27 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 
 	/**
 	 * First char to upper case
-	 * @param  {string} str - the base string
+	 * @param  {String} str - the base string
 	 * @param  {number} len - add 'padStr' X times
-	 * @param  {string} [padStr='0'] - the string to add
+	 * @param  {String} [padStr='0'] - the string to add
 	 * @param  {number} [direction=-1] - -1=left, 1=right
-	 * @return {string} the new string
+	 * @return {String} the new string
 	 */
 	static str_pad(str, len, padStr = "0", direction = -1) {
 		str += "";
 		var res = "";
-		//warning if len<str.length
-		if (direction < 0)
+		//warning if len&lt;str.length
+		if (direction &lt; 0)
 			str = str
 				.split("")
 				.reverse()
 				.join("");
-		for (var i = 0; i < len; i++) {
+		for (var i = 0; i &lt; len; i++) {
 			var c = str.charAt(i);
 			if (c === "") res += padStr;
 			res += str.charAt(i);
 		}
-		if (direction < 0)
+		if (direction &lt; 0)
 			res = res
 				.split("")
 				.reverse()
@@ -1208,8 +1237,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Remove break line, space and tabulation
-	 * @param  {string} str - the base string
-	 * @return {string} the new string
+	 * @param  {String} str - the base string
+	 * @return {String} the new string
 	 */
 	static trim(str) {
 		//return str.replace(/^\s+|\s+$/g, '');
@@ -1219,9 +1248,9 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Set cookie
-	 * @param  {string} cname - the name of the cookie
-	 * @param  {string} cvalue - the value of the cookie
-	 * @param  {string} [expireDays=7] - expiration in days
+	 * @param  {String} cname - the name of the cookie
+	 * @param  {String} cvalue - the value of the cookie
+	 * @param  {String} [expireDays=7] - expiration in days
 	 */
 	static setCookie(cname, cvalue, expireDays = 7) {
 		var d = new Date();
@@ -1231,13 +1260,13 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Get cookie
-	 * @param  {string} cname - the name of the cookie
-	 * @return {string} the value of the cookie
+	 * @param  {String} cname - the name of the cookie
+	 * @return {String} the value of the cookie
 	 */
 	static getCookie(cname) {
 		var name = cname + "=";
 		var ca = document.cookie.split(";");
-		for (var i = 0; i < ca.length; i++) {
+		for (var i = 0; i &lt; ca.length; i++) {
 			var c = ca[i].trim();
 			if (c.indexOf(name) === 0) return c.substring(name.length, c.length);
 		}
@@ -1265,19 +1294,19 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Get cookie
-	 * @param  {string} cname - the name of the cookie
-	 * @return {string} the value of the cookie
+	 * @param  {String} cname - the name of the cookie
+	 * @return {String} the value of the cookie
 	 */
 	static getFromSimpleArray(tab, what) {
-		for (var i2 = 0; i2 < tab.length; i2++) {
+		for (var i2 = 0; i2 &lt; tab.length; i2++) {
 			if (tab[i2][0] == what) return tab[i2][1];
 		}
 		return "";
 	}
 	/**
 	 * Get cookie
-	 * @param  {string} cname - the name of the cookie
-	 * @return {string} the value of the cookie
+	 * @param  {String} cname - the name of the cookie
+	 * @return {String} the value of the cookie
 	 */
 	static getSimpleArray(tab, index, what) {
 		var pos = this.searchSimpleArray(tab, index, what);
@@ -1286,33 +1315,33 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Get cookie
-	 * @param  {string} cname - the name of the cookie
-	 * @return {string} the value of the cookie
+	 * @param  {String} cname - the name of the cookie
+	 * @return {String} the value of the cookie
 	 */
 	static searchSimpleArray(tab, index, what) {
-		for (var i2 = 0; i2 < tab.length; i2++) {
+		for (var i2 = 0; i2 &lt; tab.length; i2++) {
 			if (tab[i2][index] == what) return i2;
 		}
 		return -1;
 	}
 	/**
 	 * Get cookie
-	 * @param  {string} cname - the name of the cookie
-	 * @return {string} the value of the cookie
+	 * @param  {String} cname - the name of the cookie
+	 * @return {String} the value of the cookie
 	 */
 	static searchArrayObjects(tab, what, val) {
-		for (var i2 = 0; i2 < tab.length; i2++) {
+		for (var i2 = 0; i2 &lt; tab.length; i2++) {
 			if (tab[i2][what] == val) return i2;
 		}
 		return -1;
 	}
 	/**
 	 * Get cookie
-	 * @param  {string} cname - the name of the cookie
-	 * @return {string} the value of the cookie
+	 * @param  {String} cname - the name of the cookie
+	 * @return {String} the value of the cookie
 	 */
 	static getFromArrayObjects(tab, what, val) {
-		for (var i2 = 0; i2 < tab.length; i2++) {
+		for (var i2 = 0; i2 &lt; tab.length; i2++) {
 			if (tab[i2][what] == val) return tab[i2];
 		}
 		return null;
@@ -1322,26 +1351,26 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	 */
 	static inArray(needle, haystack) {
 		var length = haystack.length;
-		for (var i = 0; i < length; i++) {
+		for (var i = 0; i &lt; length; i++) {
 			if (haystack[i] == needle) return true;
 		}
 		return false;
 	}
 	/**
 	 * To document
-	 * @param  {string}  str      the string to convert
+	 * @param  {String}  str      the string to convert
 	 * @param  {Boolean} is_xhtml [description]
-	 * @return {string}           modified string
+	 * @return {String}           modified string
 	 */
 	static nl2br(str, is_xhtml) {
-		var breakTag = is_xhtml || typeof is_xhtml === "undefined" ? "<br " + "/>" : "<br>"; //Adjust comment to avoid issue on phpjs.org display
+		var breakTag = is_xhtml || typeof is_xhtml === "undefined" ? "&lt;br " + "/>" : "&lt;br>"; //Adjust comment to avoid issue on phpjs.org display
 
 		return (str + "").replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, "$1" + breakTag + "$2");
 	}
 	/**
 	 * replaceCommaWithPoint description
-	 * @param  {string} txt
-	 * @return {string}
+	 * @param  {String} txt
+	 * @return {String}
 	 */
 	static replaceCommaWithPoint(txt) {
 		txt += "";
@@ -1359,7 +1388,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	/**
 	 * Like PHP function
 	 * @param  {Array} tab
-	 * @param  {string} field
+	 * @param  {String} field
 	 * @return {Boolean}       true if is set
 	 */
 	static isset(tab, field) {
@@ -1368,9 +1397,9 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Like PHP function
-	 * @param  {string} path
-	 * @param  {string} options
-	 * @return {string}
+	 * @param  {String} path
+	 * @param  {String} options
+	 * @return {String}
 	 */
 	static pathinfo(path, options) {
 		//  discuss at: http://phpjs.org/functions/pathinfo/
@@ -1380,7 +1409,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 		//    input by: Timo
 		//        note: Inspired by actual PHP source: php5-5.2.6/ext/standard/string.c line #1559
 		//        note: The way the bitwise arguments are handled allows for greater flexibility
-		//        note: & compatability. We might even standardize this code and use a similar approach for
+		//        note: &amp; compatability. We might even standardize this code and use a similar approach for
 		//        note: other bitwise PHP functions
 		//        note: php.js tries very hard to stay away from a core.js file with global dependencies, because we like
 		//        note: that you can just take a couple of functions and be on your way.
@@ -1413,7 +1442,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 			have_extension = false,
 			have_filename = false;
 
-		// Input defaulting & sanitation
+		// Input defaulting &amp; sanitation
 		if (!path) {
 			return false;
 		}
@@ -1421,7 +1450,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 			options = "PATHINFO_ALL";
 		}
 
-		// Initialize binary arguments. Both the string & integer (constant) input is
+		// Initialize binary arguments. Both the string &amp; integer (constant) input is
 		// allowed
 		var OPTS = {
 			PATHINFO_DIRNAME: 1,
@@ -1437,7 +1466,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 		if (typeof options !== "number") {
 			// Allow for a single string or an array of string flags
 			options = [].concat(options);
-			for (i = 0; i < options.length; i++) {
+			for (i = 0; i &lt; options.length; i++) {
 				// Resolve string input to bitwise e.g. 'PATHINFO_EXTENSION' becomes 4
 				if (OPTS[options[i]]) {
 					optTemp = optTemp | OPTS[options[i]];
@@ -1454,19 +1483,19 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 		};
 
 		// Gather path infos
-		if (options & OPTS.PATHINFO_DIRNAME) {
+		if (options &amp; OPTS.PATHINFO_DIRNAME) {
 			var dirName = path.replace(/\\/g, "/").replace(/\/[^\/]*\/?$/, ""); // dirname
 			tmp_arr.dirname = dirName === path ? "." : dirName;
 		}
 
-		if (options & OPTS.PATHINFO_BASENAME) {
+		if (options &amp; OPTS.PATHINFO_BASENAME) {
 			if (false === have_basename) {
 				have_basename = this.basename(path);
 			}
 			tmp_arr.basename = have_basename;
 		}
 
-		if (options & OPTS.PATHINFO_EXTENSION) {
+		if (options &amp; OPTS.PATHINFO_EXTENSION) {
 			if (false === have_basename) {
 				have_basename = this.basename(path);
 			}
@@ -1478,7 +1507,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 			}
 		}
 
-		if (options & OPTS.PATHINFO_FILENAME) {
+		if (options &amp; OPTS.PATHINFO_FILENAME) {
 			if (false === have_basename) {
 				have_basename = this.basename(path);
 			}
@@ -1511,8 +1540,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	 * Format a number with good decimal and add devise
 	 * @param  {Number} nb
 	 * @param  {Number} decimal
-	 * @param  {string} devise
-	 * @return {string}
+	 * @param  {String} devise
+	 * @return {String}
 	 */
 	static formatPrice(nb, decimal = 2, devise = M_.i18n.devise) {
 		return this.price(nb, decimal, devise);
@@ -1521,16 +1550,16 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	 * Alias of formatPrice
 	 * @param  {Number} nb
 	 * @param  {Number} decimal
-	 * @param  {string} devise
-	 * @return {string}
+	 * @param  {String} devise
+	 * @return {String}
 	 */
 	static price(nb, decimal = 2, devise = M_.i18n.devise, sep = " ") {
 		return this.number_format(nb, decimal, ",", ".") + sep + devise;
 	}
 	static shortPrice(nb, devise = M_.i18n.devise, sep = " ") {
 		var res = "";
-		if (nb < 1000) res += Math.round(nb) + "";
-		else if (nb < 1000000) res += Math.round(nb / 1000) + "K";
+		if (nb &lt; 1000) res += Math.round(nb) + "";
+		else if (nb &lt; 1000000) res += Math.round(nb / 1000) + "K";
 		else res += Math.round(nb / 1000000) + "M";
 		return res + sep + devise;
 	}
@@ -1538,7 +1567,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	 * Format number in %
 	 * @param  {Number} nb
 	 * @param  {Number} decimal
-	 * @return {string}
+	 * @return {String}
 	 */
 	static purcent(nb, decimal = 2, sep = " ") {
 		return this.number_format(nb, decimal, ",", ".") + sep + "%";
@@ -1547,11 +1576,11 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	 * Like PHP function
 	 * @param  {Number} a
 	 * @param  {Number} b Number of decimal
-	 * @param  {string} c decimal separator
-	 * @param  {string} d thousen separator
-	 * @return {string}   this formated number
+	 * @param  {String} c decimal separator
+	 * @param  {String} d thousen separator
+	 * @return {String}   this formated number
 	 */
-	static number_format(a, b, c, d, dropDecimal) {
+	static number_format(a, b, c, d) {
 		var i, e, f, g, h;
 		a = Number(a);
 		a = Math.round(a * Math.pow(10, b)) / Math.pow(10, b);
@@ -1559,27 +1588,24 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 		f = e.split(".");
 		if (!f[0]) f[0] = "0";
 		if (!f[1]) f[1] = "";
-		if (f[1].length < b) {
+		if (f[1].length &lt; b) {
 			g = f[1];
-			for (i = f[1].length + 1; i <= b; i++) {
+			for (i = f[1].length + 1; i &lt;= b; i++) {
 				g += "0";
 			}
 			f[1] = g;
 		}
-		if (d !== "" && f[0].length > 3) {
+		if (d !== "" &amp;&amp; f[0].length > 3) {
 			h = f[0];
 			f[0] = "";
-			for (var j = 3; j < h.length; j += 3) {
+			for (var j = 3; j &lt; h.length; j += 3) {
 				i = h.slice(h.length - j, h.length - j + 3);
 				f[0] = d + i + f[0] + "";
 			}
 			j = h.substr(0, h.length % 3 === 0 ? 3 : h.length % 3);
 			f[0] = j + f[0];
 		}
-		c = b <= 0 ? "" : c;
-		if (dropDecimal) {
-			// let kk =
-		}
+		c = b &lt;= 0 ? "" : c;
 		return f[0] + c + f[1];
 	}
 	/**
@@ -1636,7 +1662,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	/**
 	 * Display smoothly an element
 	 * @param  {jQuery}   jEl the element
-	 * @param  {function} cb  callback function after finished animation
+	 * @param  {Function} cb  callback function after finished animation
 	 */
 	static showSmoothly(jEl, cb) {
 		if (jEl.is(":hidden"))
@@ -1651,7 +1677,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	/**
 	 * Hide smoothly an element
 	 * @param  {jQuery}   jEl the element
-	 * @param  {function} cb  callback function after finished animation
+	 * @param  {Function} cb  callback function after finished animation
 	 */
 	static hideSmoothly(jEl, cb) {
 		if (jEl.is(":visible"))
@@ -1663,9 +1689,9 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Do a POST of json data
-	 * @param  {string}   url  the url to call
+	 * @param  {String}   url  the url to call
 	 * @param  {object}   args arguments to send
-	 * @param  {function} cb   callback function with "data" argument
+	 * @param  {Function} cb   callback function with "data" argument
 	 * @return {jqXHR}
 	 */
 	static postJson(url, args, cb) {
@@ -1673,9 +1699,9 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Do a PUT of json data
-	 * @param  {string}   url  the url to call
+	 * @param  {String}   url  the url to call
 	 * @param  {object}   args arguments to send
-	 * @param  {function} cb   callback function with "data" argument
+	 * @param  {Function} cb   callback function with "data" argument
 	 * @return {jqXHR}
 	 */
 	static putJson(url, args, cb) {
@@ -1683,9 +1709,9 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Do a GET of json data
-	 * @param  {string}   url  the url to call
+	 * @param  {String}   url  the url to call
 	 * @param  {object}   args arguments to send
-	 * @param  {function} cb   callback function with "data" argument
+	 * @param  {Function} cb   callback function with "data" argument
 	 * @return {jqXHR}
 	 */
 	static getJson(url, args, cb) {
@@ -1693,9 +1719,9 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Do a DELETE of json data
-	 * @param  {string}   url  the url to call
+	 * @param  {String}   url  the url to call
 	 * @param  {object}   args arguments to send
-	 * @param  {function} cb   callback function with "data" argument
+	 * @param  {Function} cb   callback function with "data" argument
 	 * @return {jqXHR}
 	 */
 	static deleteJson(url, args, cb) {
@@ -1703,10 +1729,10 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Do a Ajax call of json data
-	 * @param  {string}   url  - the url to call
-	 * @param  {object}   args - arguments to send
-	 * @param  {string}   method - POST|PUT|GET|DELETE
-	 * @param  {function} cb   - callback function with "data" argument
+	 * @param  {String}   url  the url to call
+	 * @param  {object}   args arguments to send
+	 * @param  {String}   POST|PUT|GET|DELETE
+	 * @param  {Function} cb   callback function with "data" argument
 	 * @return {jqXHR}
 	 */
 	static ajaxJson(url, args, method, cb) {
@@ -1758,9 +1784,9 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	/**
 	 * Save a file with Ajax technic
 	 * @param  {Array}   files    array of input html files
-	 * @param  {string}   url      url to call
+	 * @param  {String}   url      url to call
 	 * @param  {Object}   moreArgs send more arguments
-	 * @param  {function} cb       callback after finished
+	 * @param  {Function} cb       callback after finished
 	 * @return {jqXHR}
 	 * @example
 M_.Utils.saveFiles([form.find('co_avatar_send').jEl.get(0)], '/avatarupdate', {}, function() {}) ;
@@ -1772,9 +1798,9 @@ M_.Utils.saveFiles([form.find('co_avatar_send').jEl.get(0)], '/avatarupdate', {}
 			formData.append(key, moreArgs[key]);
 		}
 		// console.log("files", files);
-		for (var i = 0; i < files.length; i++) {
+		for (var i = 0; i &lt; files.length; i++) {
 			// console.log("files[i].files", files[i].files);
-			for (var j = 0; j < files[i].files.length; j++) {
+			for (var j = 0; j &lt; files[i].files.length; j++) {
 				var name = files[i].name;
 				// if (files[i].files.length>0) name += '['+j+']' ;
 				// console.log("name", name);
@@ -1797,7 +1823,7 @@ M_.Utils.saveFiles([form.find('co_avatar_send').jEl.get(0)], '/avatarupdate', {}
 	}
 	/**
 	 * Check if a script is loaded (warning : check exactly the file name)
-	 * @param  {string}  url url to call
+	 * @param  {String}  url url to call
 	 * @return {Boolean}     true if already loaded
 	 */
 	static isLoadedScript(url) {
@@ -1809,12 +1835,12 @@ M_.Utils.saveFiles([form.find('co_avatar_send').jEl.get(0)], '/avatarupdate', {}
 	}
 	/**
 	 * Load a javascript file dynamically ; warning, no callback !!!
-	 * @param  {string} url url to call
+	 * @param  {String} url url to call
 	 */
 	static loadScript(url) {
 		var script = document.createElement("script");
 		script.type = "text/javascript";
-		// script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp' +'&signed_in=true&callback=initialize';
+		// script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp' +'&amp;signed_in=true&amp;callback=initialize';
 		script.src = url;
 		document.body.appendChild(script);
 	}
@@ -1824,10 +1850,10 @@ M_.Utils.saveFiles([form.find('co_avatar_send').jEl.get(0)], '/avatarupdate', {}
 	static saveSelection() {
 		if (window.getSelection) {
 			var sel = window.getSelection();
-			if (sel.getRangeAt && sel.rangeCount) {
+			if (sel.getRangeAt &amp;&amp; sel.rangeCount) {
 				this._selection = sel.getRangeAt(0);
 			}
-		} else if (document.selection && document.selection.createRange) {
+		} else if (document.selection &amp;&amp; document.selection.createRange) {
 			this._selection = document.selection.createRange();
 		} else this._selection = null;
 	}
@@ -1841,7 +1867,7 @@ M_.Utils.saveFiles([form.find('co_avatar_send').jEl.get(0)], '/avatarupdate', {}
 				var sel = window.getSelection();
 				sel.removeAllRanges();
 				sel.addRange(this._selection);
-			} else if (document.selection && this._selection.select) {
+			} else if (document.selection &amp;&amp; this._selection.select) {
 				this._selection.select();
 			}
 		}
@@ -1860,7 +1886,7 @@ M_.Observable = {
 	initObservable: function() {
 		this._listeners = [];
 		if (this.listeners) {
-			for (var i = 0; i < this.listeners.length; i++) {
+			for (var i = 0; i &lt; this.listeners.length; i++) {
 				this.addListener(this.listeners[i][0], this.listeners[i][1]);
 			}
 		}
@@ -1868,21 +1894,21 @@ M_.Observable = {
 	},
 	/**
 	 * Add a listner to this object
-	 * @param {string} evtName The event name
-	 * @param {function} fct     A callback function to execute when event is trigged
+	 * @param {String} evtName The event name
+	 * @param {Function} fct     A callback function to execute when event is trigged
 	 */
 	addListener: function(evtName, fct) {
 		this._listeners.push({ evtName: evtName, fct: fct });
 	},
 	/**
 	 * Remove a listner to this object
-	 * @param {string} evtName The event name
-	 * @param {function} fct     A callback function previously saved whith addListener()
+	 * @param {String} evtName The event name
+	 * @param {Function} fct     A callback function previously saved whith addListener()
 	 */
 	removeListener: function(evtName, fct) {
 		var listenersOk = [];
-		for (var i = 0; i < this._listeners.length; i++) {
-			if (this._listeners[i].evtName == evtName && this._listeners[i].fct == fct) {
+		for (var i = 0; i &lt; this._listeners.length; i++) {
+			if (this._listeners[i].evtName == evtName &amp;&amp; this._listeners[i].fct == fct) {
 				listenersOk.push(this._listeners[i]);
 			}
 		}
@@ -1890,12 +1916,12 @@ M_.Observable = {
 	},
 	/**
 	 * Trigger the event
-	 * @param  {string} evtName The event name previously registered with addListener()
+	 * @param  {String} evtName The event name previously registered with addListener()
 	 * @return {boolean}         Return the result of callback function
 	 */
 	trigger: function(evtName) {
 		var res = true;
-		for (var i = 0; i < this._listeners.length; i++) {
+		for (var i = 0; i &lt; this._listeners.length; i++) {
 			if (this._listeners[i].evtName == evtName) {
 				var args = Array.prototype.slice.call(arguments);
 				res = this._listeners[i].fct.apply(this, args.slice(1));
@@ -1923,7 +1949,7 @@ M_.i18n = {
   * @implements M_.Observable
  * @property {array} fields - the fields definition
  * @property {object} row - the values
- * @property {string} primaryKey - the primary key name
+ * @property {String} primaryKey - the primary key name
  * @example
 M_.ModelKeyVal = class extends M_.Model {
 	getDefinition() {
@@ -1950,7 +1976,7 @@ M_.Model = class {
 		if (!this.row) log("Vous devez définir opts.row");
 		// if (!this.store) log("Vous devez définir opts.store") ;
 		var fields = this.fields;
-		for (var j = 0; j < fields.length; j++) {
+		for (var j = 0; j &lt; fields.length; j++) {
 			if (!fields[j].type) fields[j].type = "string";
 		}
 		this.updateRow();
@@ -1968,7 +1994,7 @@ M_.Model = class {
 	updateRow() {
 		var fields = this.fields;
 		// log("fields",fields)
-		for (var j = 0; j < fields.length; j++) {
+		for (var j = 0; j &lt; fields.length; j++) {
 			var val = "";
 			if (fields[j].type == "date") {
 				if (this.row[fields[j].name] === undefined) continue;
@@ -2006,7 +2032,7 @@ M_.Model = class {
 	getArray() {
 		var ret = {};
 		var fields = this.fields;
-		for (var j = 0; j < fields.length; j++) {
+		for (var j = 0; j &lt; fields.length; j++) {
 			var val = this.get(fields[j].name);
 			if (val !== null) {
 				ret[fields[j].name] = val;
@@ -2031,7 +2057,7 @@ M_.Model = class {
 	}
 	/**
      * Set only one field of model
-	 * @param  {string} field - The field name
+	 * @param  {String} field - The field name
 	 * @param  {something} val - The value
 	 * @param  {object} silently - Event "update" is not called
      */
@@ -2048,7 +2074,7 @@ M_.Model = class {
      */
 	createEmptyRow() {
 		var fields = this.fields;
-		for (var j = 0; j < fields.length; j++) {
+		for (var j = 0; j &lt; fields.length; j++) {
 			this.row[fields[j].name] = "";
 		}
 	}
@@ -2056,20 +2082,20 @@ M_.Model = class {
 	//warning : stocker le résultat ???
 	/**
      * Get a field
-	 * @param  {string} field - The field name
+	 * @param  {String} field - The field name
      */
 	get(field) {
 		var val,
 			fields = this.fields;
 
-		for (var j = 0; j < fields.length; j++) {
+		for (var j = 0; j &lt; fields.length; j++) {
 			// log("fields[j].name",fields[j].name)
 			if (fields[j].name == field) {
 				if (fields[j].fn) {
 					//if (this.row[field]) val = this.row[field] ;
 					//else val = eval(fields[j].fn) ;
 				} else if (this.row[field] !== undefined) {
-					//fields[j].type &&
+					//fields[j].type &amp;&amp;
 					if (fields[j].type == "string" || fields[j].type == "text") {
 						val = this.row[field];
 					} else if (fields[j].type == "number") {
@@ -2094,7 +2120,7 @@ M_.Model = class {
 				break;
 			}
 		}
-		if (val === undefined && M_.Utils.isset(this.row, field)) val = this.row[field];
+		if (val === undefined &amp;&amp; M_.Utils.isset(this.row, field)) val = this.row[field];
 		return val;
 	}
 	/**
@@ -2138,12 +2164,12 @@ M_.ModelKeyVal = class extends M_.Model {
  * @property {array} [rows=[]] - the data rows
  * @property {boolean} [useWebsocket=M_.App.useWebsocket] - true if use websocket and not ajax
  * @property {array} [rowsModel=[]] - the model rows
- * @property {string} [url=""] - the model rows
+ * @property {String} [url=""] - the model rows
  * @property {object} [args={}] - arguments object to pass to each ajax request
- * @property {string} [rootData="data"] - property where read data in json response
+ * @property {String} [rootData="data"] - property where read data in json response
  * @property {array} [currentSort=null] - sort the store : ['name', 'asc'] ; the second is 'asc' or 'desc'
  * @property {M_.Model} [model=null] - the model to use
- * @property {string} [primaryKey=""] - the primary key
+ * @property {String} [primaryKey=""] - the primary key
  * @property {number} [limit=null] - send 'limit' param to ajax request
  * @property {boolean} [sortOnRemote=false] - send 'sort' param to ajax request
  * @property {number} [skip=0] - send 'skip' param to ajax request
@@ -2209,16 +2235,16 @@ M_.Store = class {
 			this.primaryKey = model.primaryKey;
 		}
 		//must be last init, because update event
-		if (this.rows && this.rows.length > 0) {
+		if (this.rows &amp;&amp; this.rows.length > 0) {
 			//M_.Utils.delay("", $.proxy(function() {
 			this.setRows(this.rows);
 			//}, this), 10) ;
 			//			log("this.unshiftRows",this.unshiftRows)
-			if (this.unshiftRows && this.unshiftRows.length > 0) {
-				for (let i = 0; i < this.unshiftRows.length; i++) this.rows.unshift(this.unshiftRows[i]);
+			if (this.unshiftRows &amp;&amp; this.unshiftRows.length > 0) {
+				for (let i = 0; i &lt; this.unshiftRows.length; i++) this.rows.unshift(this.unshiftRows[i]);
 			}
-			if (this.pushRows && this.pushRows.length > 0) {
-				for (let i = 0; i < this.pushRows.length; i++) this.rows.push(this.pushRows[i]);
+			if (this.pushRows &amp;&amp; this.pushRows.length > 0) {
+				for (let i = 0; i &lt; this.pushRows.length; i++) this.rows.push(this.pushRows[i]);
 			}
 			this.useModel();
 		}
@@ -2227,14 +2253,14 @@ M_.Store = class {
 	/**
 	 * Return the first model instance where the value of field equal val. The comparaison is do with ==, so "2"==2
 	 *
-	 * @param  {string} field The searched field name
+	 * @param  {String} field The searched field name
 	 * @param  {string|number} val   The value researched.
 	 * @return {model}       Return the model instance founded or null
 	 */
 	//val can be a RegExp
 	getRowBy(field, val) {
 		var rows = this.rowsModel;
-		for (var i = 0; i < rows.length; i++) {
+		for (var i = 0; i &lt; rows.length; i++) {
 			var v;
 			if (this.model) v = rows[i].get(field);
 			else v = rows[i][field];
@@ -2251,7 +2277,7 @@ M_.Store = class {
 	 */
 	getIndexBy(field, val) {
 		var rows = this.rowsModel;
-		for (var i = 0; i < rows.length; i++) {
+		for (var i = 0; i &lt; rows.length; i++) {
 			var v = rows[i].get(field);
 			if (v == val) {
 				return i;
@@ -2281,7 +2307,7 @@ M_.Store = class {
 	 */
 	getIndexById(id) {
 		var rows = this.rowsModel;
-		for (var i = 0; i < rows.length; i++) {
+		for (var i = 0; i &lt; rows.length; i++) {
 			var v = rows[i].getId();
 			if (v == id) {
 				return i;
@@ -2299,7 +2325,7 @@ M_.Store = class {
 	getRowsBy(field, val) {
 		var res = [];
 		var rows = this.rowsModel;
-		for (var i = 0; i < rows.length; i++) {
+		for (var i = 0; i &lt; rows.length; i++) {
 			var v = rows[i].get(field);
 			if (v == val) {
 				res.push(rows[i]);
@@ -2348,7 +2374,7 @@ M_.Store = class {
 	addRows(rows) {
 		//this.rows = this.rows.concat(rows) ;
 		//this.useModel() ;
-		for (var i = 0; i < rows.length; i++) {
+		for (var i = 0; i &lt; rows.length; i++) {
 			var m = null;
 			var row = rows[i];
 			if (row instanceof M_.Model) {
@@ -2397,7 +2423,7 @@ M_.Store = class {
 	 * To document
 	 */
 	setKeysOnRows() {
-		for (var i = 0; i < this.rows.length; i++) {
+		for (var i = 0; i &lt; this.rows.length; i++) {
 			this.rows[i]._mid = i;
 		}
 	}
@@ -2465,10 +2491,10 @@ M_.Store = class {
 			} else if (a0 instanceof Date) {
 				if (direction == -1) return b0 - a0;
 				return a0 - b0;
-			} else if (a0 && b0 && a0.getDate && a0.getDate() instanceof Date) {
+			} else if (a0 &amp;&amp; b0 &amp;&amp; a0.getDate &amp;&amp; a0.getDate() instanceof Date) {
 				if (direction == -1) return b0.getDate() - a0.getDate();
 				return a0.getDate() - b0.getDate();
-			} else if (a0 && b0) {
+			} else if (a0 &amp;&amp; b0) {
 				if (direction == -1) return b0.localeCompare(a0);
 				return a0.localeCompare(b0);
 			} else return 0;
@@ -2493,7 +2519,7 @@ M_.Store = class {
 			this.rowsModel = [];
 			// var fields = this.model.fields ;
 			// log("this.rows",this.rows)
-			for (var i = 0; i < this.rows.length; i++) {
+			for (var i = 0; i &lt; this.rows.length; i++) {
 				this.rowsModel[i] = new this.model({ row: this.rows[i], store: this });
 				//this.rowsModel[i].updateRow() ;
 			}
@@ -2502,11 +2528,11 @@ M_.Store = class {
 		}
 	}
 	/**
-	 * @param  {function} fn
+	 * @param  {Function} fn
 	 */
 	each(fn) {
 		//log("length",this.rowsModel)
-		for (var i = 0; i < this.rowsModel.length; i++) {
+		for (var i = 0; i &lt; this.rowsModel.length; i++) {
 			var ret = fn.call(this, this.rowsModel[i], i);
 			if (ret === false) break;
 		}
@@ -2548,7 +2574,7 @@ M_.Store = class {
 	}
 	/**
 	 * @param  {type} args
-	 * @param  {function} callback
+	 * @param  {Function} callback
 	 * @return {type}
 	 */
 	load(args, callback) {
@@ -2558,14 +2584,14 @@ M_.Store = class {
 			if (_.isArray(this.currentSort)) okArgs.sort = this.currentSort[0] + " " + this.currentSort[1];
 			else okArgs.sort = this.currentSort;
 		}
-		if (this.limit && this.limit > 0) okArgs.limit = this.limit;
+		if (this.limit &amp;&amp; this.limit > 0) okArgs.limit = this.limit;
 		if (this.skip) okArgs.skip = this.skip;
 
-		if (args && (args.skip || args.skip === 0)) this.skip = args.skip;
-		// if (args && args.sort && _.isArray(args.sort)) this.currentSort[0] = args.sort ;
-		// if (args && args.sort && _.isString(args.sort)) this.currentSort = args.sort ;
-		// if (args && args.direction) this.currentSort[1] = args.direction ;
-		if (args && args.limit) this.limit = args.limit;
+		if (args &amp;&amp; (args.skip || args.skip === 0)) this.skip = args.skip;
+		// if (args &amp;&amp; args.sort &amp;&amp; _.isArray(args.sort)) this.currentSort[0] = args.sort ;
+		// if (args &amp;&amp; args.sort &amp;&amp; _.isString(args.sort)) this.currentSort = args.sort ;
+		// if (args &amp;&amp; args.direction) this.currentSort[1] = args.direction ;
+		if (args &amp;&amp; args.limit) this.limit = args.limit;
 
 		var thisArgs = this.args;
 		if (_.isFunction(thisArgs)) thisArgs = this.args();
@@ -2613,10 +2639,10 @@ M_.Store = class {
 		if (data.total || data.total === 0) this.lastTotal = data.total * 1;
 		//		 log("this.unshiftRows",this.unshiftRows)
 		if (this.unshiftRows.length > 0) {
-			for (i = 0; i < this.unshiftRows.length; i++) data[this.rootData].unshift(this.unshiftRows[i]);
+			for (i = 0; i &lt; this.unshiftRows.length; i++) data[this.rootData].unshift(this.unshiftRows[i]);
 		}
 		if (this.pushRows.length > 0) {
-			for (i = 0; i < this.pushRows.length; i++) data[this.rootData].push(this.pushRows[i]);
+			for (i = 0; i &lt; this.pushRows.length; i++) data[this.rootData].push(this.pushRows[i]);
 		}
 		//if (this.lastLoadArgs.add)  ;
 		//else
@@ -2624,7 +2650,7 @@ M_.Store = class {
 		// this.lastLoadArgs.add = false ;
 
 		this.useModel();
-		// if (this.currentSort && !this.sortOnRemote && _.isArray(this.currentSort))
+		// if (this.currentSort &amp;&amp; !this.sortOnRemote &amp;&amp; _.isArray(this.currentSort))
 		// 	this.sort(this.currentSort[0], this.currentSort[1], true) ;
 		//this.setKeysOnRows() ;
 
@@ -2677,27 +2703,27 @@ M_.Outlet = class {
 
 		if (M_.Utils.isEmpty(this.id)) this.id = M_.Utils.id();
 
-		if (!M_.Utils.isEmpty(this.jEl) && $.type(this.jEl) == "string") this.jEl = $("#" + this.jEl);
-		// if (!M_.Utils.isEmpty(this.container) && $.type(this.container)=="string") this.container = $("#"+this.container) ;
+		if (!M_.Utils.isEmpty(this.jEl) &amp;&amp; $.type(this.jEl) == "string") this.jEl = $("#" + this.jEl);
+		// if (!M_.Utils.isEmpty(this.container) &amp;&amp; $.type(this.container)=="string") this.container = $("#"+this.container) ;
 
 		if (M_.Utils.isEmpty(this.jEl)) this.create();
 
-		if (this.jEl && M_.Utils.isEmpty(this.jEl.attr("id"))) this.jEl.attr("id", this.id);
+		if (this.jEl &amp;&amp; M_.Utils.isEmpty(this.jEl.attr("id"))) this.jEl.attr("id", this.id);
 		this._attachHelp();
 
 		// if (M_.Utils.isEmpty(this.id)) {
-		// 	if (this.jEl && !M_.Utils.isEmpty(this.jEl.attr('id'))) {
+		// 	if (this.jEl &amp;&amp; !M_.Utils.isEmpty(this.jEl.attr('id'))) {
 		// 		this.id = this.jEl.attr('id') ;
 		// 	} else {
 		// 		this.id = M_.Utils.id() ;
 		// 	}
 		// }
-		// if (this.jEl && M_.Utils.isEmpty(this.jEl.attr('id'))) this.jEl.attr('id', this.id) ;
+		// if (this.jEl &amp;&amp; M_.Utils.isEmpty(this.jEl.attr('id'))) this.jEl.attr('id', this.id) ;
 		// M_.App.registerOutlet(this) ;
 		this.trigger("created", this);
 	}
 	_attachHelp() {
-		if (this.help && this.jEl) {
+		if (this.help &amp;&amp; this.jEl) {
 			new M_.Help({
 				controller: this.controller,
 				text: this.help,
@@ -2709,7 +2735,7 @@ M_.Outlet = class {
 	 * Extend this class to create your UI.
 	 */
 	create() {
-		this.jEl = $("<div></div>");
+		this.jEl = $("&lt;div>&lt;/div>");
 		this.container.append(this.jEl);
 	}
 	/**
@@ -2876,7 +2902,7 @@ M_.Help = class {
 	 *
 	 */
 	static createMHelp() {
-		$("body").append("<div id='M_Help'></div>");
+		$("body").append("&lt;div id='M_Help'>&lt;/div>");
 	}
 	/**
 	 *
@@ -2889,7 +2915,7 @@ M_.Help = class {
 /**
  * Like a card layout. Use HTML to define them.
  * @class
-  * @property {string} firstTab
+  * @property {String} firstTab
  */
 M_.Tabs = class extends M_.Outlet {
 	constructor(opts) {
@@ -2943,7 +2969,7 @@ M_.Tabs = class extends M_.Outlet {
 			}
 		});
 		// log("current",current)
-		if (current && current.attr("id") == jElId) {
+		if (current &amp;&amp; current.attr("id") == jElId) {
 			cbBeforeShow(cbAfterShow => {
 				if (cbAfterShow === false) return;
 				if (cbAfterShow) cbAfterShow();
@@ -3007,8 +3033,8 @@ M_.Tabs = class extends M_.Outlet {
  * A graphical tree
  * @class
   * @extends M_.Outlet
- * @property {string} autoLoad
- * @property {string} tpl
+ * @property {String} autoLoad
+ * @property {String} tpl
  */
 M_.Tree = class extends M_.Outlet {
 	constructor(opts) {
@@ -3038,7 +3064,7 @@ M_.Tree = class extends M_.Outlet {
   	 * @return {type}
   	 */
 	create() {
-		this.jEl = $("<div class='" + this.cls + "'></div>");
+		this.jEl = $("&lt;div class='" + this.cls + "'>&lt;/div>");
 		this.container.append(this.jEl);
 		this._drawNodes();
 	}
@@ -3050,9 +3076,9 @@ M_.Tree = class extends M_.Outlet {
 	}
 	_drawNodes() {
 		var html = "";
-		html += "<ul>";
+		html += "&lt;ul>";
 		html += this._createChildNodes(this.rootNode);
-		html += "</ul>";
+		html += "&lt;/ul>";
 		this.jEl.html(html);
 
 		this.jEl
@@ -3116,7 +3142,7 @@ M_.Tree = class extends M_.Outlet {
 						.closest("li")
 						.attr("m_id");
 					console.log("this.isNodeParentOf(mid, nodeDrop)", this.isNodeParentOf(mid, nodeDrop));
-					if (mid != nodeDrop && !this.isNodeParentOf(mid, nodeDrop)) {
+					if (mid != nodeDrop &amp;&amp; !this.isNodeParentOf(mid, nodeDrop)) {
 						let ok = this.trigger("beforenodemove", this, mid, nodeDrop);
 						if (ok === false) return;
 						this.moveNode(mid, nodeDrop);
@@ -3130,18 +3156,18 @@ M_.Tree = class extends M_.Outlet {
 		let myclass = "";
 		if (parent.draggable) myclass += " draggable";
 		if (parent.droppable) myclass += " droppable";
-		html += "<li m_id='" + parent.id + "' class='" + myclass + "'>";
+		html += "&lt;li m_id='" + parent.id + "' class='" + myclass + "'>";
 		let fa = "";
-		if (parent.nodes && parent.nodes.length) fa = "fa fa-minus-square";
-		html += "<span><i class='" + fa + "'></i><div class='txt'>" + parent.label + "</div></span>";
-		if (parent.nodes && parent.nodes.length) {
-			html += "<ul>";
+		if (parent.nodes &amp;&amp; parent.nodes.length) fa = "fa fa-minus-square";
+		html += "&lt;span>&lt;i class='" + fa + "'>&lt;/i>&lt;div class='txt'>" + parent.label + "&lt;/div>&lt;/span>";
+		if (parent.nodes &amp;&amp; parent.nodes.length) {
+			html += "&lt;ul>";
 			_.each(parent.nodes, (node, index) => {
 				html += this._createChildNodes(node);
 			});
-			html += "</ul>";
+			html += "&lt;/ul>";
 		}
-		html += "</li>";
+		html += "&lt;/li>";
 		return html;
 	}
 	_iter(parent, nodeId, action) {
@@ -3157,7 +3183,7 @@ M_.Tree = class extends M_.Outlet {
 			}
 			return;
 		}
-		if (parent.nodes && parent.nodes.length) {
+		if (parent.nodes &amp;&amp; parent.nodes.length) {
 			_.each(parent.nodes, (node, index) => {
 				if (!node) return;
 				if (node.id == nodeId) {
@@ -3178,7 +3204,7 @@ M_.Tree = class extends M_.Outlet {
 	}
 	/**
   	 * @param {NodeObject} node
-  	 * @param {string} parentId
+  	 * @param {String} parentId
   	 */
 	addNode(node, parentId, silently) {
 		this._nodeToAdd = node;
@@ -3187,8 +3213,8 @@ M_.Tree = class extends M_.Outlet {
 		if (!silently) this.trigger("nodeadd", this, node, parentId);
 	}
 	/**
-  	 * @param  {string}	nodeId
-  	 * @param  {string}	parentId
+  	 * @param  {String}	nodeId
+  	 * @param  {String}	parentId
   	 */
 	moveNode(nodeId, parentId, silently) {
 		// log("nodeId, parentId",nodeId, parentId)
@@ -3212,7 +3238,7 @@ M_.Tree = class extends M_.Outlet {
 		// this._iter(this.rootNode, nodeId, 'path') ;
 		var nodeIdStart = nodeId;
 		if (nodeId == "rootnode") return nodepath;
-		for (var i = 0; i < 100; i++) {
+		for (var i = 0; i &lt; 100; i++) {
 			var parentNode = this.getNodeParent(nodeIdStart);
 			if (names) {
 				nodepath.unshift(parentNode.label);
@@ -3251,7 +3277,7 @@ M_.Tree = class extends M_.Outlet {
 		return ok;
 	}
 	/**
-  	 * @param  {string}	nodeId
+  	 * @param  {String}	nodeId
   	 */
 	removeNode(nodeId, silently) {
 		// this.jEl.find("li[m_id='"++"']").remove() ;
@@ -3260,7 +3286,7 @@ M_.Tree = class extends M_.Outlet {
 		if (!silently) this.trigger("noderemove", this, nodeId);
 	}
 	/**
-  	 * @param  {string}	nodeId
+  	 * @param  {String}	nodeId
   	 * @return {NodeObject}
   	 */
 	getNode(nodeId) {
@@ -3323,8 +3349,8 @@ M_.Tree = class extends M_.Outlet {
  * @class
   * @extends M_.Outlet
  * @implements M_.Stored
- * @property {string} autoLoad
- * @property {string} tpl
+ * @property {String} autoLoad
+ * @property {String} tpl
  */
 M_.List = class extends M_.Outlet {
 	constructor(opts) {
@@ -3333,8 +3359,8 @@ M_.List = class extends M_.Outlet {
 			tpl: ""
 		};
 
-		// if (!opts.jEl && !opts.colsDef) log("jEl is mandatory in M_.List") ;
-		// if (!opts.tpl && !opts.colsDef) log("tpl is mandatory in M_.List") ;
+		// if (!opts.jEl &amp;&amp; !opts.colsDef) log("jEl is mandatory in M_.List") ;
+		// if (!opts.tpl &amp;&amp; !opts.colsDef) log("tpl is mandatory in M_.List") ;
 		opts = opts ? opts : {};
 		opts = $.extend({}, defaults, opts);
 		super(opts);
@@ -3370,7 +3396,7 @@ M_.List = class extends M_.Outlet {
 // 			this.dragStart = false ;
 // 		}, this)) ;
 // 		$(document).mousemove({el:el}, $.proxy(function(evt) {
-// 			if (this.dragStart && this.dragEl == evt.data.el) {
+// 			if (this.dragStart &amp;&amp; this.dragEl == evt.data.el) {
 // 				var top = evt.pageY ;
 // 				var left = evt.pageX ;
 // 				this.dragEl.offset({top: top-this.dragDiff.top, left: left-this.dragDiff.left}) ;
@@ -3430,13 +3456,13 @@ M_.SimpleList = class extends M_.List {
 	 */
 	create() {
 		var html = "";
-		html += `<div class='M_SimpleList'>
-					<div class='M_SimpleListContent'>
-						<div class='M_SimpleListContentFake1'></div>
-						<div class='M_SimpleListContentReal'></div>
-						<div class='M_SimpleListContentFake2'></div>
-					</div>
-				</div>`;
+		html += `&lt;div class='M_SimpleList'>
+					&lt;div class='M_SimpleListContent'>
+						&lt;div class='M_SimpleListContentFake1'>&lt;/div>
+						&lt;div class='M_SimpleListContentReal'>&lt;/div>
+						&lt;div class='M_SimpleListContentFake2'>&lt;/div>
+					&lt;/div>
+				&lt;/div>`;
 		this.jEl = $(html);
 		this.container.append(this.jEl);
 		if (!this.dynamic) this.jEl.find(".M_SimpleListContent").css("background-image", "none");
@@ -3447,7 +3473,7 @@ M_.SimpleList = class extends M_.List {
 					() => {
 						var diff = this.jEl.offset().top - this.jEl.find(".M_SimpleListContent").offset().top;
 						var _skipPosition = Math.ceil(diff / this.lineHeight) - Math.ceil(this.loadLimit / 4);
-						if (_skipPosition < 0) _skipPosition = 0;
+						if (_skipPosition &lt; 0) _skipPosition = 0;
 						this.store.reload(false, { skip: _skipPosition, limit: this.loadLimit });
 					},
 					100,
@@ -3473,7 +3499,7 @@ M_.SimpleList = class extends M_.List {
 				if (indexTemp % 2 === 0) clsTr += " M_TableListOdd";
 				else clsTr += " M_TableListEven";
 			}
-			html += "<div class='" + clsTr + " M_Noselectable' data-m_id='" + model.get(mid) + "'>" + val + "</div>";
+			html += "&lt;div class='" + clsTr + " M_Noselectable' data-m_id='" + model.get(mid) + "'>" + val + "&lt;/div>";
 		});
 		this.jEl.find(".M_SimpleListContentReal").html(html);
 
@@ -3483,7 +3509,7 @@ M_.SimpleList = class extends M_.List {
 		// 	cursor: "move",
 		// 	cursorAt: { top: -12, left: -20 },
 		// 	helper: function( event ) {
-		// 		return $( "<div class='ui-widget-header' style='z-index:100000;'>I'm a custom helper</div>" );
+		// 		return $( "&lt;div class='ui-widget-header' style='z-index:100000;'>I'm a custom helper&lt;/div>" );
 		// 	}
 		// });
 
@@ -3505,7 +3531,7 @@ M_.SimpleList = class extends M_.List {
 			var ok = true,
 				dontremoveselection = false;
 			if (this.multipleSelection) {
-				if ((M_.Utils.isMacos && evt.metaKey) || evt.ctrlKey) {
+				if ((M_.Utils.isMacos &amp;&amp; evt.metaKey) || evt.ctrlKey) {
 					// evt.preventDefault() ;
 					// evt.stopPropagation() ;
 					if (item.hasClass("selected")) ok = false;
@@ -3517,7 +3543,7 @@ M_.SimpleList = class extends M_.List {
 					var max = Math.max(lastIndex, currentIndex);
 					// var r =
 					this.store.each((row, i) => {
-						if (i >= min && i <= max) {
+						if (i >= min &amp;&amp; i &lt;= max) {
 							var m_idTemp = row.getId();
 							this.jEl.find("." + this.classItems + '[data-m_id="' + m_idTemp + '"]').addClass("selected");
 							if (this.currentSelection.indexOf(m_idTemp) == -1) this.currentSelection.push(m_idTemp);
@@ -3608,9 +3634,9 @@ M_.SimpleList = class extends M_.List {
 		if (!this._dragStarted) {
 			var sel = this.getSelection();
 			this.viewable = $(
-				"<div style='width:20px; height:20px; position:relative; z-index:100000;'><div class='M_Badge' style='right:-30px;'>" +
+				"&lt;div style='width:20px; height:20px; position:relative; z-index:100000;'>&lt;div class='M_Badge' style='right:-30px;'>" +
 					sel.length +
-					"</div><span class='fa fa-group' style='font-size:30px;'></span></div>"
+					"&lt;/div>&lt;span class='fa fa-group' style='font-size:30px;'>&lt;/span>&lt;/div>"
 			);
 			$("body").append(this.viewable);
 		}
@@ -3626,20 +3652,20 @@ M_.SimpleList = class extends M_.List {
 		if (!$.isArray(m_id)) m_id = [m_id];
 		if (!this.multipleSelection) this.jEl.find("." + this.classItems).removeClass("selected");
 		var goodItem = [];
-		for (var i = 0; i < m_id.length; i++) {
+		for (var i = 0; i &lt; m_id.length; i++) {
 			// log("m_id[i]",m_id[i])
 			goodItem = this.jEl.find("." + this.classItems + '[data-m_id="' + m_id[i] + '"]');
 			goodItem.addClass("selected");
 		}
 		// this.currentSelection = m_id ;
-		if (this.selectionVisible && goodItem.length) {
+		if (this.selectionVisible &amp;&amp; goodItem.length) {
 			var posYRow = goodItem.position().top;
 			var posYParent = goodItem.parent().position().top;
 			// log(posYRow, posYParent)
 			var goodContainer = goodItem.closest(".M_SimpleList");
 			// log('goodContainer.scrollTop()',goodContainer.scrollTop())
 			if (
-				1 * (posYRow - posYParent) < goodContainer.scrollTop() ||
+				1 * (posYRow - posYParent) &lt; goodContainer.scrollTop() ||
 				1 * (posYRow - posYParent) > goodContainer.scrollTop() + goodContainer.height() - goodItem.height() - 30
 			) {
 				goodItem.closest(".M_SimpleList").animate(
@@ -3657,7 +3683,7 @@ M_.SimpleList = class extends M_.List {
 	getSelection() {
 		var tabSelection = [];
 		// log("this.currentSelection",this.currentSelection)
-		for (var i = 0; i < this.currentSelection.length; i++) {
+		for (var i = 0; i &lt; this.currentSelection.length; i++) {
 			var model = this.store.getRow(this.currentSelection[i]);
 			tabSelection.push(model);
 		}
@@ -3710,15 +3736,15 @@ M_.TableList = class extends M_.SimpleList {
 		if (this.withMouseOverRaw) cls += " M_TableListOverRaw";
 		this._idMore = M_.Utils.id();
 
-		html += `<div class='M_TableList ${cls}' style='${this.styleTable}'>
-					<div>
-						<table cellpadding="0" cellspacing="0">
-							<thead></thead>
-							<tbody></tbody>
-						</table>
-					</div>
-					<div class="M_AlignRight"><a id="${this._idMore}" href='javascript:void(0);'>${this.getMoreText()}</a></div>
-				</div>`;
+		html += `&lt;div class='M_TableList ${cls}' style='${this.styleTable}'>
+					&lt;div>
+						&lt;table cellpadding="0" cellspacing="0">
+							&lt;thead>&lt;/thead>
+							&lt;tbody>&lt;/tbody>
+						&lt;/table>
+					&lt;/div>
+					&lt;div class="M_AlignRight">&lt;a id="${this._idMore}" href='javascript:void(0);'>${this.getMoreText()}&lt;/a>&lt;/div>
+				&lt;/div>`;
 		this.jEl = $(html);
 		this.container.append(this.jEl);
 		this.jEl.css("padding-top", this.headerHeight);
@@ -3778,13 +3804,13 @@ M_.TableList = class extends M_.SimpleList {
 		var html = "",
 			mid = this.store.primaryKey,
 			colsDef = this.colsDef;
-		html += "<tr>";
-		for (var i = 0; i < colsDef.length; i++) {
+		html += "&lt;tr>";
+		for (var i = 0; i &lt; colsDef.length; i++) {
 			let cls = this.classHeader + " M_Noselectable";
 			let style = "";
-			if (colsDef[i].align && colsDef[i].align == "right") cls += " M_AlignRight";
-			if (colsDef[i].align && colsDef[i].align == "center") cls += " M_AlignCenter";
-			if (colsDef[i].align && colsDef[i].align == "left") cls += " M_AlignLeft";
+			if (colsDef[i].align &amp;&amp; colsDef[i].align == "right") cls += " M_AlignRight";
+			if (colsDef[i].align &amp;&amp; colsDef[i].align == "center") cls += " M_AlignCenter";
+			if (colsDef[i].align &amp;&amp; colsDef[i].align == "left") cls += " M_AlignLeft";
 			if (!colsDef[i].align) cls += " M_AlignLeft";
 			if (colsDef[i].width) {
 				var w = "";
@@ -3792,11 +3818,11 @@ M_.TableList = class extends M_.SimpleList {
 				else w = colsDef[i].width + "px";
 				style += "width:" + w + "; ";
 			}
-			html += "<th data-m-col='" + i + "' class='" + cls + "' style='" + style + "'>" + colsDef[i].label;
-			if (this.fullHeight) html += "<div style='" + style + "'>" + colsDef[i].label + "</div>";
-			html += "</th>";
+			html += "&lt;th data-m-col='" + i + "' class='" + cls + "' style='" + style + "'>" + colsDef[i].label;
+			if (this.fullHeight) html += "&lt;div style='" + style + "'>" + colsDef[i].label + "&lt;/div>";
+			html += "&lt;/th>";
 		}
-		html += "</tr>";
+		html += "&lt;/tr>";
 		this.jEl
 			.find("thead")
 			.empty()
@@ -3805,7 +3831,7 @@ M_.TableList = class extends M_.SimpleList {
 		html = "";
 		this.store.each((model, indexTemp) => {
 			// log("model",model)
-			if (this.limitRows && indexTemp >= this.limitRows && this._limitRows) return true;
+			if (this.limitRows &amp;&amp; indexTemp >= this.limitRows &amp;&amp; this._limitRows) return true;
 			var clsTr = "";
 			if (this.oddEven) {
 				if (indexTemp % 2 === 0) clsTr += " M_TableListOdd";
@@ -3813,8 +3839,8 @@ M_.TableList = class extends M_.SimpleList {
 			}
 			var draggable = "";
 			if (this.draggableRows) draggable = "draggable='true'";
-			html += "<tr class='" + clsTr + "' " + draggable + ">";
-			for (var i = 0; i < colsDef.length; i++) {
+			html += "&lt;tr class='" + clsTr + "' " + draggable + ">";
+			for (var i = 0; i &lt; colsDef.length; i++) {
 				let val = "",
 					cls = this.classItems + " M_Noselectable",
 					mystyle = { cls: "", style: "" };
@@ -3825,16 +3851,16 @@ M_.TableList = class extends M_.SimpleList {
 					if (model instanceof M_.Model) val = model.get(colsDef[i].val);
 					else val = model[colsDef[i].val];
 				}
-				if (colsDef[i].align && colsDef[i].align == "right") cls += " M_AlignRight";
-				if (colsDef[i].align && colsDef[i].align == "center") cls += " M_AlignCenter";
-				if (colsDef[i].align && colsDef[i].align == "left") cls += " M_AlignLeft";
+				if (colsDef[i].align &amp;&amp; colsDef[i].align == "right") cls += " M_AlignRight";
+				if (colsDef[i].align &amp;&amp; colsDef[i].align == "center") cls += " M_AlignCenter";
+				if (colsDef[i].align &amp;&amp; colsDef[i].align == "left") cls += " M_AlignLeft";
 				cls += " " + mystyle.cls;
 				let datamid = "";
 				if (model instanceof M_.Model) datamid = model.get(mid);
 				else datamid = model[mid];
-				html += "<td class='" + cls + "' style='" + mystyle.style + "' data-m_id='" + datamid + "'>" + val + "</td>";
+				html += "&lt;td class='" + cls + "' style='" + mystyle.style + "' data-m_id='" + datamid + "'>" + val + "&lt;/td>";
 			}
-			html += "</tr>";
+			html += "&lt;/tr>";
 		});
 		this.jEl
 			.find("tbody")
@@ -3941,7 +3967,7 @@ M_.CRUD = {
 	/**
 	 * @param  {type}
 	 * @param  {Object}
-	 * @param  {function}
+	 * @param  {Function}
 	 * @return {type}
 	 */
 	load(id, args = {}, callback = null) {
@@ -3979,7 +4005,7 @@ M_.CRUD = {
 	_treatDataCrud(data, callback) {
 		// log("_treatDataCrud",data)
 		var row = null;
-		if (data && data[this.rootData]) row = data[this.rootData];
+		if (data &amp;&amp; data[this.rootData]) row = data[this.rootData];
 		else row = data;
 		this.trigger("loadraw", this, row);
 		if (this.processData) this.processData(row);
@@ -4003,7 +4029,7 @@ M_.CRUD = {
 	/**
 	 * @param  {type}
 	 * @param  {Object}
-	 * @param  {function}
+	 * @param  {Function}
 	 * @return {type}
 	 */
 	save(modelOrData = null, args = {}, callback = null) {
@@ -4024,7 +4050,7 @@ M_.CRUD = {
 		// log("data",data)
 		// log("data", data)
 		for (key in data) {
-			// if (data[key] && data[key].toDate && data[key].toDate() instanceof Date) {
+			// if (data[key] &amp;&amp; data[key].toDate &amp;&amp; data[key].toDate() instanceof Date) {
 			if (moment.isMoment(data[key])) {
 				data[key] = data[key].toISOString();
 			}
@@ -4037,7 +4063,7 @@ M_.CRUD = {
 		// log("okArgs",okArgs);
 
 		/*var fields=this.fields ;
-			for(var j=0 ; j<fields.length ; j++) {
+			for(var j=0 ; j&lt;fields.length ; j++) {
 				if (fields[j].type=='date') {
 					this.row[fields[j].name] = M_.Utils.formatDate(this.row[fields[j].name], 'Y-m-d H:i:s') ;
 				}
@@ -4110,7 +4136,7 @@ M_.CRUD = {
 		// 	dataType: 'json',
 		// 	cache: false,
 		// 	success: (data)=> {
-		// 		//&this.trigger("saved", data);
+		// 		//&amp;this.trigger("saved", data);
 		// 		this.trigger("save", this, data);
 		// 		if (this._callbackFormSaved) this._callbackFormSaved(data) ;
 		// 	}
@@ -4120,7 +4146,7 @@ M_.CRUD = {
 	/**
 	 * @param  {type}
 	 * @param  {Object}
-	 * @param  {function}
+	 * @param  {Function}
 	 * @return {type}
 	 */
 	delete(id, args = {}, callback = null) {
@@ -4228,7 +4254,7 @@ M_.Drawer = class {
 		this.jEl.outerWidth(this.width);
 		this.jEl.outerHeight(this.height);
 
-		if (!this.floating && !ok) {
+		if (!this.floating &amp;&amp; !ok) {
 			this.alignTo.height("100%");
 		}
 		this.jEl.css("position", "absolute");
@@ -4310,7 +4336,7 @@ M_.Drawer = class {
 			else this.jEl.offset({ top: topStart, left: leftStart });
 		}
 
-		if (!this.floating && ok) {
+		if (!this.floating &amp;&amp; ok) {
 			this.alignTo.height("calc(100% - " + this.height + "px)");
 		}
 
@@ -4353,13 +4379,13 @@ M_.Modal = class {
 		});
 
 		if (this.focusOn) {
-			this.jEl1 = $("<div class='M_Modal'></div>");
+			this.jEl1 = $("&lt;div class='M_Modal'>&lt;/div>");
 			$("body").append(this.jEl1);
-			this.jEl2 = $("<div class='M_Modal'></div>");
+			this.jEl2 = $("&lt;div class='M_Modal'>&lt;/div>");
 			$("body").append(this.jEl2);
-			this.jEl3 = $("<div class='M_Modal'></div>");
+			this.jEl3 = $("&lt;div class='M_Modal'>&lt;/div>");
 			$("body").append(this.jEl3);
-			this.jEl4 = $("<div class='M_Modal'></div>");
+			this.jEl4 = $("&lt;div class='M_Modal'>&lt;/div>");
 			$("body").append(this.jEl4);
 			if (this.clickHide) {
 				this.jEl1.click(() => {
@@ -4376,7 +4402,7 @@ M_.Modal = class {
 				});
 			}
 		} else {
-			this.jEl = $("<div class='M_Modal'><p>" + this.text + "</p></div>");
+			this.jEl = $("&lt;div class='M_Modal'>&lt;p>" + this.text + "&lt;/p>&lt;/div>");
 			$("body").append(this.jEl);
 			if (this.clickHide) {
 				this.jEl.click(() => {
@@ -4385,9 +4411,9 @@ M_.Modal = class {
 			}
 			if (this.isLoading) {
 				this.jEl.html(
-					"<div style='width:300px;margin:200px auto 0 auto; text-align:center;'><i style='font-size:100px;' class='fa fa-clock-o faa-spin animated'></i><br><h1 style='color:white;'>" +
+					"&lt;div style='width:300px;margin:200px auto 0 auto; text-align:center;'>&lt;i style='font-size:100px;' class='fa fa-clock-o faa-spin animated'>&lt;/i>&lt;br>&lt;h1 style='color:white;'>" +
 						this.isLoading +
-						"</h1></div>"
+						"&lt;/h1>&lt;/div>"
 				);
 			}
 		}
@@ -4558,7 +4584,7 @@ M_.Window = class {
 	 * @return {type}
 	 */
 	create() {
-		this.jEl = $("<div class='M_Window'></div>").hide();
+		this.jEl = $("&lt;div class='M_Window'>&lt;/div>").hide();
 		$("body").append(this.jEl);
 
 		// if (this.width=='auto') this.width = '100%' ;
@@ -4655,7 +4681,7 @@ M_.Window = class {
 		var speed = M_.Utils.getSpeedAnim();
 		if (ok) {
 			this.zindex = M_.Utils.getNextZIndex();
-			if (this.modal && !this.modalObj) {
+			if (this.modal &amp;&amp; !this.modalObj) {
 				this.modalObj = new M_.Modal({
 					clickHide: this.clickHide,
 					alpha: this.alpha,
@@ -4785,7 +4811,7 @@ M_.Button = class extends M_.Outlet {
 	 * @return {type}
 	 */
 	create() {
-		var html = `<button class="M_Button ${this.cls}" id="${this.id}">${this.text}</button>`;
+		var html = `&lt;button class="M_Button ${this.cls}" id="${this.id}">${this.text}&lt;/button>`;
 		this.jEl = $(html);
 		this.container.append(this.jEl);
 		if (this.handler) this.jEl.click(this.handler);
@@ -4807,14 +4833,14 @@ M_.Dialog = new class {
 		$.extend(this, this.defaults, opts);
 	}
 	_createTemplate(title, text, icon = "fa-warning") {
-		var html = `<div style="overflow:auto; height:90%;">
-						<h1 style="line-height:22px;">${title}</h1>
-						<div>
-							<div class='M_FloatLeft' style='width:25%'><span class='fa ${icon} M_IconBig'></span></div>
-							<div class='M_FloatLeft' style='width:75%'>${text}</div>
-							<div class='M_Clear'></div>
-						</div>
-					</div>`;
+		var html = `&lt;div style="overflow:auto; height:90%;">
+						&lt;h1 style="line-height:22px;">${title}&lt;/h1>
+						&lt;div>
+							&lt;div class='M_FloatLeft' style='width:25%'>&lt;span class='fa ${icon} M_IconBig'>&lt;/span>&lt;/div>
+							&lt;div class='M_FloatLeft' style='width:75%'>${text}&lt;/div>
+							&lt;div class='M_Clear'>&lt;/div>
+						&lt;/div>
+					&lt;/div>`;
 		return html;
 	}
 	/**
@@ -4826,12 +4852,12 @@ M_.Dialog = new class {
 	alert(title, text, callbackOk) {
 		// this.callbackOk = callbackOk ;
 		var html = this._createTemplate(title, text);
-		html += `<div class="M_margintop">
-						<div class='M_FloatRight'>
-							<button type="button" class='M_DialogOK M_Button primary'>${this.textButtonOk}</button>
-						</div>
-						<div class='M_Clear'></div>
-					</div>`;
+		html += `&lt;div class="M_margintop">
+						&lt;div class='M_FloatRight'>
+							&lt;button type="button" class='M_DialogOK M_Button primary'>${this.textButtonOk}&lt;/button>
+						&lt;/div>
+						&lt;div class='M_Clear'>&lt;/div>
+					&lt;/div>`;
 		var win = new M_.Window({
 			html: html
 		});
@@ -4852,15 +4878,15 @@ M_.Dialog = new class {
 		// this.callbackOk = callbackOk ;
 		// this.callbackCancel = callbackCancel ;
 		var html = this._createTemplate(title, text);
-		html += `<div class="M_margintop">
-						<div class='M_FloatRight'>
-							<button type="button" class='M_DialogOK M_Button primary'>${this.textButtonOk}</button>
-						</div>
-						<div class='M_FloatRight'>
-							<button type="button" class='M_DialogCancel M_ModalCancel M_Button'>${this.textButtonCancel}</button>
-						</div>
-						<div class='M_Clear'></div>
-					</div>`;
+		html += `&lt;div class="M_margintop">
+						&lt;div class='M_FloatRight'>
+							&lt;button type="button" class='M_DialogOK M_Button primary'>${this.textButtonOk}&lt;/button>
+						&lt;/div>
+						&lt;div class='M_FloatRight'>
+							&lt;button type="button" class='M_DialogCancel M_ModalCancel M_Button'>${this.textButtonCancel}&lt;/button>
+						&lt;/div>
+						&lt;div class='M_Clear'>&lt;/div>
+					&lt;/div>`;
 		var winConfirm = new M_.Window({
 			html: html
 		});
@@ -4879,16 +4905,16 @@ M_.Dialog = new class {
 	}
 	/**
 	 * alert user
-	 * @param  {string} text
-	 * @param  {string} position
+	 * @param  {String} text
+	 * @param  {String} position
 	 * @param  {Number} time      number of milliseconds
-	 * @param  {function} callbackClose
+	 * @param  {Function} callbackClose
 	 */
 	notify(text, time = 2000, position = "top", callbackClose = null) {
 		var html = "";
-		html += `<div class="">
+		html += `&lt;div class="">
 							${text}
-						</div>`;
+						&lt;/div>`;
 		var win = new M_.Window({
 			html: html,
 			modal: false,
@@ -4951,18 +4977,18 @@ M_.Dropdown = class extends M_.Outlet {
 	drawItem(item, i, ul, items) {
 		if (this.drawEachItem) return this.drawEachItem.call(this, item, i, ul, items);
 		if (!item.text || item.text == "_m_separation") {
-			ul.append($(`<li class="M_DropdownSeparation"></li>`));
+			ul.append($(`&lt;li class="M_DropdownSeparation">&lt;/li>`));
 			return;
 		}
 		var more = "";
 		if (item.disabled) more += " disabled";
 		if (this.itemsClass) more += " " + this.itemsClass;
 		if (item.cls) more += " " + item.cls;
-		var htmlItem = `<li class="M_DropdownMenu ${more}">${item.text}</li>`;
+		var htmlItem = `&lt;li class="M_DropdownMenu ${more}">${item.text}&lt;/li>`;
 		var jElItem = $(htmlItem);
 		// jElItem.data('indexitem', i) ;
 		ul.append(jElItem);
-		if (item.click && !item.disabled) {
+		if (item.click &amp;&amp; !item.disabled) {
 			jElItem.click({ fn: item }, evt => {
 				// var el = $(evt.target).closest('.M_DropdownMenu') ;
 				evt.data.fn.click(evt, evt.data.fn);
@@ -4981,9 +5007,9 @@ M_.Dropdown = class extends M_.Outlet {
 		this.jEl.height("auto");
 		// log("setItems",this.jEl)
 		if (items.length) {
-			var ul = $("<ul>");
+			var ul = $("&lt;ul>");
 			this.jEl.append(ul);
-			for (var i = 0; i < items.length; i++) {
+			for (var i = 0; i &lt; items.length; i++) {
 				this.drawItem(items[i], i, ul, items);
 			}
 			this._setPosition();
@@ -4997,7 +5023,7 @@ M_.Dropdown = class extends M_.Outlet {
 	 */
 	create() {
 		// console.log("create");
-		var html = `<div class="M_Relative"><div id="${this.id}" class="M_Dropdown"></div></div>`;
+		var html = `&lt;div class="M_Relative">&lt;div id="${this.id}" class="M_Dropdown">&lt;/div>&lt;/div>`;
 		// log("this.container",this.container)
 		$(this.container).append(html);
 		this.jEl = $(this.container).find(".M_Dropdown");
@@ -5104,14 +5130,14 @@ M_.Dropdown = class extends M_.Outlet {
 		var hCompareTo = compareTo.outerHeight();
 		// console.log("hCompareTo", hCompareTo);
 		// console.log("top,h,topCompareTo,hCompareTo", top,h,topCompareTo,hCompareTo,this.jEl);
-		if (top + h > topCompareTo + hCompareTo && this.alwaysDropdownBelow !== true) {
+		if (top + h > topCompareTo + hCompareTo &amp;&amp; this.alwaysDropdownBelow !== true) {
 			// check if space above is bigger than below
 			if (top - topCompareTo > topCompareTo + hCompareTo - top) {
 				//more big above
 				// max height
 				let maxh = top - topCompareTo - 35;
 				let moreH = 0;
-				if (h > maxh && this.autoSize) {
+				if (h > maxh &amp;&amp; this.autoSize) {
 					h = maxh;
 					this.jEl.height(h - 50);
 				} else moreH = 30;
@@ -5120,7 +5146,7 @@ M_.Dropdown = class extends M_.Outlet {
 			} else {
 				// more big bottom
 				let maxh = topCompareTo + hCompareTo - top - 25;
-				if (h > maxh && this.autoSize) {
+				if (h > maxh &amp;&amp; this.autoSize) {
 					h = maxh;
 					this.jEl.height(h);
 				}
@@ -5132,7 +5158,7 @@ M_.Dropdown = class extends M_.Outlet {
 		// var h = this.jEl.height() ;
 		// if (top+h-$(window).scrollTop() > hWin) {
 		// 	// try to set dropdown on top of alignTo
-		// 	if (this.alignTo.offset().top>(hWin/2) && h<(hWin/2)) {
+		// 	if (this.alignTo.offset().top>(hWin/2) &amp;&amp; h&lt;(hWin/2)) {
 		// 		t = this.alignTo.offset().top - h - 30 ;
 		// 		this.jEl.offset({top:t, left:l}) ;
 
@@ -5191,7 +5217,7 @@ M_.Dropdown = class extends M_.Outlet {
 		// log("closeAllDropdown")
 		$(".M_Dropdown").trigger("M_DropdownHide");
 		// if (this.tabDropdowns) {
-		// 	for(var i=0 ; i<this.tabDropdowns.length ; i++) {
+		// 	for(var i=0 ; i&lt;this.tabDropdowns.length ; i++) {
 		// 		if (this.tabDropdowns[i]) this.tabDropdowns[i].hide() ;
 		// 	}
 		// }
@@ -5274,26 +5300,26 @@ M_.CalendarMonth = class {
 	 * @return {type}
 	 */
 	create() {
-		var html = `<div class="M_CalendarMonth ${this._cls} ${this.cls}">
-			<div class="M_CalendarMonth_days">
-				<div class="M_CalendarMonth_previous"><span class="fa fa-arrow-circle-left"></span></div>
-				<div class="M_CalendarMonth_date">Date</div>
-				<div class="M_CalendarMonth_next"><span class="fa fa-arrow-circle-right"></span></div>
-				<div class="M_CalendarMonth_content"></div>
-			</div>
-			<div class="M_CalendarMonth_months">
-				<div class="M_CalendarMonth_previous"><span class="fa fa-arrow-circle-left"></span></div>
-				<div class="M_CalendarMonth_date">Date</div>
-				<div class="M_CalendarMonth_next"><span class="fa fa-arrow-circle-right"></span></div>
-				<div class="M_CalendarMonth_content"></div>
-			</div>
-			<div class="M_CalendarMonth_years">
-				<div class="M_CalendarMonth_previous"><span class="fa fa-arrow-circle-left"></span></div>
-				<div class="M_CalendarMonth_date">Date</div>
-				<div class="M_CalendarMonth_next"><span class="fa fa-arrow-circle-right"></span></div>
-				<div class="M_CalendarMonth_content"></div>
-			</div>
-		</div>`;
+		var html = `&lt;div class="M_CalendarMonth ${this._cls} ${this.cls}">
+			&lt;div class="M_CalendarMonth_days">
+				&lt;div class="M_CalendarMonth_previous">&lt;span class="fa fa-arrow-circle-left">&lt;/span>&lt;/div>
+				&lt;div class="M_CalendarMonth_date">Date&lt;/div>
+				&lt;div class="M_CalendarMonth_next">&lt;span class="fa fa-arrow-circle-right">&lt;/span>&lt;/div>
+				&lt;div class="M_CalendarMonth_content">&lt;/div>
+			&lt;/div>
+			&lt;div class="M_CalendarMonth_months">
+				&lt;div class="M_CalendarMonth_previous">&lt;span class="fa fa-arrow-circle-left">&lt;/span>&lt;/div>
+				&lt;div class="M_CalendarMonth_date">Date&lt;/div>
+				&lt;div class="M_CalendarMonth_next">&lt;span class="fa fa-arrow-circle-right">&lt;/span>&lt;/div>
+				&lt;div class="M_CalendarMonth_content">&lt;/div>
+			&lt;/div>
+			&lt;div class="M_CalendarMonth_years">
+				&lt;div class="M_CalendarMonth_previous">&lt;span class="fa fa-arrow-circle-left">&lt;/span>&lt;/div>
+				&lt;div class="M_CalendarMonth_date">Date&lt;/div>
+				&lt;div class="M_CalendarMonth_next">&lt;span class="fa fa-arrow-circle-right">&lt;/span>&lt;/div>
+				&lt;div class="M_CalendarMonth_content">&lt;/div>
+			&lt;/div>
+		&lt;/div>`;
 
 		this.jEl = $(html);
 		this.container.append(this.jEl);
@@ -5344,16 +5370,16 @@ M_.CalendarMonth = class {
 		var yearStart = Math.floor(this.dateViewed.year() / 10) * 10 - 1;
 
 		var html = "";
-		html += "<table>";
-		for (var i = 0; i < 12; i++) {
+		html += "&lt;table>";
+		for (var i = 0; i &lt; 12; i++) {
 			var dActu = moment({ year: yearStart + i, month: this.dateViewed.month(), day: 1 });
-			if (i % 4 === 0) html += "<tr>";
+			if (i % 4 === 0) html += "&lt;tr>";
 			var active = "";
 			if (dActu.year() == this.dateSelected.year()) active = "class='active'";
-			html += "<td " + active + " data-m-date='" + dActu.format("YYYY-MM-DD") + "'>" + dActu.year() + "</td>";
-			if (i % 4 === 3) html += "</tr>";
+			html += "&lt;td " + active + " data-m-date='" + dActu.format("YYYY-MM-DD") + "'>" + dActu.year() + "&lt;/td>";
+			if (i % 4 === 3) html += "&lt;/tr>";
 		}
-		html += "</table>";
+		html += "&lt;/table>";
 		this.jEl.find(".M_CalendarMonth_years .M_CalendarMonth_content").html(html);
 
 		this.jEl.find(".M_CalendarMonth_years .M_CalendarMonth_date").html(yearStart + 1 + " - " + (yearStart + 11));
@@ -5418,27 +5444,27 @@ M_.CalendarMonth = class {
 		this.jEl.find(".M_CalendarMonth_years").hide();
 
 		var html = "";
-		html += "<table>";
+		html += "&lt;table>";
 		var tabMonths = moment.months();
-		for (var i = 0; i < 12; i++) {
+		for (var i = 0; i &lt; 12; i++) {
 			var dActu = moment({ year: this.dateViewed.year(), month: i, day: 1 }); //new Date(this.dateViewed.year(), i, 1) ;
-			if (i % 3 === 0) html += "<tr>";
+			if (i % 3 === 0) html += "&lt;tr>";
 			var active = "";
-			if (dActu.year() == this.dateSelected.year() && dActu.month() == this.dateSelected.month()) active = "class='active'";
+			if (dActu.year() == this.dateSelected.year() &amp;&amp; dActu.month() == this.dateSelected.month()) active = "class='active'";
 			var moreD = "";
 			if (this.showWeekNumber) {
 				var dTemp3 = moment(dActu).endOf("month");
-				moreD += "<br>(S" + dActu.week() + " - S" + dTemp3.week() + ")";
+				moreD += "&lt;br>(S" + dActu.week() + " - S" + dTemp3.week() + ")";
 			}
-			html += "<td " + active + " data-m-date='" + dActu.format("YYYY-MM-DD") + "'>" + tabMonths[i] + moreD + "</td>";
-			if (i % 3 == 2) html += "</tr>";
+			html += "&lt;td " + active + " data-m-date='" + dActu.format("YYYY-MM-DD") + "'>" + tabMonths[i] + moreD + "&lt;/td>";
+			if (i % 3 == 2) html += "&lt;/tr>";
 		}
-		html += "</table>";
+		html += "&lt;/table>";
 		this.jEl.find(".M_CalendarMonth_months .M_CalendarMonth_content").html(html);
 
 		this.jEl
 			.find(".M_CalendarMonth_months .M_CalendarMonth_date")
-			.html(this.dateViewed.year() + " <span class='fa fa-arrow-circle-down'></span>");
+			.html(this.dateViewed.year() + " &lt;span class='fa fa-arrow-circle-down'>&lt;/span>");
 
 		this.jEl.find(".M_CalendarMonth_months .M_CalendarMonth_content td").off("click");
 		this.jEl.find(".M_CalendarMonth_months .M_CalendarMonth_content td").on("click", evt => {
@@ -5516,28 +5542,28 @@ M_.CalendarMonth = class {
 		var firstDate = moment({ year: year, month: month, day: 1 }).startOf("day");
 		var decalage = 0;
 		// log("firstDate",firstDate,decalage)
-		for (i = 1; i <= 7; i++) {
+		for (i = 1; i &lt;= 7; i++) {
 			if (firstDate.day() == 1) break;
 			decalage--;
 			firstDate.add(-1, "days");
 		}
 		// log("firstDate",firstDate,decalage)
 		var html = "";
-		html += "<table>";
-		html += "<thead><tr>";
-		if (this.showWeekNumber) html += "<th>S</th>";
+		html += "&lt;table>";
+		html += "&lt;thead>&lt;tr>";
+		if (this.showWeekNumber) html += "&lt;th>S&lt;/th>";
 		var tabDaysShort = moment.weekdaysShort();
-		for (i = 0; i < 7; i++) {
+		for (i = 0; i &lt; 7; i++) {
 			var j = (i + 1) % 7;
-			html += "<th>" + tabDaysShort[j] + "</th>";
+			html += "&lt;th>" + tabDaysShort[j] + "&lt;/th>";
 		}
-		html += "</tr></thead>";
-		html += "<tbody>";
+		html += "&lt;/tr>&lt;/thead>";
+		html += "&lt;tbody>";
 		var tabCells = [];
 		var nbMax = Math.ceil(nbDaysInMonth + 15);
 		var nbLines = 0;
 		// log("firstDate",nbMax,firstDate, this.dateViewed)
-		for (i = 0; i < nbMax; i++) {
+		for (i = 0; i &lt; nbMax; i++) {
 			var dActu = moment()
 				.year(year)
 				.month(month)
@@ -5545,24 +5571,24 @@ M_.CalendarMonth = class {
 				.startOf("day"); //{year:year, month:month, day:1+decalage+i}
 			if (i === 0) this._thefirstDay = moment(dActu);
 			if (dActu.day() == 1) {
-				html += "<tr>";
+				html += "&lt;tr>";
 				if (this.showWeekNumber) {
 					let tdClsWeek = "";
-					if (this.disabledDates && this.disabledDates(this, dActu)) tdClsWeek = "notselectable";
+					if (this.disabledDates &amp;&amp; this.disabledDates(this, dActu)) tdClsWeek = "notselectable";
 					html +=
-						"<td class='" + tdClsWeek + "' data-m-date='" + dActu.format("YYYY-MM-DD") + "'><b>" + dActu.week() + "</b>&nbsp;&nbsp;</td>";
+						"&lt;td class='" + tdClsWeek + "' data-m-date='" + dActu.format("YYYY-MM-DD") + "'>&lt;b>" + dActu.week() + "&lt;/b>&amp;nbsp;&amp;nbsp;&lt;/td>";
 				}
 				nbLines++;
-				if (this.allways6lines && nbLines == 7) {
+				if (this.allways6lines &amp;&amp; nbLines == 7) {
 					this._thelastDay = moment(dActu);
 					break;
 				}
 			}
 			var tdCls = "";
 			if (
-				this.showDateViewed &&
-				dActu.year() == this.dateSelected.year() &&
-				dActu.month() == this.dateSelected.month() &&
+				this.showDateViewed &amp;&amp;
+				dActu.year() == this.dateSelected.year() &amp;&amp;
+				dActu.month() == this.dateSelected.month() &amp;&amp;
 				dActu.date() == this.dateSelected.date()
 			)
 				tdCls += "active ";
@@ -5570,35 +5596,35 @@ M_.CalendarMonth = class {
 			var isDisabled = false;
 			if (this.disabledDates) isDisabled = this.disabledDates(this, dActu);
 			if (isDisabled) tdCls += "notselectable ";
-			if (this.showDateSelected && dActu.year() == today.year() && dActu.month() == today.month() && dActu.date() == today.date())
+			if (this.showDateSelected &amp;&amp; dActu.year() == today.year() &amp;&amp; dActu.month() == today.month() &amp;&amp; dActu.date() == today.date())
 				tdCls += "current ";
 			var contentTemp = dActu.date();
 			var idCell = M_.Utils.id();
 			//if (this.renderCellDay) contentTemp = this.renderCellDay(this, dActu, idCell) ;
 			tabCells.push([dActu, idCell]);
 			html +=
-				"<td class='" +
+				"&lt;td class='" +
 				tdCls +
 				"' id='" +
 				idCell +
 				"' data-m-date='" +
 				dActu.format("YYYY-MM-DD") +
-				"'><div class='M_CalendarMonth_txt'>" +
+				"'>&lt;div class='M_CalendarMonth_txt'>" +
 				contentTemp +
-				"</div></td>";
-			if (dActu.day() === 0) html += "</tr>";
-			if (dActu.month() != month && dActu.day() === 0 && !this.allways6lines && nbLines >= 2) {
+				"&lt;/div>&lt;/td>";
+			if (dActu.day() === 0) html += "&lt;/tr>";
+			if (dActu.month() != month &amp;&amp; dActu.day() === 0 &amp;&amp; !this.allways6lines &amp;&amp; nbLines >= 2) {
 				this._thelastDay = moment(dActu);
 				break;
 			}
 		}
-		html += "</tbody>";
-		html += "</table>";
+		html += "&lt;/tbody>";
+		html += "&lt;/table>";
 		var tabMonths = moment.months();
 		this.jEl.find(".M_CalendarMonth_days .M_CalendarMonth_content").html(html);
 		this.jEl
 			.find(".M_CalendarMonth_days .M_CalendarMonth_date")
-			.html(tabMonths[this.dateViewed.month()] + " " + this.dateViewed.year() + " <span class='fa fa-arrow-circle-down'></span>");
+			.html(tabMonths[this.dateViewed.month()] + " " + this.dateViewed.year() + " &lt;span class='fa fa-arrow-circle-down'>&lt;/span>");
 
 		this.jEl.find(".M_CalendarMonth_days .M_CalendarMonth_content td").off("click");
 		this.jEl.find(".M_CalendarMonth_days .M_CalendarMonth_content td").on("click", evt => {
@@ -5637,7 +5663,7 @@ M_.CalendarMonth = class {
 		});
 
 		if (this.renderCellDay) {
-			for (i = 0; i < tabCells.length; i++) {
+			for (i = 0; i &lt; tabCells.length; i++) {
 				var el = $("#" + tabCells[i][1]);
 				var contentTemp2 = this.renderCellDay(this, tabCells[i][0], el);
 				el.html(contentTemp2);
@@ -5744,7 +5770,7 @@ M_.Calendar.MonthView = class extends M_.CalendarMonth {
 		if (this.store)
 			this.store.load({
 				skip: 0,
-				// where: "{'va_start':{'<': '"+moment(this.dateViewed).startOf('month').add(1, 'month').format('YYYY-MM-DD')+"'}, 'va_end':{'>':'"+moment(this.dateViewed).startOf('month').format('YYYY-MM-DD')+"'}}"
+				// where: "{'va_start':{'&lt;': '"+moment(this.dateViewed).startOf('month').add(1, 'month').format('YYYY-MM-DD')+"'}, 'va_end':{'>':'"+moment(this.dateViewed).startOf('month').format('YYYY-MM-DD')+"'}}"
 				start: moment(this.dateViewed)
 					.startOf("month")
 					.format("YYYY-MM-DD"),
@@ -5800,7 +5826,7 @@ M_.Calendar.MonthView = class extends M_.CalendarMonth {
 			var end2 = model.get(this.modelDef.end2) || false;
 			var nbDays = end.diff(start, "days") + 1;
 			var dActu = moment(start);
-			for (var nj = 0; nj < nbDays; nj++) {
+			for (var nj = 0; nj &lt; nbDays; nj++) {
 				var isFirst = false;
 				var isLast = false;
 				var startOfWeek = moment(dActu)
@@ -5840,7 +5866,7 @@ M_.Calendar.MonthView = class extends M_.CalendarMonth {
 		});
 		// _.each(tabBars, (barEvt)=> {
 		for (let barEvt of tabBars) {
-			var bar = $("<div class='M_CalendarMonthView_bar " + barEvt.cls + "' data-m-evt='" + barEvt.id + "'>" + barEvt.text + "</div>");
+			var bar = $("&lt;div class='M_CalendarMonthView_bar " + barEvt.cls + "' data-m-evt='" + barEvt.id + "'>" + barEvt.text + "&lt;/div>");
 			var css = {
 				top: barEvt.position * 15 + 25
 			};
@@ -5848,8 +5874,8 @@ M_.Calendar.MonthView = class extends M_.CalendarMonth {
 			if (barEvt.color) css.color = barEvt.color;
 			var moreLeft = 0;
 			var moreWidth = 0;
-			if (barEvt.start2 && barEvt.isFirst) moreLeft = 50; //widthCell/2
-			if (barEvt.end2 && barEvt.isLast) moreWidth = 50; //widthCell/2
+			if (barEvt.start2 &amp;&amp; barEvt.isFirst) moreLeft = 50; //widthCell/2
+			if (barEvt.end2 &amp;&amp; barEvt.isLast) moreWidth = 50; //widthCell/2
 			css.left = moreLeft + "%";
 			bar
 				.width(101 * barEvt.nbDays - moreLeft - moreWidth + "%") //widthCell*barEvt.nbDays
@@ -5923,7 +5949,7 @@ M_.Form.Form = class {
 		this.initCRUD();
 
 		var items = this.items;
-		for (var i = 0; i < items.length; i++) {
+		for (var i = 0; i &lt; items.length; i++) {
 			this.addItem(items[i]);
 		}
 
@@ -5940,14 +5966,21 @@ M_.Form.Form = class {
 	 */
 	reset() {
 		var _items = this._items;
-		for (var i = 0; i < _items.length; i++) {
+		for (var i = 0; i &lt; _items.length; i++) {
 			_items[i].reset();
 		}
 		this.trigger("reset", this);
 	}
+	disable() {
+		var _items = this._items;
+		for (var i = 0; i &lt; _items.length; i++) {
+			_items[i].disable();
+		}
+		this.trigger("disable", this);
+	}
 	enable() {
 		var _items = this._items;
-		for (var i = 0; i < _items.length; i++) {
+		for (var i = 0; i &lt; _items.length; i++) {
 			_items[i].enable();
 		}
 		this.trigger("disable", this);
@@ -5958,7 +5991,7 @@ M_.Form.Form = class {
 	valid(err = []) {
 		var ok = true;
 		var _items = this._items;
-		for (var i = 0; i < _items.length; i++) {
+		for (var i = 0; i &lt; _items.length; i++) {
 			if (!_items[i].valid()) {
 				ok = false;
 				var label = _items[i].name;
@@ -5969,7 +6002,7 @@ M_.Form.Form = class {
 		}
 		var ok2 = this.trigger("valid", this, ok, err);
 		// console.log("ok2", ok2, ok);
-		return ok && ok2;
+		return ok &amp;&amp; ok2;
 	}
 	/**
 	 * @param  {type}
@@ -5986,13 +6019,13 @@ M_.Form.Form = class {
 				if (key2 === "") key2 = key;
 				key = key2;
 			}
-			errTxt += "<b>" + key + "</b> : ";
+			errTxt += "&lt;b>" + key + "&lt;/b> : ";
 			_.each(attr, msg => {
 				errTxt += msg.message;
 			});
-			errTxt += "<br/>";
+			errTxt += "&lt;br/>";
 		});
-		M_.Dialog.alert("Erreur", "Merci de corriger les champs en rouge :<br/>" + errTxt);
+		M_.Dialog.alert("Erreur", "Merci de corriger les champs en rouge :&lt;br/>" + errTxt);
 	}
 	/**
 	 * @param  {type}
@@ -6015,11 +6048,11 @@ M_.Form.Form = class {
 	setValues(dataOrModel) {
 		// console.log("this._items", this._items);
 		this.reset();
-		if (!(dataOrModel instanceof M_.Model) && this.model) dataOrModel = new this.model({ row: dataOrModel });
+		if (!(dataOrModel instanceof M_.Model) &amp;&amp; this.model) dataOrModel = new this.model({ row: dataOrModel });
 		this._currentModel = dataOrModel;
 		var _items = this._items;
 		// log("_items",_items)
-		for (var i = 0; i < _items.length; i++) {
+		for (var i = 0; i &lt; _items.length; i++) {
 			let v;
 			if (this.model) v = this._currentModel.get(_items[i].name);
 			else v = this._currentModel[_items[i].name];
@@ -6047,10 +6080,10 @@ M_.Form.Form = class {
 	}
 	//	_hideIfEmpty() {
 	//		var _items = this._items ;
-	//		for(var i=0 ; i<_items.length ; i++) {
+	//		for(var i=0 ; i&lt;_items.length ; i++) {
 	//			// _items[i]._hideIfEmpty() ;
 	//			// log("hideIfEmpty",_items[i].hideIfEmpty2)
-	//			if (_items[i].hideContainerIfEmpty && M_.Utils.isEmpty(_items[i].getValue())) {
+	//			if (_items[i].hideContainerIfEmpty &amp;&amp; M_.Utils.isEmpty(_items[i].getValue())) {
 	//				_items[i].container.hide() ;
 	//			} else {
 	//				_items[i].container.show() ;
@@ -6070,7 +6103,7 @@ M_.Form.Form = class {
 		// log("model",model)
 		var _items = this._items,
 			data = {};
-		for (var i = 0; i < _items.length; i++) {
+		for (var i = 0; i &lt; _items.length; i++) {
 			if (_items[i] instanceof M_.Form.File) continue;
 			// 	// log("AAAAAAAAAAA")
 			// 	var resTemp = _items[i].getValue(serialized) ;
@@ -6108,7 +6141,7 @@ M_.Form.Form = class {
 	 */
 	find(fieldName) {
 		var _items = this._items;
-		for (var i = 0; i < _items.length; i++) {
+		for (var i = 0; i &lt; _items.length; i++) {
 			if (_items[i].name == fieldName) {
 				return _items[i];
 			}
@@ -6119,7 +6152,7 @@ M_.Form.Form = class {
 	 * @return {type}
 	 */
 	resetValid() {
-		for (var i = 0; i < this._items.length; i++) {
+		for (var i = 0; i &lt; this._items.length; i++) {
 			this._items[i].informValid(true);
 		}
 	}
@@ -6135,9 +6168,9 @@ M_.Form.Form = class {
 	_alert(err) {
 		var errTxt = "";
 		_.each(err, er => {
-			errTxt += "• " + er.label + "<br>";
+			errTxt += "• " + er.label + "&lt;br>";
 		});
-		M_.Dialog.alert("Erreur", "Merci de corriger les champs en rouge :<br>" + errTxt);
+		M_.Dialog.alert("Erreur", "Merci de corriger les champs en rouge :&lt;br>" + errTxt);
 	}
 	validAndSave(modelOrData = null, args = {}, callback = null) {
 		var err = [];
@@ -6157,7 +6190,7 @@ M_.Form.Form = class {
 		// 	data = data.getArray();
 		// }
 		// this.resetSate();
-		// for (var i = 0; i < this.outlets.length; i++) {
+		// for (var i = 0; i &lt; this.outlets.length; i++) {
 		// 	var outlet = this.outlets[i];
 		// 	for (var key in data) {
 		// 		if (outlet.name == key) {
@@ -6187,11 +6220,11 @@ M_.Form.Form = class {
 	 */
 	addItem(item) {
 		if (!_.isArray(item)) item = [item];
-		for (let i = 0; i < item.length; i++) {
+		for (let i = 0; i &lt; item.length; i++) {
 			var optsItem = $.extend({}, this.itemsDefaults, item[i]);
 			optsItem.form = this;
 			if (optsItem.autoContainer) {
-				var jElTemp = $("<div></div>");
+				var jElTemp = $("&lt;div>&lt;/div>");
 				optsItem.autoContainer.append(jElTemp);
 				optsItem.container = jElTemp;
 			}
@@ -6209,7 +6242,7 @@ M_.Form.Form = class {
 	 */
 	deleteItem(name) {
 		var keepedItems = [];
-		for (var i = 0; i < this._items.length; i++) {
+		for (var i = 0; i &lt; this._items.length; i++) {
 			// log("destroy",this._items[i].name,name)
 			if (this._items[i].name == name) {
 				this._items[i].destroy();
@@ -6238,7 +6271,7 @@ M_.Form.Form = class {
 	 */
 	getItemsByFakeGroup(fakeGroupName) {
 		var keepedItems = [];
-		for (var i = 0; i < this._items.length; i++) {
+		for (var i = 0; i &lt; this._items.length; i++) {
 			if (this._items[i].fakeGroup.indexOf(fakeGroupName) >= 0) keepedItems.push(this._items[i]);
 		}
 		return keepedItems;
@@ -6246,7 +6279,7 @@ M_.Form.Form = class {
 
 	getItemsByType(type) {
 		var keepedItems = [];
-		for (var i = 0; i < this._items.length; i++) {
+		for (var i = 0; i &lt; this._items.length; i++) {
 			if (this._items[i] instanceof type) keepedItems.push(this._items[i]);
 		}
 		return keepedItems;
@@ -6257,9 +6290,9 @@ M_.Form.Form = class {
 	 */
 	deleteByFakeGroup(fakeGroupName) {
 		var keepedItems = [];
-		for (var i = 0; i < this._items.length; i++) {
+		for (var i = 0; i &lt; this._items.length; i++) {
 			// console.log("this._items[i].fakeGroup.indexOf(fakeGroupName)",this._items[i].fakeGroup.indexOf(fakeGroupName),fakeGroupName);
-			if (this._items[i].fakeGroup.indexOf(fakeGroupName) < 0) keepedItems.push(this._items[i]);
+			if (this._items[i].fakeGroup.indexOf(fakeGroupName) &lt; 0) keepedItems.push(this._items[i]);
 			else this._items[i].destroy();
 		}
 		this._items = keepedItems;
@@ -6268,17 +6301,10 @@ M_.Form.Form = class {
 		return this._currentModel;
 	}
 	disable() {
-		var _items = this._items;
-		for (var i = 0; i < _items.length; i++) {
-			_items[i].disable();
+		for (var i = 0; i &lt; this._items.length; i++) {
+			if (this._items[i].disable) this._items[i].disable();
 		}
-		this.trigger("disable", this);
 	}
-	// disable() {
-	// 	for (var i = 0; i < this._items.length; i++) {
-	// 		if (this._items[i].disable) this._items[i].disable();
-	// 	}
-	// }
 };
 
 /**
@@ -6350,7 +6376,7 @@ M_.Form.Input = class extends M_.Outlet {
 
 		if (typeof this.fakeGroup === "string") this.fakeGroup = [this.fakeGroup];
 
-		if ((this.labelPosition == "left" || this.labelPosition == "right") && this.labelWidth === 0) this.labelWidth = 0.3;
+		if ((this.labelPosition == "left" || this.labelPosition == "right") &amp;&amp; this.labelWidth === 0) this.labelWidth = 0.3;
 
 		this.setValue(this.value);
 	}
@@ -6367,21 +6393,21 @@ M_.Form.Input = class extends M_.Outlet {
 		if (M_.Utils.isEmpty(this.id)) this.id = M_.Utils.id();
 		var v = this.value;
 		if ($.type(v) !== "string") v = "";
-		if (this.labelPosition == "left" && this.label !== "") {
+		if (this.labelPosition == "left" &amp;&amp; this.label !== "") {
 			this.clsLabel += " M_LabelLeft";
 			this.clsInput += " M_InputLeft";
 		}
-		if (this.labelPosition == "right" && this.label !== "") {
+		if (this.labelPosition == "right" &amp;&amp; this.label !== "") {
 			this.clsLabel += " M_LabelRight";
 			this.clsInput += " M_InputRight";
 		}
 		if (
-			this.labelWidth > 0 &&
-			this.label !== "" &&
-			(this.labelPosition == "left" || this.labelPosition == "right") &&
+			this.labelWidth > 0 &amp;&amp;
+			this.label !== "" &amp;&amp;
+			(this.labelPosition == "left" || this.labelPosition == "right") &amp;&amp;
 			this.inputType != "checkbox"
 		) {
-			if (this.labelWidth <= 1) {
+			if (this.labelWidth &lt;= 1) {
 				this.styleLabel += " width:" + this.labelWidth * 100 + "%;";
 				this.styleInput += " width:" + (100 - this.labelWidth * 100) + "%;";
 			} else {
@@ -6398,36 +6424,36 @@ M_.Form.Input = class extends M_.Outlet {
 		if (this.labelFocusInput) forattr = 'for="' + this.id + '"';
 		if (!this.editable) readOnly = "readonly";
 		if (this.inputType == "hidden") {
-			html += `<input ${readOnly} id="${this.id}" type="${this.inputType}" class="M_Input" name="${this.name}" value="${v}">`;
+			html += `&lt;input ${readOnly} id="${this.id}" type="${this.inputType}" class="M_Input" name="${this.name}" value="${v}">`;
 		} else {
-			html += `<div style="${this.styleGroup}" class="M_FormGroup ${this.clsGroup}">`;
-			if (this.label !== "" && (this.labelPosition == "left" || this.labelPosition == "top"))
-				html += `<label style="${this.styleLabel}" class="${this.clsLabel}" ${forattr}>${this.label}</label>`;
-			// if (this._addInputGroup) html += `<div class="M_InputGroup">` ;
+			html += `&lt;div style="${this.styleGroup}" class="M_FormGroup ${this.clsGroup}">`;
+			if (this.label !== "" &amp;&amp; (this.labelPosition == "left" || this.labelPosition == "top"))
+				html += `&lt;label style="${this.styleLabel}" class="${this.clsLabel}" ${forattr}>${this.label}&lt;/label>`;
+			// if (this._addInputGroup) html += `&lt;div class="M_InputGroup">` ;
 			var multiple = "";
 			if (this.multiple) multiple = "multiple";
 			if (this.inputType == "file") {
-				html += `<input ${tabindex} ${readOnly} id="${this.id}" type="${this.inputType}" style="${this
+				html += `&lt;input ${tabindex} ${readOnly} id="${this.id}" type="${this.inputType}" style="${this
 					.styleInput}" ${multiple} class="M_Input M_InputFile ${this.clsInput}" name="${this.name}" value="${v}" placeholder="${this
-					.placeholder}"><label class='M_InputFileLabel' for="${this.id}">${this.txtChooseFile}</label>`;
+					.placeholder}">&lt;label class='M_InputFileLabel' for="${this.id}">${this.txtChooseFile}&lt;/label>`;
 			} else if (this.inputType == "textarea") {
 				if (!this.height) this.height = 100;
 				this.styleInput += " height:" + this.height + "px;";
-				html += `<textarea ${tabindex} placeholder="${this.placeholder}" ${readOnly} id="${this.id}" class="M_Input ${this
-					.clsInput}" style="${this.styleInput}" rows="${this.rows}" name="${this.name}">${v}</textarea>`;
+				html += `&lt;textarea ${tabindex} placeholder="${this.placeholder}" ${readOnly} id="${this.id}" class="M_Input ${this
+					.clsInput}" style="${this.styleInput}" rows="${this.rows}" name="${this.name}">${v}&lt;/textarea>`;
 			} else if (this.inputType == "none") {
-				html += `<div id="${this.id}"></div>`;
+				html += `&lt;div id="${this.id}">&lt;/div>`;
 			} else {
 				var incremental = "";
 				if (this.incremental) incremental = 'incremental="incremental"';
-				html += `<input ${tabindex} ${readOnly} id="${this.id}" ${incremental} type="${this.inputType}" style="${this
+				html += `&lt;input ${tabindex} ${readOnly} id="${this.id}" ${incremental} type="${this.inputType}" style="${this
 					.styleInput}" class="M_Input ${this._clsMore} ${this.clsInput}" name="${this.name}" value="${v}" placeholder="${this
 					.placeholder}">`;
 			}
-			// if (this._addInputGroup) html += `</div>` ;
-			if (this.label !== "" && (this.labelPosition == "bottom" || this.labelPosition == "right"))
-				html += `<label style="${this.styleLabel}" class="${this.clsLabel}" ${forattr}">${this.label}</label>`;
-			html += `</div>`;
+			// if (this._addInputGroup) html += `&lt;/div>` ;
+			if (this.label !== "" &amp;&amp; (this.labelPosition == "bottom" || this.labelPosition == "right"))
+				html += `&lt;label style="${this.styleLabel}" class="${this.clsLabel}" ${forattr}">${this.label}&lt;/label>`;
+			html += `&lt;/div>`;
 		}
 		// log("html",html)
 		this.container.append(html);
@@ -6463,18 +6489,18 @@ M_.Form.Input = class extends M_.Outlet {
 		var ok = true,
 			val = this.getValue(),
 			err = "";
-		if (!this.allowEmpty && M_.Utils.isEmpty(val)) {
+		if (!this.allowEmpty &amp;&amp; M_.Utils.isEmpty(val)) {
 			ok = false;
 			err = "Ce champs ne peut pas être vide\n";
 		}
-		if (this.minLength !== null && val.length < this.minLength) {
-			if (val.length === 0 && this.allowEmpty) {
+		if (this.minLength !== null &amp;&amp; val.length &lt; this.minLength) {
+			if (val.length === 0 &amp;&amp; this.allowEmpty) {
 			} else {
 				ok = false;
 				err = "La longeur minimum est de " + this.minLength + " pour ce champs\n";
 			}
 		}
-		if (this.maxLength !== null && val.length > this.maxLength) {
+		if (this.maxLength !== null &amp;&amp; val.length > this.maxLength) {
 			ok = false;
 			err = "La longeur maximum est de " + this.maxLength + " pour ce champs\n";
 		}
@@ -6552,11 +6578,11 @@ M_.Form.Slider = class extends M_.Form.Input {
 		if (M_.Utils.isEmpty(this.id)) this.id = M_.Utils.id();
 		var v = this.value;
 		var jEl = $(
-			"<div class='M_Slider'><label class='M_SliderLabelLeft'>" +
+			"&lt;div class='M_Slider'>&lt;label class='M_SliderLabelLeft'>" +
 				this.labelLeft +
-				"</label><div class='M_SliderBar'><div class='M_SliderCursor'></div></div><label class='M_SliderLabelRight'>" +
+				"&lt;/label>&lt;div class='M_SliderBar'>&lt;div class='M_SliderCursor'>&lt;/div>&lt;/div>&lt;label class='M_SliderLabelRight'>" +
 				this.labelRight +
-				"</label><div class='M_Clear'></div></div>"
+				"&lt;/label>&lt;div class='M_Clear'>&lt;/div>&lt;/div>"
 		);
 		var wLabels = 0;
 		if (this.labelLeft === "") {
@@ -6592,7 +6618,7 @@ M_.Form.Slider = class extends M_.Form.Input {
 				var w = this.jEl.width();
 				// console.log("w % this.steps", Math.ceil(relX / (w/this.steps)));
 				pos = Math.ceil(relX / (w / this.steps)) - 1;
-				// if (pos<0) pos = 0 ;
+				// if (pos&lt;0) pos = 0 ;
 				this.setValue(pos);
 			}
 			this.trigger("change", this, pos);
@@ -6665,11 +6691,10 @@ M_.Form.Multi = class extends M_.Form.Input {
 			value: [],
 			onClickBtAdd: null,
 			chooseValues: null,
-			chooseValuesAreNumbers: true,
-			chooseValuesAreObjects: false
+			chooseValuesAreNumbers: true
 		};
 		opts._idBtAddKeyword = M_.Utils.id();
-		if (opts.label) opts.label += " <span id='" + opts._idBtAddKeyword + "' class='fa fa-plus faa-pulse animated-hover'>";
+		if (opts.label) opts.label += " &lt;span id='" + opts._idBtAddKeyword + "' class='fa fa-plus faa-pulse animated-hover'>";
 		opts = opts ? opts : {};
 		opts = $.extend({}, defaults, opts);
 		super(opts);
@@ -6686,7 +6711,7 @@ M_.Form.Multi = class extends M_.Form.Input {
 			let idTemp = M_.Utils.id();
 			let checked = "";
 			if (_.indexOf(this.value, c.key) >= 0) checked = "checked";
-			html += `<div class="M_FormMultiItem"><label for="${idTemp}"><input type='checkbox' id='${idTemp}' name='${idTemp}' data-id="${c.key}" ${checked}>${c.val}</label></div>`;
+			html += `&lt;div class="M_FormMultiItem">&lt;label for="${idTemp}">&lt;input type='checkbox' id='${idTemp}' name='${idTemp}' data-id="${c.key}" ${checked}>${c.val}&lt;/label>&lt;/div>`;
 		});
 		this.dd = new M_.Dropdown({
 			autoShow: true,
@@ -6706,20 +6731,18 @@ M_.Form.Multi = class extends M_.Form.Input {
 		});
 	}
 	/**
- 	 * @return {type}
- 	 */
+	 * @return {type}
+	 */
 	drawContainer() {
 		// log("this.value",this.value,this.name);
 		this.jEl.empty();
 		_.each(this.value, val => {
 			let valtxt = "",
 				valid = "";
-			// console.log("val", val);
 			if (this.chooseValues) {
 				let v2 = val;
 				if (!isNaN(val)) v2 = val * 1;
 				let v = _.find(this.chooseValues, { key: v2 });
-				// console.log("v2,val", v2, val);
 				if (v) {
 					valid = v.key;
 					valtxt = v.val;
@@ -6727,7 +6750,7 @@ M_.Form.Multi = class extends M_.Form.Input {
 			} else {
 				valid = valtxt = val;
 			}
-			let html = `<div class="M_ComboboxMultiItem selected" data-kw-id="${valid}">${valtxt} <span class="fa fa-trash faa-pulse animated-hover"></span></div>`;
+			let html = `&lt;div class="M_ComboboxMultiItem selected" data-kw-id="${valid}">${valtxt} &lt;span class="fa fa-trash faa-pulse animated-hover">&lt;/span>&lt;/div>`;
 			let jEl = $(html);
 			this.jEl.append(jEl);
 			jEl.find(".fa-trash").click(evt => {
@@ -6750,9 +6773,9 @@ M_.Form.Multi = class extends M_.Form.Input {
 		});
 	}
 	/**
- 	 * @param  {type}
- 	 * @return {type}
- 	 */
+	 * @param  {type}
+	 * @return {type}
+	 */
 	removeValue(valtoremove) {
 		// _.pull(this.value, val);
 		let oks = [];
@@ -6763,37 +6786,23 @@ M_.Form.Multi = class extends M_.Form.Input {
 		this.drawContainer();
 	}
 	/**
- 	 * @param {type}
- 	 */
+	 * @param {type}
+	 */
 	setValue(val) {
-		// console.log("setValue", val);
 		this.previousValue = this.value;
-		if (!_.isArray(val)) val = [];
+		if (val === "") val = [];
 		this.value = val;
-		if (this.chooseValuesAreObjects) {
-			if (this.value.length) {
-				if (_.isPlainObject(this.value[0])) {
-					this.chooseValues = val;
-					let oks = [];
-					_.each(this.value, v => {
-						oks.push(v.key);
-					});
-					this.value = oks;
-				}
-			}
-			// console.log("setValue,this.chooseValues,this.value", this.chooseValues, this.value);
-		}
 		this.drawContainer();
 	}
 	/**
- 	 * @return {type}
- 	 */
+	 * @return {type}
+	 */
 	getValue() {
 		return this.value;
 	}
 	/**
- 	 * @param {type}
- 	 */
+	 * @param {type}
+	 */
 	addValue(val) {
 		this.value.push(val);
 	}
@@ -6818,15 +6827,15 @@ M_.Form.Rating = class extends M_.Form.Input {
 		opts = $.extend({}, defaults, opts);
 		super(opts);
 		this.jEl.addClass("M_FormRate");
-		for (var i = 0; i < this.nbStars; i++) {
-			var el = $("<div class='M_FormRateItem'>" + i + "</div>");
+		for (var i = 0; i &lt; this.nbStars; i++) {
+			var el = $("&lt;div class='M_FormRateItem'>" + i + "&lt;/div>");
 			this.jEl.append(el);
 			el.mouseenter({ note: i }, evt => {
 				if (this._toExitStar) window.clearTimeout(this._toExitStar);
 				// log("mouseover", evt.data.note, $(evt.target))
 				// $(evt.target).addClass('over') ;
-				for (var i = 0; i < this.nbStars; i++) {
-					if (i <= evt.data.note * 1) this.jEl.find(".M_FormRateItem:nth-child(" + (i + 1) + ")").addClass("over");
+				for (var i = 0; i &lt; this.nbStars; i++) {
+					if (i &lt;= evt.data.note * 1) this.jEl.find(".M_FormRateItem:nth-child(" + (i + 1) + ")").addClass("over");
 					else this.jEl.find(".M_FormRateItem:nth-child(" + (i + 1) + ")").removeClass("over");
 				}
 			});
@@ -6848,8 +6857,8 @@ M_.Form.Rating = class extends M_.Form.Input {
 	drawContainer() {
 		// this.jEl.empty() ;
 		// this.jEl.removeClass('M_FormRate') ;
-		for (var i = 0; i < this.nbStars; i++) {
-			if (i <= this.value * 1) this.jEl.find(".M_FormRateItem:nth-child(" + (i + 1) + ")").addClass("over");
+		for (var i = 0; i &lt; this.nbStars; i++) {
+			if (i &lt;= this.value * 1) this.jEl.find(".M_FormRateItem:nth-child(" + (i + 1) + ")").addClass("over");
 			else this.jEl.find(".M_FormRateItem:nth-child(" + (i + 1) + ")").removeClass("over");
 		}
 	}
@@ -6909,7 +6918,7 @@ M_.Form.File = class extends M_.Form.Input {
 
 		this.jEl.on("change", evt => {
 			let fileName = "";
-			if (this.jEl.files && this.jEl.files.length > 1)
+			if (this.jEl.files &amp;&amp; this.jEl.files.length > 1)
 				fileName = (this.jEl.getAttribute("data-multiple-caption") || "").replace("{count}", this.jEl.files.length);
 			else fileName = evt.target.value.split("\\").pop();
 			if (fileName) this._labelButton.html(fileName);
@@ -6953,7 +6962,7 @@ M_.Form.File = class extends M_.Form.Input {
 	// 	if (!this.editable) readOnly = "readonly" ;
 	// 	var multiple = "" ;
 	// 	if (this.multiple) multiple = "multiple" ;
-	// 	this.jEl = $(`<input ${tabindex} ${readOnly} id="${this.id}" type="${this.inputType}" style="${this.styleInput}" ${multiple} class="M_Input ${this.clsInput}" name="${this.name}" value="" placeholder="${this.placeholder}">`) ;
+	// 	this.jEl = $(`&lt;input ${tabindex} ${readOnly} id="${this.id}" type="${this.inputType}" style="${this.styleInput}" ${multiple} class="M_Input ${this.clsInput}" name="${this.name}" value="" placeholder="${this.placeholder}">`) ;
 	// 	par.append(this.jEl) ;
 	// 	this.jEl.on('change', (evt)=> {
 	// 		this.trigger("change", this, evt) ;
@@ -7120,7 +7129,7 @@ M_.Form.Password = class extends M_.Form.Text {
 		super(opts);
 
 		if (this.checkstrength) {
-			this.jElPass = $("<div class='M_DivPassword'>OK</div>");
+			this.jElPass = $("&lt;div class='M_DivPassword'>OK&lt;/div>");
 			this.jElPass.hide();
 			this.container.append(this.jElPass);
 			this.container.css("position", "relative");
@@ -7129,9 +7138,9 @@ M_.Form.Password = class extends M_.Form.Text {
 				this.jElPass.show();
 				var score = this.checkPassword();
 				this.jElPass.removeClass("bg_col3 bg_col5 bg_col2");
-				if (score < 2) {
+				if (score &lt; 2) {
 					this.jElPass.addClass("bg_col3").html("Mauvais");
-				} else if (score < 4) {
+				} else if (score &lt; 4) {
 					this.jElPass.addClass("bg_col5").html("Moyen");
 				} else {
 					this.jElPass.addClass("bg_col2").html("Bon");
@@ -7149,7 +7158,7 @@ M_.Form.Password = class extends M_.Form.Text {
 		var v = this.jEl.val();
 		var err = [];
 		var score = 0;
-		if (v.length < this.minLength) {
+		if (v.length &lt; this.minLength) {
 			err.push(this.minLength + " char minimum");
 		} else score++;
 		var re = /[0-9]/;
@@ -7193,7 +7202,7 @@ M_.Form.TextEditor = class extends M_.Form.Textarea {
 		this.jEl.hide();
 		var idTemp1 = M_.Utils.id();
 		var idTemp2 = M_.Utils.id();
-		this.jEl.after("<div id='" + idTemp1 + "'></div><div><div class='M_FormEditor-Content' id='" + idTemp2 + "'></div></div>");
+		this.jEl.after("&lt;div id='" + idTemp1 + "'>&lt;/div>&lt;div>&lt;div class='M_FormEditor-Content' id='" + idTemp2 + "'>&lt;/div>&lt;/div>");
 		$("#" + idTemp2).height(this.heightEditor);
 		this.editor = new M_.Editor({
 			buttonsContainer: $("#" + idTemp1),
@@ -7254,17 +7263,17 @@ M_.Form.RadioGroup = class extends M_.Form.Input {
 		if (M_.Utils.isEmpty(this.id)) this.id = M_.Utils.id();
 		var v = this.value;
 		if ($.type(v) !== "string") v = "";
-		if ((this.labelPosition == "left" || this.labelPosition == "right") && this.label !== "") {
+		if ((this.labelPosition == "left" || this.labelPosition == "right") &amp;&amp; this.label !== "") {
 			this.clsLabel += " M_LabelLeft";
 			this.clsInput += " M_InputLeft";
 		}
 		if (
-			this.labelWidth > 0 &&
-			this.label !== "" &&
-			(this.labelPosition == "left" || this.labelPosition == "right") &&
+			this.labelWidth > 0 &amp;&amp;
+			this.label !== "" &amp;&amp;
+			(this.labelPosition == "left" || this.labelPosition == "right") &amp;&amp;
 			this.inputType != "checkbox"
 		) {
-			if (this.labelWidth <= 1) {
+			if (this.labelWidth &lt;= 1) {
 				this.styleLabel += " width:" + this.labelWidth * 100 + "%;";
 				this.styleInput += " width:" + (100 - this.labelWidth * 100) + "%;";
 			} else {
@@ -7279,19 +7288,19 @@ M_.Form.RadioGroup = class extends M_.Form.Input {
 		if (this.labelFocusInput) forattr = 'for="' + this.id + '"';
 		if (!this.editable) readOnly = "readonly";
 
-		// var html = `<div class='M_HorizontalForm'></div></div>` ;
+		// var html = `&lt;div class='M_HorizontalForm'>&lt;/div>&lt;/div>` ;
 
-		html += `<div style="${this.styleGroup}" class="M_FormGroup ${this.clsGroup}">`;
-		if (this.label !== "" && (this.labelPosition == "left" || this.labelPosition == "top"))
-			html += `<label style="${this.styleLabel}" class="${this.clsLabel}" ${forattr}>${this.label}</label>`;
-		html += `<div id="${this.id}" type="${this.inputType}" style="${this.styleInput}" class="M_Input ${this.clsInput}">`;
+		html += `&lt;div style="${this.styleGroup}" class="M_FormGroup ${this.clsGroup}">`;
+		if (this.label !== "" &amp;&amp; (this.labelPosition == "left" || this.labelPosition == "top"))
+			html += `&lt;label style="${this.styleLabel}" class="${this.clsLabel}" ${forattr}>${this.label}&lt;/label>`;
+		html += `&lt;div id="${this.id}" type="${this.inputType}" style="${this.styleInput}" class="M_Input ${this.clsInput}">`;
 		var nameTemp = M_.Utils.id();
 		_.each(this.items, item => {
 			let idTemp = M_.Utils.id();
-			html += `<div class="M_RadioGroupItem ${this
-				.radioPosition}"><input type='radio' name="${nameTemp}" id="${idTemp}" value="${item.key}" class="M_InputRight"/><label for="${idTemp}" class="M_LabelRight">${item.val}</label></div>`;
+			html += `&lt;div class="M_RadioGroupItem ${this
+				.radioPosition}">&lt;input type='radio' name="${nameTemp}" id="${idTemp}" value="${item.key}" class="M_InputRight"/>&lt;label for="${idTemp}" class="M_LabelRight">${item.val}&lt;/label>&lt;/div>`;
 		});
-		html += `</div></div>`;
+		html += `&lt;/div>&lt;/div>`;
 
 		this.container.append(html);
 		this.jEl = this.container.find(".M_HorizontalForm");
@@ -7422,7 +7431,7 @@ M_.Form.Checkbox = class extends M_.Form.Input {
  * @property {type} valueMax
  * @property {type} valueMin
  * @property {type} startEmpty
- * @property {type} allowComparison allow signs : > or < or = or >= or <=
+ * @property {type} allowComparison allow signs : > or &lt; or = or >= or &lt;=
  */
 M_.Form.Number = class extends M_.Form.Text {
 	constructor(opts) {
@@ -7450,10 +7459,10 @@ M_.Form.Number = class extends M_.Form.Text {
 		var re = "\\d";
 		if (this.allowNegative) re += "|\\-";
 		if (this.decimalLength > 0) re += "|\\" + this.decimalSeparator;
-		if (this.allowComparison) re += "|>|<|=";
+		if (this.allowComparison) re += "|>|&lt;|=";
 		this.regxValidChar = re;
 		var ok = super.validChar(txt);
-		if (this.maxLength && (this.jEl.val() + "").length >= this.maxLength) ok = false;
+		if (this.maxLength &amp;&amp; (this.jEl.val() + "").length >= this.maxLength) ok = false;
 		return ok;
 	}
 	/**
@@ -7461,7 +7470,7 @@ M_.Form.Number = class extends M_.Form.Text {
 	 */
 	setValue(v) {
 		// log("setValue",v)
-		if (this.startEmpty && (v === "" || v === null || typeof v === "undefined")) return this.jEl.val("");
+		if (this.startEmpty &amp;&amp; (v === "" || v === null || typeof v === "undefined")) return this.jEl.val("");
 		v = v * 1;
 		this.value = v;
 		var v2 = v;
@@ -7481,7 +7490,7 @@ M_.Form.Number = class extends M_.Form.Text {
 	 * @return {type}
 	 */
 	getValue(serialized = false) {
-		if (this.startEmpty && this.jEl.val() === "") return null;
+		if (this.startEmpty &amp;&amp; this.jEl.val() === "") return null;
 		var v = (this.jEl.val() + "").replace(this.decimalSeparator, ".");
 		this.value = v * 1;
 		if (this.allowComparison) this.value = v;
@@ -7560,7 +7569,7 @@ M_.Form.Picker = class extends M_.Form.Text {
 
 		super(optsTemp);
 
-		if (this.showDropdownOnFocus && this.hasDropdown) {
+		if (this.showDropdownOnFocus &amp;&amp; this.hasDropdown) {
 			this._sameEventEventClick = false;
 			this.jEl.on("click", evt => {
 				// focus
@@ -7641,14 +7650,14 @@ M_.Form.Picker = class extends M_.Form.Text {
 		if (!this.hidePicker) {
 			var moreCls = "",
 				moreStyle = "";
-			if ((this.labelPosition == "left" || this.labelPosition == "right") && this.label !== "") {
+			if ((this.labelPosition == "left" || this.labelPosition == "right") &amp;&amp; this.label !== "") {
 				moreCls += " M_InputLeft";
 				moreStyle += " width:calc(100% - " + this.labelWidth + "px);";
 			}
 			this.jEl.outerWidth("100%");
 			this.jEl.removeClass("M_InputLeft");
-			this.jEl.wrap("<div class='M_FormInputGroup " + moreCls + "' style='" + moreStyle + "'>");
-			var htmlCaret = `<div class="M_FormCaret ${this.icon}" style='${this.stylePicker}'></div>`;
+			this.jEl.wrap("&lt;div class='M_FormInputGroup " + moreCls + "' style='" + moreStyle + "'>");
+			var htmlCaret = `&lt;div class="M_FormCaret ${this.icon}" style='${this.stylePicker}'>&lt;/div>`;
 			this.caret = $(htmlCaret);
 			this.container.find(".M_FormInputGroup").append(this.caret);
 			this.caret.click(evt => {
@@ -7745,7 +7754,7 @@ M_.Form.Date = class extends M_.Form.Picker {
 	 */
 	showDropdown(evt) {
 		super.showDropdown(evt);
-		if (moment.isMoment(this.value) && this.calendar) {
+		if (moment.isMoment(this.value) &amp;&amp; this.calendar) {
 			this.calendar.setDateViewed(this.value);
 			this.calendar.setDateSelected(this.value);
 		}
@@ -7843,23 +7852,23 @@ M_.Form.Hour = class extends M_.Form.Date {
 	createDropdown() {
 		// log("createDropdown")
 		var html = `
-		<div class="">
-			<div class="M_Col6 M_FormHour_hour_up"><span class="fa fa-chevron-up"></span></div>
-			<div class="M_Col6 M_FormHour_minute_up"><span class="fa fa-chevron-up"></span></div>
-			<div class="M_Col6 M_FormHour_second_up"><span class="fa fa-chevron-up"></span></div>
-			<div class="M_Clear"></div>
+		&lt;div class="">
+			&lt;div class="M_Col6 M_FormHour_hour_up">&lt;span class="fa fa-chevron-up">&lt;/span>&lt;/div>
+			&lt;div class="M_Col6 M_FormHour_minute_up">&lt;span class="fa fa-chevron-up">&lt;/span>&lt;/div>
+			&lt;div class="M_Col6 M_FormHour_second_up">&lt;span class="fa fa-chevron-up">&lt;/span>&lt;/div>
+			&lt;div class="M_Clear">&lt;/div>
 
-			<div class="M_Col6"><input type="text" class="form-control M_FormHour_hour" placeholder="" maxlength="2"></div>
-			<div class="M_Col6"><input type="text" class="form-control M_FormHour_minute" placeholder="" maxlength="2"></div>
-			<div class="M_Col6"><input type="text" class="form-control M_FormHour_second" placeholder="" maxlength="2"></div>
-			<div class="M_Clear"></div>
+			&lt;div class="M_Col6">&lt;input type="text" class="form-control M_FormHour_hour" placeholder="" maxlength="2">&lt;/div>
+			&lt;div class="M_Col6">&lt;input type="text" class="form-control M_FormHour_minute" placeholder="" maxlength="2">&lt;/div>
+			&lt;div class="M_Col6">&lt;input type="text" class="form-control M_FormHour_second" placeholder="" maxlength="2">&lt;/div>
+			&lt;div class="M_Clear">&lt;/div>
 
-			<div class="M_Col6 M_FormHour_hour_down"><span class="fa fa-chevron-down"></span></div>
-			<div class="M_Col6 M_FormHour_minute_down"><span class="fa fa-chevron-down"></span></div>
-			<div class="M_Col6 M_FormHour_second_down"><span class="fa fa-chevron-down"></span></div>
-			<div class="M_Clear"></div>
-			<div>
-		</div>
+			&lt;div class="M_Col6 M_FormHour_hour_down">&lt;span class="fa fa-chevron-down">&lt;/span>&lt;/div>
+			&lt;div class="M_Col6 M_FormHour_minute_down">&lt;span class="fa fa-chevron-down">&lt;/span>&lt;/div>
+			&lt;div class="M_Col6 M_FormHour_second_down">&lt;span class="fa fa-chevron-down">&lt;/span>&lt;/div>
+			&lt;div class="M_Clear">&lt;/div>
+			&lt;div>
+		&lt;/div>
 		`;
 		this.dropdown = new M_.Dropdown({
 			destroyOnHide: true,
@@ -7880,7 +7889,7 @@ M_.Form.Hour = class extends M_.Form.Date {
 		// log("this.value",this.value)
 		if (this.jEl.val().length > 0) this.value = moment(this.jEl.val(), this.dateFormat);
 		this.setToCurrent();
-		if (this.dateFormat.indexOf("s") < 0) {
+		if (this.dateFormat.indexOf("s") &lt; 0) {
 			this.jElDropdown.find(".M_FormHour_second_up, .M_FormHour_second_down").hide();
 			this.jElDropdown
 				.find(".M_FormHour_second")
@@ -8028,7 +8037,7 @@ M_.Form.DateHour = class extends M_.Form.Input {
 		var optsTemp = $.extend({}, defaults, opts);
 		super(optsTemp);
 
-		// if ((this.labelPosition=='left' || this.labelPosition=='right') && this.labelWidth===0) this.labelWidth = 0.3 ;
+		// if ((this.labelPosition=='left' || this.labelPosition=='right') &amp;&amp; this.labelWidth===0) this.labelWidth = 0.3 ;
 	}
 	/**
 	 * @return {type}
@@ -8040,17 +8049,17 @@ M_.Form.DateHour = class extends M_.Form.Input {
 		if (M_.Utils.isEmpty(this.id)) this.id = M_.Utils.id();
 		var v = this.value;
 		if ($.type(v) !== "string") v = "";
-		if ((this.labelPosition == "left" || this.labelPosition == "right") && this.label !== "") {
+		if ((this.labelPosition == "left" || this.labelPosition == "right") &amp;&amp; this.label !== "") {
 			this.clsLabel += " M_LabelLeft";
 			this.clsInput += " M_InputLeft";
 		}
 		if (
-			this.labelWidth > 0 &&
-			this.label !== "" &&
-			(this.labelPosition == "left" || this.labelPosition == "right") &&
+			this.labelWidth > 0 &amp;&amp;
+			this.label !== "" &amp;&amp;
+			(this.labelPosition == "left" || this.labelPosition == "right") &amp;&amp;
 			this.inputType != "checkbox"
 		) {
-			if (this.labelWidth <= 1) {
+			if (this.labelWidth &lt;= 1) {
 				this.styleLabel += " width:" + this.labelWidth * 100 + "%;";
 				this.styleInput += " width:" + (100 - this.labelWidth * 100) + "%;";
 			} else {
@@ -8065,14 +8074,14 @@ M_.Form.DateHour = class extends M_.Form.Input {
 		if (this.labelFocusInput) forattr = 'for="' + this.id + '"';
 		if (!this.editable) readOnly = "readonly";
 
-		// var html = `<div class='M_HorizontalForm'></div></div>` ;
+		// var html = `&lt;div class='M_HorizontalForm'>&lt;/div>&lt;/div>` ;
 
-		html += `<div style="${this.styleGroup}" class="M_FormGroup ${this.clsGroup}">`;
-		if (this.label !== "" && (this.labelPosition == "left" || this.labelPosition == "top"))
-			html += `<label style="${this.styleLabel}" class="${this.clsLabel}" ${forattr}>${this.label}</label>`;
-		html += `<div id="${this.id}" type="${this.inputType}" style="${this.styleInput}" class="M_Input ${this
-			.clsInput}"><div id='${id1}' class='M_FloatLeft'></div><div id='${id2}' class='M_FloatLeft'></div>`;
-		html += `</div>`;
+		html += `&lt;div style="${this.styleGroup}" class="M_FormGroup ${this.clsGroup}">`;
+		if (this.label !== "" &amp;&amp; (this.labelPosition == "left" || this.labelPosition == "top"))
+			html += `&lt;label style="${this.styleLabel}" class="${this.clsLabel}" ${forattr}>${this.label}&lt;/label>`;
+		html += `&lt;div id="${this.id}" type="${this.inputType}" style="${this.styleInput}" class="M_Input ${this
+			.clsInput}">&lt;div id='${id1}' class='M_FloatLeft'>&lt;/div>&lt;div id='${id2}' class='M_FloatLeft'>&lt;/div>`;
+		html += `&lt;/div>`;
 
 		this.container.append(html);
 		this.jEl = this.container.find(".M_HorizontalForm");
@@ -8189,7 +8198,7 @@ M_.Form.Combobox = class extends M_.Form.Picker {
 	 */
 	create() {
 		super.create();
-		// this.caret = $('<span class="fa fa-caret-down M_caret M_showonedit"></span>') ;
+		// this.caret = $('&lt;span class="fa fa-caret-down M_caret M_showonedit">&lt;/span>') ;
 		// this.container.find('.M_editable').after(this.caret);
 		// this.caret.click($.proxy(this.showDropdown, this)) ;
 	}
@@ -8237,7 +8246,7 @@ M_.Form.Combobox = class extends M_.Form.Picker {
 	getValue() {
 		if (this.useRawValue) return this.getRawValue();
 		if (this.getRawValue() === "") this.value = "";
-		if (this.value === "" && this.useZeroIfEmpty) return 0;
+		if (this.value === "" &amp;&amp; this.useZeroIfEmpty) return 0;
 		return this.value;
 	}
 	/**
@@ -8335,9 +8344,9 @@ M_.Form.ComboboxMulti = class extends M_.Form.Combobox {
 		var optsTemp = $.extend({}, defaults, opts);
 		super(optsTemp);
 
-		this.jElForMulti = $("<div></div>");
+		this.jElForMulti = $("&lt;div>&lt;/div>");
 		this.container.append(this.jElForMulti);
-		this.container.append("<div class='M_Clear'></div>");
+		this.container.append("&lt;div class='M_Clear'>&lt;/div>");
 	}
 	onEnterInput() {
 		if (this.allowCreate) {
@@ -8372,9 +8381,9 @@ M_.Form.ComboboxMulti = class extends M_.Form.Combobox {
 	addItemMulti(val, realval, deletable) {
 		var idTemp = M_.Utils.id();
 		var html =
-			"<div class='M_ComboboxMultiItem selected' data-comboboxmultiitem=\"" + val + '" data-comboboxmultiitemval="' + realval + '">' + realval;
-		if (deletable !== false) html += "&nbsp;<span class='fa fa-trash faa-pulse animated-hover' id='" + idTemp + "'></span>";
-		html += " </div>";
+			"&lt;div class='M_ComboboxMultiItem selected' data-comboboxmultiitem=\"" + val + '" data-comboboxmultiitemval="' + realval + '">' + realval;
+		if (deletable !== false) html += "&amp;nbsp;&lt;span class='fa fa-trash faa-pulse animated-hover' id='" + idTemp + "'>&lt;/span>";
+		html += " &lt;/div>";
 		this.jElForMulti.append(html);
 		if (deletable !== false) {
 			$("#" + idTemp).click(evt => {
@@ -8594,7 +8603,7 @@ M_.Editor = class {
 
 		if (this.container) {
 			this.setContainer(this.container);
-			this.path = $("<div class='M_FormEditor-Path'>&nbsp;</div>");
+			this.path = $("&lt;div class='M_FormEditor-Path'>&amp;nbsp;&lt;/div>");
 			this.container.after(this.path);
 		}
 		document.execCommand("styleWithCSS", false, false);
@@ -8623,7 +8632,7 @@ M_.Editor = class {
 		document.execCommand(
 			"insertHTML",
 			false,
-			"<table><tr><td>Cell 1.1</td><td>Cell 1.2</td></tr><tr><td>Cell 2.1</td><td>Cell 2.2</td></tr></table>"
+			"&lt;table>&lt;tr>&lt;td>Cell 1.1&lt;/td>&lt;td>Cell 1.2&lt;/td>&lt;/tr>&lt;tr>&lt;td>Cell 2.1&lt;/td>&lt;td>Cell 2.2&lt;/td>&lt;/tr>&lt;/table>"
 		);
 		this.caretMove();
 	}
@@ -8640,7 +8649,7 @@ M_.Editor = class {
 	 */
 	execInsertTableColumn() {
 		var td = $(document.getSelection().getRangeAt(0).commonAncestorContainer).closest("td");
-		if (td.length && td.closest("#" + this.container.get(0).id).length) {
+		if (td.length &amp;&amp; td.closest("#" + this.container.get(0).id).length) {
 			var n = td
 				.closest("tr")
 				.find("td")
@@ -8652,7 +8661,7 @@ M_.Editor = class {
 					$(this)
 						.find("td")
 						.eq(n)
-						.after("<td>Nouvelle cellule</td>");
+						.after("&lt;td>Nouvelle cellule&lt;/td>");
 				});
 		}
 	}
@@ -8661,12 +8670,12 @@ M_.Editor = class {
 	 */
 	execInsertTableRow() {
 		var tr = $(document.getSelection().getRangeAt(0).commonAncestorContainer).closest("tr");
-		if (tr.length && tr.closest("#" + this.container.get(0).id).length) {
+		if (tr.length &amp;&amp; tr.closest("#" + this.container.get(0).id).length) {
 			// var n = tr.closest("table").find("tr").index(tr) ;
 			var countTds = tr.find("td").length;
-			var newTr = $("<tr></tr>");
-			for (var i = 0; i < countTds; i++) {
-				newTr.append("<td>Nouvelle cellule</td>");
+			var newTr = $("&lt;tr>&lt;/tr>");
+			for (var i = 0; i &lt; countTds; i++) {
+				newTr.append("&lt;td>Nouvelle cellule&lt;/td>");
 			}
 			tr.after(newTr);
 		}
@@ -8688,23 +8697,23 @@ M_.Editor = class {
 						idBtCancel = M_.Utils.id(),
 						idLink = M_.Utils.id(),
 						idTarget = M_.Utils.id();
-					this.html = `<div class="M_WindowContent">
-						<div class="M_WindowHeader">
-							<h1>Edition <b>d'un lien</b></h1>
-						</div>
-						<div class="M_WindowBody">
-							<div id="${idLink}"></div>
-							<div id="${idTarget}"></div>
-						</div>
-						<div class="M_WindowFooter">
-							<div class="M_FloatRight">
-								<button id="${idBtSave}" type="button" class="M_Button primary">Enregistrer</button>
-							</div>
-							<div class="M_FloatLeft">
-								<button id="${idBtCancel}" type="button" class="M_Button">Annuler</button>
-							</div>
-						</div>
-					</div>`;
+					this.html = `&lt;div class="M_WindowContent">
+						&lt;div class="M_WindowHeader">
+							&lt;h1>Edition &lt;b>d'un lien&lt;/b>&lt;/h1>
+						&lt;/div>
+						&lt;div class="M_WindowBody">
+							&lt;div id="${idLink}">&lt;/div>
+							&lt;div id="${idTarget}">&lt;/div>
+						&lt;/div>
+						&lt;div class="M_WindowFooter">
+							&lt;div class="M_FloatRight">
+								&lt;button id="${idBtSave}" type="button" class="M_Button primary">Enregistrer&lt;/button>
+							&lt;/div>
+							&lt;div class="M_FloatLeft">
+								&lt;button id="${idBtCancel}" type="button" class="M_Button">Annuler&lt;/button>
+							&lt;/div>
+						&lt;/div>
+					&lt;/div>`;
 					super.create();
 
 					this.form = new M_.Form.Form({
@@ -8768,22 +8777,22 @@ M_.Editor = class {
 					var idBtSave = M_.Utils.id(),
 						idBtCancel = M_.Utils.id(),
 						idCode = M_.Utils.id();
-					this.html = `<div class="M_WindowContent">
-						<div class="M_WindowHeader">
-							<h1>Edition <b>du code source</b></h1>
-						</div>
-						<div class="M_WindowBody">
-							<div id="${idCode}"></div>
-						</div>
-						<div class="M_WindowFooter">
-							<div class="M_FloatRight">
-								<button id="${idBtSave}" type="button" class="M_Button primary">Enregistrer</button>
-							</div>
-							<div class="M_FloatLeft">
-								<button id="${idBtCancel}" type="button" class="M_Button">Annuler</button>
-							</div>
-						</div>
-					</div>`;
+					this.html = `&lt;div class="M_WindowContent">
+						&lt;div class="M_WindowHeader">
+							&lt;h1>Edition &lt;b>du code source&lt;/b>&lt;/h1>
+						&lt;/div>
+						&lt;div class="M_WindowBody">
+							&lt;div id="${idCode}">&lt;/div>
+						&lt;/div>
+						&lt;div class="M_WindowFooter">
+							&lt;div class="M_FloatRight">
+								&lt;button id="${idBtSave}" type="button" class="M_Button primary">Enregistrer&lt;/button>
+							&lt;/div>
+							&lt;div class="M_FloatLeft">
+								&lt;button id="${idBtCancel}" type="button" class="M_Button">Annuler&lt;/button>
+							&lt;/div>
+						&lt;/div>
+					&lt;/div>`;
 					super.create();
 
 					this.form = new M_.Form.Form({
@@ -8838,28 +8847,28 @@ M_.Editor = class {
 						idstyle = M_.Utils.id(),
 						idid = M_.Utils.id(),
 						idalign = M_.Utils.id();
-					this.html = `<div class="M_WindowContent">
-						<div class="M_WindowHeader">
-							<h1>Edition <b>d'un tableau</b></h1>
-						</div>
-						<div class="M_WindowBody">
-							<div id="${idwidth}"></div>
-							<div id="${idcellspacing}"></div>
-							<div id="${idcellpadding}"></div>
-							<div id="${idborder}"></div>
-							<div id="${idstyle}"></div>
-							<div id="${idid}"></div>
-							<div id="${idalign}"></div>
-						</div>
-						<div class="M_WindowFooter">
-							<div class="M_FloatRight">
-								<button id="${idBtSave}" type="button" class="M_Button primary">Enregistrer</button>
-							</div>
-							<div class="M_FloatLeft">
-								<button id="${idBtCancel}" type="button" class="M_Button">Annuler</button>
-							</div>
-						</div>
-					</div>`;
+					this.html = `&lt;div class="M_WindowContent">
+						&lt;div class="M_WindowHeader">
+							&lt;h1>Edition &lt;b>d'un tableau&lt;/b>&lt;/h1>
+						&lt;/div>
+						&lt;div class="M_WindowBody">
+							&lt;div id="${idwidth}">&lt;/div>
+							&lt;div id="${idcellspacing}">&lt;/div>
+							&lt;div id="${idcellpadding}">&lt;/div>
+							&lt;div id="${idborder}">&lt;/div>
+							&lt;div id="${idstyle}">&lt;/div>
+							&lt;div id="${idid}">&lt;/div>
+							&lt;div id="${idalign}">&lt;/div>
+						&lt;/div>
+						&lt;div class="M_WindowFooter">
+							&lt;div class="M_FloatRight">
+								&lt;button id="${idBtSave}" type="button" class="M_Button primary">Enregistrer&lt;/button>
+							&lt;/div>
+							&lt;div class="M_FloatLeft">
+								&lt;button id="${idBtCancel}" type="button" class="M_Button">Annuler&lt;/button>
+							&lt;/div>
+						&lt;/div>
+					&lt;/div>`;
 					super.create();
 
 					this.form = new M_.Form.Form({
@@ -8978,25 +8987,25 @@ M_.Editor = class {
 						idalign = M_.Utils.id(),
 						idvalign = M_.Utils.id(),
 						idcolor = M_.Utils.id();
-					this.html = `<div class="M_WindowContent">
-						<div class="M_WindowHeader">
-							<h1>Edition <b>d'une cellule</b></h1>
-						</div>
-						<div class="M_WindowBody">
-							<div id="${idwidth}"></div>
-							<div id="${idalign}"></div>
-							<div id="${idvalign}"></div>
-							<div id="${idcolor}"></div>
-						</div>
-						<div class="M_WindowFooter">
-							<div class="M_FloatRight">
-								<button id="${idBtSave}" type="button" class="M_Button primary">Enregistrer</button>
-							</div>
-							<div class="M_FloatLeft">
-								<button id="${idBtCancel}" type="button" class="M_Button">Annuler</button>
-							</div>
-						</div>
-					</div>`;
+					this.html = `&lt;div class="M_WindowContent">
+						&lt;div class="M_WindowHeader">
+							&lt;h1>Edition &lt;b>d'une cellule&lt;/b>&lt;/h1>
+						&lt;/div>
+						&lt;div class="M_WindowBody">
+							&lt;div id="${idwidth}">&lt;/div>
+							&lt;div id="${idalign}">&lt;/div>
+							&lt;div id="${idvalign}">&lt;/div>
+							&lt;div id="${idcolor}">&lt;/div>
+						&lt;/div>
+						&lt;div class="M_WindowFooter">
+							&lt;div class="M_FloatRight">
+								&lt;button id="${idBtSave}" type="button" class="M_Button primary">Enregistrer&lt;/button>
+							&lt;/div>
+							&lt;div class="M_FloatLeft">
+								&lt;button id="${idBtCancel}" type="button" class="M_Button">Annuler&lt;/button>
+							&lt;/div>
+						&lt;/div>
+					&lt;/div>`;
 					super.create();
 
 					this.form = new M_.Form.Form({
@@ -9104,28 +9113,28 @@ M_.Editor = class {
 					var idBtSave = M_.Utils.id(),
 						idBtCancel = M_.Utils.id(),
 						idCode = M_.Utils.id();
-					this.html = `<div class="M_WindowContent">
-						<div class="M_WindowHeader">
-							<h1>Envoyer <b>des images</b></h1>
-						</div>
-						<div class="M_WindowBody">
-							<div id="${idCode}"></div>
-							<div class="m_dropherenewimage" contenteditable><h2>Déposer ici un (ou des) fichier(s) de votre bureau</h2></div>
-							<h2 style="margin-top:15px;">Ou choisissez les fichiers à envoyer</h2>
-							<input type="file" class="m_fileinput" multiple />
-							<div class="M_Clear"></div>
-							<output class="m_fileoutput"></output>
-							<div class="M_Clear"></div>
-						</div>
-						<div class="M_WindowFooter">
-							<div class="M_FloatRight">
-								<button id="${idBtSave}" type="button" class="M_Button primary">Enregistrer</button>
-							</div>
-							<div class="M_FloatLeft">
-								<button id="${idBtCancel}" type="button" class="M_Button">Annuler</button>
-							</div>
-						</div>
-					</div>`;
+					this.html = `&lt;div class="M_WindowContent">
+						&lt;div class="M_WindowHeader">
+							&lt;h1>Envoyer &lt;b>des images&lt;/b>&lt;/h1>
+						&lt;/div>
+						&lt;div class="M_WindowBody">
+							&lt;div id="${idCode}">&lt;/div>
+							&lt;div class="m_dropherenewimage" contenteditable>&lt;h2>Déposer ici un (ou des) fichier(s) de votre bureau&lt;/h2>&lt;/div>
+							&lt;h2 style="margin-top:15px;">Ou choisissez les fichiers à envoyer&lt;/h2>
+							&lt;input type="file" class="m_fileinput" multiple />
+							&lt;div class="M_Clear">&lt;/div>
+							&lt;output class="m_fileoutput">&lt;/output>
+							&lt;div class="M_Clear">&lt;/div>
+						&lt;/div>
+						&lt;div class="M_WindowFooter">
+							&lt;div class="M_FloatRight">
+								&lt;button id="${idBtSave}" type="button" class="M_Button primary">Enregistrer&lt;/button>
+							&lt;/div>
+							&lt;div class="M_FloatLeft">
+								&lt;button id="${idBtCancel}" type="button" class="M_Button">Annuler&lt;/button>
+							&lt;/div>
+						&lt;/div>
+					&lt;/div>`;
 					super.create();
 
 					this.jEl.find(".m_dropherenewimage").on(
@@ -9147,7 +9156,7 @@ M_.Editor = class {
 							e.preventDefault();
 							var files = e.originalEvent.dataTransfer.files;
 							if (files.length === 0) return;
-							for (var i = 0; i < files.length; i++) {
+							for (var i = 0; i &lt; files.length; i++) {
 								var f = files[i];
 								this.createThumbnail(f);
 							}
@@ -9156,7 +9165,7 @@ M_.Editor = class {
 
 					$("#" + idBtSave).click(() => {
 						var formData = new FormData();
-						for (var i = 0; i < this.tabFilesToSend.length; i++) {
+						for (var i = 0; i &lt; this.tabFilesToSend.length; i++) {
 							formData.append("file" + i, this.tabFilesToSend[i]);
 						}
 						var xhr = new XMLHttpRequest();
@@ -9170,7 +9179,7 @@ M_.Editor = class {
 								if (jsonResponse.tabRes.length > 0) img = jsonResponse.tabRes[0];
 								me.callbackSave(img);
 							} else {
-								for (var i = 0; i < jsonResponse.tabRes.length; i++) {
+								for (var i = 0; i &lt; jsonResponse.tabRes.length; i++) {
 									document.execCommand("insertImage", false, jsonResponse.tabRes[i]);
 								}
 							}
@@ -9182,7 +9191,7 @@ M_.Editor = class {
 							if (e.lengthComputable) {
 								// var complete = (e.loaded / e.total * 100 | 0);
 								//Mlog("complete",complete)
-								//updates a <progress> tag to show upload progress
+								//updates a &lt;progress> tag to show upload progress
 								//$('progress').val(complete);
 							}
 						};
@@ -9201,7 +9210,7 @@ M_.Editor = class {
 						$.proxy(function(e) {
 							var files = e.target.files;
 							if (files.length === 0) return;
-							for (var i = 0; i < files.length; i++) {
+							for (var i = 0; i &lt; files.length; i++) {
 								var f = files[i];
 								this.createThumbnail(f);
 							}
@@ -9216,7 +9225,7 @@ M_.Editor = class {
 					reader.onload = (function(theFile) {
 						return function(e) {
 							list.append(
-								['<img style="margin:0 15px 15px 0" src="', e.target.result, '" title="', theFile.name, '" width="100" />'].join("")
+								['&lt;img style="margin:0 15px 15px 0" src="', e.target.result, '" title="', theFile.name, '" width="100" />'].join("")
 							);
 							me.center();
 						};
@@ -9243,10 +9252,10 @@ M_.Editor = class {
 				});
 				tabTemp.reverse();
 				tabTemp.push("text");
-				html = tabTemp.join(" &gt; ");
+				html = tabTemp.join(" &amp;gt; ");
 			}
 			//html += sel.get(0).tagName ;
-			html += "&nbsp;";
+			html += "&amp;nbsp;";
 			this.path.html(html);
 		}
 
@@ -9267,20 +9276,20 @@ M_.Editor = class {
 	 * @return {type}
 	 */
 	createButtons() {
-		var toolbar = $("<div>", { class: "M_Editor", role: "toolbar" });
+		var toolbar = $("&lt;div>", { class: "M_Editor", role: "toolbar" });
 		this.buttonsContainer.append(toolbar);
-		// var currentGroup = $("<div>", {'class':'btn-group'}) ;
+		// var currentGroup = $("&lt;div>", {'class':'btn-group'}) ;
 		// toolbar.append(currentGroup) ;
-		for (var i = 0; i < this.buttons.length; i++) {
+		for (var i = 0; i &lt; this.buttons.length; i++) {
 			let bt = this.buttons[i];
-			if (_.indexOf(this.buttonsToDisplay, bt[0]) < 0) continue;
+			if (_.indexOf(this.buttonsToDisplay, bt[0]) &lt; 0) continue;
 			if (bt[0] === "|") {
-				// currentGroup = $("<div>", {'class':'btn-group'}) ;
+				// currentGroup = $("&lt;div>", {'class':'btn-group'}) ;
 				// toolbar.append(currentGroup) ;
 			} else {
 				let caret = "";
-				if (bt[5]) caret = "<span class='fa fa-caret-down'></span>";
-				let button = $("<button m_id='" + bt[0] + "'><i class='fa " + bt[2] + "'></i> " + caret + "</button>");
+				if (bt[5]) caret = "&lt;span class='fa fa-caret-down'>&lt;/span>";
+				let button = $("&lt;button m_id='" + bt[0] + "'>&lt;i class='fa " + bt[2] + "'>&lt;/i> " + caret + "&lt;/button>");
 				toolbar.append(button);
 				if (bt[5]) {
 					button.click({ items: bt[5] }, evt => {
@@ -9289,7 +9298,7 @@ M_.Editor = class {
 						var items = [];
 						_.each(evt.data.items, item => {
 							let nameTemp = item[1];
-							if (item[2] && item[2] !== "") nameTemp = "<i class='fa " + item[2] + "'></i>&nbsp;" + nameTemp;
+							if (item[2] &amp;&amp; item[2] !== "") nameTemp = "&lt;i class='fa " + item[2] + "'>&lt;/i>&amp;nbsp;" + nameTemp;
 							items.push({
 								text: nameTemp,
 								click: evt => {
@@ -9399,7 +9408,7 @@ M_.Editor = class {
 				xhr.upload.onprogress = function(e) {
 					if (e.lengthComputable) {
 						// var complete = (e.loaded / e.total * 100 | 0);
-						//updates a <progress> tag to show upload progress
+						//updates a &lt;progress> tag to show upload progress
 						//$('progress').val(complete);
 					}
 				};
@@ -9429,7 +9438,7 @@ window.log = function() {
 };
 
 // (function(factory) {
-// 	if (typeof define === 'function' && define.amd) {
+// 	if (typeof define === 'function' &amp;&amp; define.amd) {
 // 		define([ 'jquery' ], factory);
 // 	}
 // 	else {
@@ -9453,7 +9462,7 @@ window.log = function() {
 // 		var draggable = element.data('m_draggable');
 // 		var singleRes;
 // 		if (typeof options === 'string') {
-// 			if (draggable && $.isFunction(draggable[options])) {
+// 			if (draggable &amp;&amp; $.isFunction(draggable[options])) {
 // 				singleRes = draggable[options].apply(draggable, args);
 // 				if (!i) res = singleRes;
 // 				if (options === 'destroy') element.removeData('m_draggable');
@@ -9496,7 +9505,7 @@ window.log = function() {
 // // 			this.dragStart = false ;
 // // 		}, this)) ;
 // // 		$(document).mousemove({el:el}, $.proxy(function(evt) {
-// // 			if (this.dragStart && this.dragEl == evt.data.el) {
+// // 			if (this.dragStart &amp;&amp; this.dragEl == evt.data.el) {
 // // 				var top = evt.pageY ;
 // // 				var left = evt.pageX ;
 // // 				this.dragEl.offset({top: top-this.dragDiff.top, left: left-this.dragDiff.left}) ;
@@ -9532,7 +9541,7 @@ window.log = function() {
 // 			this.dragStart = false ;
 // 		}, this)) ;
 // 		$(document).mousemove({el:el}, $.proxy(function(evt) {
-// 			if (this.dragStart && this.dragEl == evt.data.el) {
+// 			if (this.dragStart &amp;&amp; this.dragEl == evt.data.el) {
 // 				var top = evt.pageY ;
 // 				var left = evt.pageX ;
 // 				this.dragEl.offset({top: top-this.dragDiff.top, left: left-this.dragDiff.left}) ;
@@ -9564,3 +9573,26 @@ window.log = function() {
 
 // l'utiliser pour la création du PDF ? http://www.jqueryrain.com/?l1iRfaTH
 /// ...pas mal du tout, car çà permet de laisser en colonne !!!!
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="M_.App.html">M_.App</a></li><li><a href="M_.Button.html">M_.Button</a></li><li><a href="M_.CalendarMonth.html">M_.CalendarMonth</a></li><li><a href="M_.Controller.html">M_.Controller</a></li><li><a href="M_.Drawer.html">M_.Drawer</a></li><li><a href="M_.Dropdown.html">M_.Dropdown</a></li><li><a href="M_.Editor.html">M_.Editor</a></li><li><a href="M_.Form.Checkbox.html">M_.Form.Checkbox</a></li><li><a href="M_.Form.Color.html">M_.Form.Color</a></li><li><a href="M_.Form.Combobox.html">M_.Form.Combobox</a></li><li><a href="M_.Form.ComboboxMulti.html">M_.Form.ComboboxMulti</a></li><li><a href="M_.Form.Date.html">M_.Form.Date</a></li><li><a href="M_.Form.DateHour.html">M_.Form.DateHour</a></li><li><a href="M_.Form.Display.html">M_.Form.Display</a></li><li><a href="M_.Form.Div.html">M_.Form.Div</a></li><li><a href="M_.Form.File.html">M_.Form.File</a></li><li><a href="M_.Form.Form.html">M_.Form.Form</a></li><li><a href="M_.Form.Hidden.html">M_.Form.Hidden</a></li><li><a href="M_.Form.Hour.html">M_.Form.Hour</a></li><li><a href="M_.Form.Input.html">M_.Form.Input</a></li><li><a href="M_.Form.Multi.html">M_.Form.Multi</a></li><li><a href="M_.Form.Number.html">M_.Form.Number</a></li><li><a href="M_.Form.Picker.html">M_.Form.Picker</a></li><li><a href="M_.Form.Price.html">M_.Form.Price</a></li><li><a href="M_.Form.RadioGroup.html">M_.Form.RadioGroup</a></li><li><a href="M_.Form.Rating.html">M_.Form.Rating</a></li><li><a href="M_.Form.Text.html">M_.Form.Text</a></li><li><a href="M_.Form.Textarea.html">M_.Form.Textarea</a></li><li><a href="M_.Form.TextEditor.html">M_.Form.TextEditor</a></li><li><a href="M_.Help.html">M_.Help</a></li><li><a href="M_.List.html">M_.List</a></li><li><a href="M_.Modal.html">M_.Modal</a></li><li><a href="M_.Model.html">M_.Model</a></li><li><a href="M_.ModelKeyVal.html">M_.ModelKeyVal</a></li><li><a href="M_.Outlet.html">M_.Outlet</a></li><li><a href="M_.SimpleList.html">M_.SimpleList</a></li><li><a href="M_.Store.html">M_.Store</a></li><li><a href="M_.TableList.html">M_.TableList</a></li><li><a href="M_.Tabs.html">M_.Tabs</a></li><li><a href="M_.Tree.html">M_.Tree</a></li><li><a href="M_.Utils.html">M_.Utils</a></li><li><a href="M_.Window.html">M_.Window</a></li></ul><h3>Namespaces</h3><ul><li><a href="M_.html">M_</a></li><li><a href="M_.Form.html">M_.Form</a></li></ul><h3>Interfaces</h3><ul><li><a href="M_.CRUD.html">M_.CRUD</a></li><li><a href="M_.Observable.html">M_.Observable</a></li><li><a href="M_.Stored.html">M_.Stored</a></li></ul><h3>Global</h3><ul><li><a href="global.html#alert">alert</a></li><li><a href="global.html#beforeReady">beforeReady</a></li><li><a href="global.html#confirm">confirm</a></li><li><a href="global.html#create">create</a></li><li><a href="global.html#notify">notify</a></li><li><a href="global.html#open">open</a></li><li><a href="global.html#ready">ready</a></li><li><a href="global.html#renderMustache">renderMustache</a></li><li><a href="global.html#renderMustacheTo">renderMustacheTo</a></li><li><a href="global.html#resize">resize</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
