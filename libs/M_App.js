@@ -56,12 +56,7 @@ module.exports = class MorphineServer {
 	}
 
 	isMultipart(req) {
-		if (
-			req.headers &&
-			req.headers["content-type"] &&
-			req.headers["content-type"].substr(0, 9).toLowerCase() == "multipart"
-		)
-			return true;
+		if (req.headers && req.headers["content-type"] && req.headers["content-type"].substr(0, 9).toLowerCase() == "multipart") return true;
 		return false;
 	}
 
@@ -112,9 +107,7 @@ module.exports = class MorphineServer {
 				}
 			}
 			if (!controllers[route.controller][route.action]) {
-				console.log(
-					"Action " + route.action + " in " + route.controller + " doesn't exists"
-				);
+				console.log("Action " + route.action + " in " + route.controller + " doesn't exists");
 				return;
 			}
 			// console.log("controllers",controllers[route.controller]);
@@ -173,9 +166,10 @@ module.exports = class MorphineServer {
 
 	initIoSocket() {
 		io.on("connection", function(socket) {
+			console.log("process.cwd()", process.cwd());
 			Sockets.onConnection(socket);
 		});
-		if (Socket.initListeners) Socket.initListeners();
+		if (Sockets.initListeners) Sockets.initListeners();
 	}
 
 	initTasks(nextinit) {
@@ -251,11 +245,7 @@ module.exports = class MorphineServer {
 		//     app.set('trust proxy', 1) ; // trust first proxy
 		//     sess.cookie.secure = true ; // serve secure cookies
 		// }
-		if (
-			morphineserver.config.models &&
-			morphineserver.config.models.redis &&
-			morphineserver.config.models.redis.disabled
-		) {
+		if (morphineserver.config.models && morphineserver.config.models.redis && morphineserver.config.models.redis.disabled) {
 		} else {
 			sess.store = new RedisStore(morphineserver.config.models.redis);
 		}
@@ -344,11 +334,7 @@ module.exports = class MorphineServer {
 					nextinit();
 				},
 				nextinit => {
-					if (
-						morphineserver.config.models &&
-						morphineserver.config.models.mysql &&
-						morphineserver.config.models.mysql.disabled
-					)
+					if (morphineserver.config.models && morphineserver.config.models.mysql && morphineserver.config.models.mysql.disabled)
 						return nextinit();
 					M_Db.init(this.config, () => {
 						async.eachOfSeries(
@@ -402,13 +388,7 @@ module.exports = class MorphineServer {
 		);
 	}
 	_justStarted() {
-		console.log(
-			("Listen on port " +
-				(this.config.port + "").bold +
-				" in " +
-				this.config.environment.bold +
-				" environment").bgGreen
-		);
+		console.log(("Listen on port " + (this.config.port + "").bold + " in " + this.config.environment.bold + " environment").bgGreen);
 		console.log("Date : " + moment().format("DD MMMM YYYY HH:mm:ss").green);
 		console.log(
 			`
