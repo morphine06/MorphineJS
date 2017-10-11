@@ -3694,15 +3694,17 @@ M_.TableList = class extends M_.SimpleList {
 			withMouseOverRaw: true,
 			headerHeight: 30,
 			_colsToHide: [],
-			draggableRows: false
+			draggableRows: false,
+			group: null,
+			groupLabel: null
 		};
 		opts = opts ? opts : {};
 		var optsTemp = $.extend({}, defaults, opts);
 		super(optsTemp);
 	}
 	/**
-	 * @return {type}
-	 */
+ 	 * @return {type}
+ 	 */
 	create() {
 		var html = "",
 			cls = "";
@@ -3711,14 +3713,14 @@ M_.TableList = class extends M_.SimpleList {
 		this._idMore = M_.Utils.id();
 
 		html += `<div class='M_TableList ${cls}' style='${this.styleTable}'>
-					<div>
-						<table cellpadding="0" cellspacing="0">
-							<thead></thead>
-							<tbody></tbody>
-						</table>
-					</div>
-					<div class="M_AlignRight"><a id="${this._idMore}" href='javascript:void(0);'>${this.getMoreText()}</a></div>
-				</div>`;
+ 					<div>
+ 						<table cellpadding="0" cellspacing="0">
+ 							<thead></thead>
+ 							<tbody></tbody>
+ 						</table>
+ 					</div>
+ 					<div class="M_AlignRight"><a id="${this._idMore}" href='javascript:void(0);'>${this.getMoreText()}</a></div>
+ 				</div>`;
 		this.jEl = $(html);
 		this.container.append(this.jEl);
 		this.jEl.css("padding-top", this.headerHeight);
@@ -3756,24 +3758,24 @@ M_.TableList = class extends M_.SimpleList {
 		return this.store.count() - this.limitRows;
 	}
 	/**
-	 * @return {type}
-	 */
+ 	 * @return {type}
+ 	 */
 	getMoreText() {
 		var val = this.moreText;
 		val = val.replace(/%n/, this._getNbRowsLimited());
 		return val;
 	}
 	/**
-	 * @return {type}
-	 */
+ 	 * @return {type}
+ 	 */
 	getLessText() {
 		var val = this.lessText;
 		val = val.replace(/%n/, this._getNbRowsLimited());
 		return val;
 	}
 	/**
-	 * @return {type}
-	 */
+ 	 * @return {type}
+ 	 */
 	render() {
 		var html = "",
 			mid = this.store.primaryKey,
@@ -3803,6 +3805,7 @@ M_.TableList = class extends M_.SimpleList {
 			.html(html);
 
 		html = "";
+		let previousgroup = "----";
 		this.store.each((model, indexTemp) => {
 			// log("model",model)
 			if (this.limitRows && indexTemp >= this.limitRows && this._limitRows) return true;
@@ -3813,6 +3816,16 @@ M_.TableList = class extends M_.SimpleList {
 			}
 			var draggable = "";
 			if (this.draggableRows) draggable = "draggable='true'";
+			if (this.group) {
+				let g1 = this.group(model, this.store);
+				let g2 = this.groupLabel(model, this.store);
+				if (previousgroup != g1) {
+					html += "<tr class='M_TableGroup'>";
+					html += "<td colspan=" + colsDef.length + ">" + g2 + "</td>";
+					html += "</tr>";
+				}
+				previousgroup = g1;
+			}
 			html += "<tr class='" + clsTr + "' " + draggable + ">";
 			for (var i = 0; i < colsDef.length; i++) {
 				let val = "",
@@ -3853,9 +3866,16 @@ M_.TableList = class extends M_.SimpleList {
 				direction = direction * -1;
 				colDef._sortDirection = direction;
 				// console.log("colDef._sortDirection", colDef._sortDirection);
-
 				if (colDef.sort) this.store.sort(colDef.sort, direction);
 				else this.store.sort(colDef.val, direction);
+				if (this.group) {
+					let f = model => {
+						// console.log("colDef", colDef);
+						if (colDef.sort) {
+						}
+					};
+					this.store.sort(this.group, 1);
+				}
 				// this.render() ;
 			}
 		});
