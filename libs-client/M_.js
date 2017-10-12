@@ -1,4 +1,43 @@
+// mettre des types généraux : par exemple "meublé" et "chambre de bonne" dans "appartement" ou "bastide" et "chateau" dans "villa"
+
+// changer update en change pour les événements combobox
+
+//// voir http://jsfiddle.net/jhfrench/GpdgF/ pour un treeview
+//// mettre un appel bouton "téléphonique reçu" accessible sur toutes les pages
+//// excellent : http://dropthebit.com/demos/fancy_input/fancyInput.html
+/// pour du scroll : http://johnpolacek.github.io/superscrollorama/
+/// peut servir, d'autres trucs bien sur ce site : http://tympanus.net/codrops/2012/01/24/arctext-js-curving-text-with-css3-and-jquery/
+/// à utiliser sur un site web : http://www.seanmccambridge.com/tubular/
+/// excellent : http://tutorialzine.com/2011/09/jquery-pointpoint-plugin/
+/// peut-être pas mal, pour rafraichir les listes : http://usehook.com/
+// à étudier : http://www.chartjs.org/docs/#getting-started-creating-a-chart
+// à copier ??? http://paulkinzett.github.io/toolbar/
+
+/// http://codecanyon.net/item/fun-captcha-jquery-plugin/6705437?ref=yuzuruishikawa
+
+// Mac OS X: http://blog.coolaj86.com/articles/how-to-create-an-osx-pkg-installer.html
+// Ubuntu Linux: http://blog.coolaj86.com/articles/how-to-create-a-debian-installer.html
+// Microsoft Windows: http://blog.coolaj86.com/articles/how-to-create-an-innosetup-installer.html
+
+// à annalyser : http://www.corm.fr/demonstration/
+// à analyser également (permet de faire des applications locales en nodejs) : https://github.com/rogerwang/node-webkit
+
+// l'utiliser pour la création du PDF ? http://www.jqueryrain.com/?l1iRfaTH
+/// ...pas mal du tout, car çà permet de laisser en colonne !!!!
+
 "use strict";
+
+// import {$} from "./../js/jquery";
+// import {moment} from "./../js/moment-with-locales";
+// console.log("moment",moment);
+//
+// var jquery = $ ;
+
+window.log = function() {
+	if (window.console) {
+		console.log.apply(window.console, arguments);
+	}
+};
 
 moment().localeData("fr");
 moment().utcOffset(0);
@@ -31,14 +70,16 @@ M_.registerModule = (name, module) => {
 /**
  * The Morphine application, instancied
  * @class
- * @property {boolean} inDevelopment - display more errors or helps
- * @property {boolean} useWebsocket - use websocket for M_.Utils.[get,post,put,delete]Json functions
- * @property {string} name - application name
- * @property {type} routes - Todo
- * @property {string} defaultController - the first controller to call
- * @property {array} tabController - contains instancied controllers
- * @property {jquery} container - jQuery element where main application goes
- * @property {M_.Controller} currentController - the current controller
+ * @memberof! <global>
+ * @property {type} inDevelopment
+ * @property {type} useWebsocket
+ * @property {type} name
+ * @property {type} routes
+ * @property {type} defaultController
+ * @property {type} tabController
+ * @property {type} tabOutlets
+ * @property {type} container
+ * @property {type} currentController
  * @property {type} namespace
  * @property {type} templates
  * @property {type} models
@@ -54,7 +95,7 @@ M_.registerModule = (name, module) => {
 M_.App = new class {
 	/**
 	 * Already instancied
-	 * @return {type} [description]
+	 * @return {[type]} [description]
 	 */
 	constructor() {}
 	/**
@@ -129,6 +170,7 @@ M_.App = new class {
 		return this;
 	}
 	/**
+	 * @function onBeforeAllAjax
 	 * @memberOf! M_.App
 	 * @instance
 	 * @param {Object} options
@@ -138,7 +180,6 @@ M_.App = new class {
 	onBeforeAllAjax(options, originalOptions, jqXHR) {}
 	/**
 	 * To document
-	 * @memberOf! M_.App
 	 * @param {Object} data
 	 * @param {Object} options
 	 * @param {Object} originalOptions
@@ -157,7 +198,7 @@ M_.App = new class {
 		return this;
 	}
 	/**
-	 * @param  {function}
+	 * @param  {Function}
 	 * @return {M_.App}
 	 */
 	beforeReady(fn) {
@@ -165,7 +206,7 @@ M_.App = new class {
 		return this;
 	}
 	/**
-	 * @param  {function}
+	 * @param  {Function}
 	 * @return {M_.App}
 	 */
 	ready(fn) {
@@ -192,8 +233,8 @@ M_.App = new class {
 	}
 	/**
 	 * Open a page
-	 * @param  {string} module
-	 * @param  {string} action
+	 * @param  {String} module
+	 * @param  {String} action
 	 * @return {M_.App}
 	 */
 	open(module, action) {
@@ -341,7 +382,7 @@ M_.App = new class {
 	/**
 	 * @param  {JSTemplate}	tpl
 	 * @param  {Object}		tplData
-	 * @return {string}
+	 * @return {String}
 	 */
 	renderMustache(tpl, tplData = {}) {
 		//, tplPartials={}
@@ -356,6 +397,7 @@ M_.App = new class {
 /**
 A generic controller to extends
  * @class
+ * @memberof! <global>
  * @example
 export class Calculator extends M_.Controller {
 	init() {
@@ -391,7 +433,7 @@ M_.Controller = class {
 	 */
 	init() {}
 	/**
-	 * @param  {function}
+	 * @param  {Function}
 	 */
 	resolve(next) {
 		next(true);
@@ -484,7 +526,8 @@ M_.Controller = class {
 
 /**
  * Usefull methods for manipulate date, string, paths, etc...
-  */
+ * @memberof! <global>
+ */
 M_.Utils = class {
 	static preloadImages(preload, cb) {
 		// var preload = ["a.gif", "b.gif", "c.gif"];
@@ -879,8 +922,8 @@ M_.Utils = class {
 
 	/**
 	 * Return the extension of a path.
-	 * @param  {string} path The path
-	 * @return {string}      The extension or ''
+	 * @param  {String} path The path
+	 * @return {String}      The extension or ''
 	 * @example
 	 * var ext = M_.Utils.getExtensionFromPath("foo/bar/my_file.html") ;
 	 * // ext = "html"
@@ -891,8 +934,8 @@ M_.Utils = class {
 
 	/**
 	 * Return the base name of a path.
-	 * @param  {string} path The path
-	 * @return {string}      The name of the file
+	 * @param  {String} path The path
+	 * @return {String}      The name of the file
 	 * @example
 	 * var filename = getBaseNameFromPath("foo/bar/myfile.html") ;
 	 * // filename = "myfile.html"
@@ -903,8 +946,8 @@ M_.Utils = class {
 
 	/**
 	 * Return the directory of a path.
-	 * @param  {string} path The path
-	 * @return {string}      The name of the file
+	 * @param  {String} path The path
+	 * @return {String}      The name of the file
 	 * @example
 	 * var filename = getDirFromPath("foo/bar/myfile.html") ;
 	 * // filename = "foo/bar"
@@ -964,7 +1007,7 @@ M_.Utils = class {
 	}
 	/**
 	 * Return a uniq ID
-	 * @return {string} A incremental number start from 1
+	 * @return {String} A incremental number start from 1
 	 */
 	static id() {
 		if (!this.cmpUniqId) this.cmpUniqId = 0;
@@ -1033,7 +1076,7 @@ M_.Utils = class {
 	}
 	/**
 	 * Create a UUID with a random algorithme
-	 * @return {string} The number is like 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+	 * @return {String} The number is like 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
 	 */
 	static createUUID() {
 		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
@@ -1047,7 +1090,7 @@ M_.Utils = class {
 	 * Clone an object... simple level !!!!
 	 * @param  {object} nb
 	 * @param  {object} singular
-	 * @param  {object} [plural=null] - le pluriel d'une chaine, sinon rajoute un "s"
+	 * @param  {object} plural
 	 * @return {object} singular
 	 * @example
 var plural1 = M_.Utils.plural(3, "guitare")
@@ -1076,7 +1119,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	 * Create a delay
 	 * @param  {function} callback - une fonction à appeler
 	 * @param  {number} time - un temp en millisecondes
-	 * @param  {string} [arbitralName="arbitralName"] - donner de préférence un nom unique
+	 * @param  {String} [arbitralName="arbitralName"] - donner de préférence un nom unique
 	 */
 	static delay(callback, time, arbitralName = "arbitralName") {
 		if (!this.tabDelay) this.tabDelay = {};
@@ -1116,8 +1159,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Format a phone number... for french format !!! to update...
-	 * @param  {string} num
-	 * @return {string} the formated number
+	 * @param  {String} num
+	 * @return {String} the formated number
 	 */
 	static formatPhone(num) {
 		var ret = "";
@@ -1142,9 +1185,9 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Strip html tags
-	 * @param  {string} num
-	 * @param  {string} allowed
-	 * @return {string} the new string
+	 * @param  {String} num
+	 * @param  {String} allowed
+	 * @return {String} the new string
 	 */
 	static strip_tags(input, allowed) {
 		//From: http://phpjs.org/functions
@@ -1160,8 +1203,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * First char to upper case
-	 * @param  {string} str
-	 * @return {string} the new string
+	 * @param  {String} str
+	 * @return {String} the new string
 	 */
 	static ucfirst(str) {
 		//  discuss at: http://phpjs.org/functions/ucfirst/
@@ -1179,11 +1222,11 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 
 	/**
 	 * First char to upper case
-	 * @param  {string} str - the base string
+	 * @param  {String} str - the base string
 	 * @param  {number} len - add 'padStr' X times
-	 * @param  {string} [padStr='0'] - the string to add
+	 * @param  {String} [padStr='0'] - the string to add
 	 * @param  {number} [direction=-1] - -1=left, 1=right
-	 * @return {string} the new string
+	 * @return {String} the new string
 	 */
 	static str_pad(str, len, padStr = "0", direction = -1) {
 		str += "";
@@ -1208,8 +1251,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Remove break line, space and tabulation
-	 * @param  {string} str - the base string
-	 * @return {string} the new string
+	 * @param  {String} str - the base string
+	 * @return {String} the new string
 	 */
 	static trim(str) {
 		//return str.replace(/^\s+|\s+$/g, '');
@@ -1219,9 +1262,9 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Set cookie
-	 * @param  {string} cname - the name of the cookie
-	 * @param  {string} cvalue - the value of the cookie
-	 * @param  {string} [expireDays=7] - expiration in days
+	 * @param  {String} cname - the name of the cookie
+	 * @param  {String} cvalue - the value of the cookie
+	 * @param  {String} [expireDays=7] - expiration in days
 	 */
 	static setCookie(cname, cvalue, expireDays = 7) {
 		var d = new Date();
@@ -1231,8 +1274,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Get cookie
-	 * @param  {string} cname - the name of the cookie
-	 * @return {string} the value of the cookie
+	 * @param  {String} cname - the name of the cookie
+	 * @return {String} the value of the cookie
 	 */
 	static getCookie(cname) {
 		var name = cname + "=";
@@ -1265,8 +1308,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Get cookie
-	 * @param  {string} cname - the name of the cookie
-	 * @return {string} the value of the cookie
+	 * @param  {String} cname - the name of the cookie
+	 * @return {String} the value of the cookie
 	 */
 	static getFromSimpleArray(tab, what) {
 		for (var i2 = 0; i2 < tab.length; i2++) {
@@ -1276,8 +1319,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Get cookie
-	 * @param  {string} cname - the name of the cookie
-	 * @return {string} the value of the cookie
+	 * @param  {String} cname - the name of the cookie
+	 * @return {String} the value of the cookie
 	 */
 	static getSimpleArray(tab, index, what) {
 		var pos = this.searchSimpleArray(tab, index, what);
@@ -1286,8 +1329,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Get cookie
-	 * @param  {string} cname - the name of the cookie
-	 * @return {string} the value of the cookie
+	 * @param  {String} cname - the name of the cookie
+	 * @return {String} the value of the cookie
 	 */
 	static searchSimpleArray(tab, index, what) {
 		for (var i2 = 0; i2 < tab.length; i2++) {
@@ -1297,8 +1340,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Get cookie
-	 * @param  {string} cname - the name of the cookie
-	 * @return {string} the value of the cookie
+	 * @param  {String} cname - the name of the cookie
+	 * @return {String} the value of the cookie
 	 */
 	static searchArrayObjects(tab, what, val) {
 		for (var i2 = 0; i2 < tab.length; i2++) {
@@ -1308,8 +1351,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Get cookie
-	 * @param  {string} cname - the name of the cookie
-	 * @return {string} the value of the cookie
+	 * @param  {String} cname - the name of the cookie
+	 * @return {String} the value of the cookie
 	 */
 	static getFromArrayObjects(tab, what, val) {
 		for (var i2 = 0; i2 < tab.length; i2++) {
@@ -1329,9 +1372,9 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * To document
-	 * @param  {string}  str      the string to convert
+	 * @param  {String}  str      the string to convert
 	 * @param  {Boolean} is_xhtml [description]
-	 * @return {string}           modified string
+	 * @return {String}           modified string
 	 */
 	static nl2br(str, is_xhtml) {
 		var breakTag = is_xhtml || typeof is_xhtml === "undefined" ? "<br " + "/>" : "<br>"; //Adjust comment to avoid issue on phpjs.org display
@@ -1340,8 +1383,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * replaceCommaWithPoint description
-	 * @param  {string} txt
-	 * @return {string}
+	 * @param  {String} txt
+	 * @return {String}
 	 */
 	static replaceCommaWithPoint(txt) {
 		txt += "";
@@ -1359,7 +1402,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	/**
 	 * Like PHP function
 	 * @param  {Array} tab
-	 * @param  {string} field
+	 * @param  {String} field
 	 * @return {Boolean}       true if is set
 	 */
 	static isset(tab, field) {
@@ -1368,9 +1411,9 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Like PHP function
-	 * @param  {string} path
-	 * @param  {string} options
-	 * @return {string}
+	 * @param  {String} path
+	 * @param  {String} options
+	 * @return {String}
 	 */
 	static pathinfo(path, options) {
 		//  discuss at: http://phpjs.org/functions/pathinfo/
@@ -1511,8 +1554,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	 * Format a number with good decimal and add devise
 	 * @param  {Number} nb
 	 * @param  {Number} decimal
-	 * @param  {string} devise
-	 * @return {string}
+	 * @param  {String} devise
+	 * @return {String}
 	 */
 	static formatPrice(nb, decimal = 2, devise = M_.i18n.devise) {
 		return this.price(nb, decimal, devise);
@@ -1521,8 +1564,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	 * Alias of formatPrice
 	 * @param  {Number} nb
 	 * @param  {Number} decimal
-	 * @param  {string} devise
-	 * @return {string}
+	 * @param  {String} devise
+	 * @return {String}
 	 */
 	static price(nb, decimal = 2, devise = M_.i18n.devise, sep = " ") {
 		return this.number_format(nb, decimal, ",", ".") + sep + devise;
@@ -1538,7 +1581,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	 * Format number in %
 	 * @param  {Number} nb
 	 * @param  {Number} decimal
-	 * @return {string}
+	 * @return {String}
 	 */
 	static purcent(nb, decimal = 2, sep = " ") {
 		return this.number_format(nb, decimal, ",", ".") + sep + "%";
@@ -1547,11 +1590,11 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	 * Like PHP function
 	 * @param  {Number} a
 	 * @param  {Number} b Number of decimal
-	 * @param  {string} c decimal separator
-	 * @param  {string} d thousen separator
-	 * @return {string}   this formated number
+	 * @param  {String} c decimal separator
+	 * @param  {String} d thousen separator
+	 * @return {String}   this formated number
 	 */
-	static number_format(a, b, c, d, dropDecimal) {
+	static number_format(a, b, c, d) {
 		var i, e, f, g, h;
 		a = Number(a);
 		a = Math.round(a * Math.pow(10, b)) / Math.pow(10, b);
@@ -1577,9 +1620,6 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 			f[0] = j + f[0];
 		}
 		c = b <= 0 ? "" : c;
-		if (dropDecimal) {
-			// let kk =
-		}
 		return f[0] + c + f[1];
 	}
 	/**
@@ -1636,7 +1676,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	/**
 	 * Display smoothly an element
 	 * @param  {jQuery}   jEl the element
-	 * @param  {function} cb  callback function after finished animation
+	 * @param  {Function} cb  callback function after finished animation
 	 */
 	static showSmoothly(jEl, cb) {
 		if (jEl.is(":hidden"))
@@ -1651,7 +1691,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	/**
 	 * Hide smoothly an element
 	 * @param  {jQuery}   jEl the element
-	 * @param  {function} cb  callback function after finished animation
+	 * @param  {Function} cb  callback function after finished animation
 	 */
 	static hideSmoothly(jEl, cb) {
 		if (jEl.is(":visible"))
@@ -1663,9 +1703,9 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Do a POST of json data
-	 * @param  {string}   url  the url to call
+	 * @param  {String}   url  the url to call
 	 * @param  {object}   args arguments to send
-	 * @param  {function} cb   callback function with "data" argument
+	 * @param  {Function} cb   callback function with "data" argument
 	 * @return {jqXHR}
 	 */
 	static postJson(url, args, cb) {
@@ -1673,9 +1713,9 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Do a PUT of json data
-	 * @param  {string}   url  the url to call
+	 * @param  {String}   url  the url to call
 	 * @param  {object}   args arguments to send
-	 * @param  {function} cb   callback function with "data" argument
+	 * @param  {Function} cb   callback function with "data" argument
 	 * @return {jqXHR}
 	 */
 	static putJson(url, args, cb) {
@@ -1683,9 +1723,9 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Do a GET of json data
-	 * @param  {string}   url  the url to call
+	 * @param  {String}   url  the url to call
 	 * @param  {object}   args arguments to send
-	 * @param  {function} cb   callback function with "data" argument
+	 * @param  {Function} cb   callback function with "data" argument
 	 * @return {jqXHR}
 	 */
 	static getJson(url, args, cb) {
@@ -1693,9 +1733,9 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Do a DELETE of json data
-	 * @param  {string}   url  the url to call
+	 * @param  {String}   url  the url to call
 	 * @param  {object}   args arguments to send
-	 * @param  {function} cb   callback function with "data" argument
+	 * @param  {Function} cb   callback function with "data" argument
 	 * @return {jqXHR}
 	 */
 	static deleteJson(url, args, cb) {
@@ -1703,10 +1743,10 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	}
 	/**
 	 * Do a Ajax call of json data
-	 * @param  {string}   url  - the url to call
-	 * @param  {object}   args - arguments to send
-	 * @param  {string}   method - POST|PUT|GET|DELETE
-	 * @param  {function} cb   - callback function with "data" argument
+	 * @param  {String}   url  the url to call
+	 * @param  {object}   args arguments to send
+	 * @param  {String}   POST|PUT|GET|DELETE
+	 * @param  {Function} cb   callback function with "data" argument
 	 * @return {jqXHR}
 	 */
 	static ajaxJson(url, args, method, cb) {
@@ -1758,9 +1798,9 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	/**
 	 * Save a file with Ajax technic
 	 * @param  {Array}   files    array of input html files
-	 * @param  {string}   url      url to call
+	 * @param  {String}   url      url to call
 	 * @param  {Object}   moreArgs send more arguments
-	 * @param  {function} cb       callback after finished
+	 * @param  {Function} cb       callback after finished
 	 * @return {jqXHR}
 	 * @example
 M_.Utils.saveFiles([form.find('co_avatar_send').jEl.get(0)], '/avatarupdate', {}, function() {}) ;
@@ -1797,7 +1837,7 @@ M_.Utils.saveFiles([form.find('co_avatar_send').jEl.get(0)], '/avatarupdate', {}
 	}
 	/**
 	 * Check if a script is loaded (warning : check exactly the file name)
-	 * @param  {string}  url url to call
+	 * @param  {String}  url url to call
 	 * @return {Boolean}     true if already loaded
 	 */
 	static isLoadedScript(url) {
@@ -1809,7 +1849,7 @@ M_.Utils.saveFiles([form.find('co_avatar_send').jEl.get(0)], '/avatarupdate', {}
 	}
 	/**
 	 * Load a javascript file dynamically ; warning, no callback !!!
-	 * @param  {string} url url to call
+	 * @param  {String} url url to call
 	 */
 	static loadScript(url) {
 		var script = document.createElement("script");
@@ -1852,7 +1892,8 @@ M_.Utils._appIsFullScreen = false;
 /**
  * Observable interface
  * @interface M_.Observable
-  */
+ * @memberof! <global>
+ */
 M_.Observable = {
 	/**
 	 * Call this method in init() method of your class where you implement this mixin
@@ -1868,16 +1909,16 @@ M_.Observable = {
 	},
 	/**
 	 * Add a listner to this object
-	 * @param {string} evtName The event name
-	 * @param {function} fct     A callback function to execute when event is trigged
+	 * @param {String} evtName The event name
+	 * @param {Function} fct     A callback function to execute when event is trigged
 	 */
 	addListener: function(evtName, fct) {
 		this._listeners.push({ evtName: evtName, fct: fct });
 	},
 	/**
 	 * Remove a listner to this object
-	 * @param {string} evtName The event name
-	 * @param {function} fct     A callback function previously saved whith addListener()
+	 * @param {String} evtName The event name
+	 * @param {Function} fct     A callback function previously saved whith addListener()
 	 */
 	removeListener: function(evtName, fct) {
 		var listenersOk = [];
@@ -1890,7 +1931,7 @@ M_.Observable = {
 	},
 	/**
 	 * Trigger the event
-	 * @param  {string} evtName The event name previously registered with addListener()
+	 * @param  {String} evtName The event name previously registered with addListener()
 	 * @return {boolean}         Return the result of callback function
 	 */
 	trigger: function(evtName) {
@@ -1907,7 +1948,8 @@ M_.Observable = {
 
 /**
  * Redefine this constants in your language
-  */
+ * @memberof! <global>
+ */
 M_.i18n = {
 	// days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
 	// months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -1920,10 +1962,11 @@ M_.i18n = {
 /**
  * Create a model class. Generally you extends this class like exemple below
  * @class
-  * @implements M_.Observable
+ * @memberof! <global>
+ * @implements M_.Observable
  * @property {array} fields - the fields definition
  * @property {object} row - the values
- * @property {string} primaryKey - the primary key name
+ * @property {String} primaryKey - the primary key name
  * @example
 M_.ModelKeyVal = class extends M_.Model {
 	getDefinition() {
@@ -2031,7 +2074,7 @@ M_.Model = class {
 	}
 	/**
      * Set only one field of model
-	 * @param  {string} field - The field name
+	 * @param  {String} field - The field name
 	 * @param  {something} val - The value
 	 * @param  {object} silently - Event "update" is not called
      */
@@ -2056,7 +2099,7 @@ M_.Model = class {
 	//warning : stocker le résultat ???
 	/**
      * Get a field
-	 * @param  {string} field - The field name
+	 * @param  {String} field - The field name
      */
 	get(field) {
 		var val,
@@ -2108,7 +2151,8 @@ M_.Model = class {
 /**
  * Use a standard model key / value. No params.
  * @class M_.ModelKeyVal
-  * @example
+ * @memberof! <global>
+ * @example
 // Very useful with combobox
 var combo = new M_.Form.Combobox({
 	name: 'of_typecook',
@@ -2134,16 +2178,17 @@ M_.ModelKeyVal = class extends M_.Model {
 /**
  * A store is a client cache of rows. It can do ajax requests in json
  * @class
-  * @implements M_.Observable
+ * @memberof! <global>
+ * @implements M_.Observable
  * @property {array} [rows=[]] - the data rows
  * @property {boolean} [useWebsocket=M_.App.useWebsocket] - true if use websocket and not ajax
  * @property {array} [rowsModel=[]] - the model rows
- * @property {string} [url=""] - the model rows
+ * @property {String} [url=""] - the model rows
  * @property {object} [args={}] - arguments object to pass to each ajax request
- * @property {string} [rootData="data"] - property where read data in json response
+ * @property {String} [rootData="data"] - property where read data in json response
  * @property {array} [currentSort=null] - sort the store : ['name', 'asc'] ; the second is 'asc' or 'desc'
  * @property {M_.Model} [model=null] - the model to use
- * @property {string} [primaryKey=""] - the primary key
+ * @property {String} [primaryKey=""] - the primary key
  * @property {number} [limit=null] - send 'limit' param to ajax request
  * @property {boolean} [sortOnRemote=false] - send 'sort' param to ajax request
  * @property {number} [skip=0] - send 'skip' param to ajax request
@@ -2227,7 +2272,7 @@ M_.Store = class {
 	/**
 	 * Return the first model instance where the value of field equal val. The comparaison is do with ==, so "2"==2
 	 *
-	 * @param  {string} field The searched field name
+	 * @param  {String} field The searched field name
 	 * @param  {string|number} val   The value researched.
 	 * @return {model}       Return the model instance founded or null
 	 */
@@ -2502,7 +2547,7 @@ M_.Store = class {
 		}
 	}
 	/**
-	 * @param  {function} fn
+	 * @param  {Function} fn
 	 */
 	each(fn) {
 		//log("length",this.rowsModel)
@@ -2548,7 +2593,7 @@ M_.Store = class {
 	}
 	/**
 	 * @param  {type} args
-	 * @param  {function} callback
+	 * @param  {Function} callback
 	 * @return {type}
 	 */
 	load(args, callback) {
@@ -2654,7 +2699,8 @@ M_.Store = class {
 /**
  * A base graphical object
  * @class
-  * @implements M_.Observable
+ * @memberof! <global>
+ * @implements M_.Observable
  */
 M_.Outlet = class {
 	constructor(opts) {
@@ -2741,7 +2787,8 @@ M_.Outlet = class {
 /**
  * Implement this interface to get a store
  * @interface
-  */
+ * @memberof! <global>
+ */
 M_.Stored = {
 	//autoFocus: null,
 	/**
@@ -2779,7 +2826,8 @@ M_.Stored = {
 /**
  * Display an help on jquery element
  * @class
-  * @property  {type} controller
+ * @memberof! <global>
+ * @property  {type} controller
  * @property  {type} text
  * @property  {type} attachedObj
  * @property  {type} shiftX
@@ -2889,7 +2937,8 @@ M_.Help = class {
 /**
  * Like a card layout. Use HTML to define them.
  * @class
-  * @property {string} firstTab
+ * @memberof! <global>
+ * @property {String} firstTab
  */
 M_.Tabs = class extends M_.Outlet {
 	constructor(opts) {
@@ -3006,9 +3055,10 @@ M_.Tabs = class extends M_.Outlet {
 /**
  * A graphical tree
  * @class
-  * @extends M_.Outlet
- * @property {string} autoLoad
- * @property {string} tpl
+ * @memberof! <global>
+ * @extends M_.Outlet
+ * @property {String} autoLoad
+ * @property {String} tpl
  */
 M_.Tree = class extends M_.Outlet {
 	constructor(opts) {
@@ -3178,7 +3228,7 @@ M_.Tree = class extends M_.Outlet {
 	}
 	/**
   	 * @param {NodeObject} node
-  	 * @param {string} parentId
+  	 * @param {String} parentId
   	 */
 	addNode(node, parentId, silently) {
 		this._nodeToAdd = node;
@@ -3187,8 +3237,8 @@ M_.Tree = class extends M_.Outlet {
 		if (!silently) this.trigger("nodeadd", this, node, parentId);
 	}
 	/**
-  	 * @param  {string}	nodeId
-  	 * @param  {string}	parentId
+  	 * @param  {String}	nodeId
+  	 * @param  {String}	parentId
   	 */
 	moveNode(nodeId, parentId, silently) {
 		// log("nodeId, parentId",nodeId, parentId)
@@ -3251,7 +3301,7 @@ M_.Tree = class extends M_.Outlet {
 		return ok;
 	}
 	/**
-  	 * @param  {string}	nodeId
+  	 * @param  {String}	nodeId
   	 */
 	removeNode(nodeId, silently) {
 		// this.jEl.find("li[m_id='"++"']").remove() ;
@@ -3260,7 +3310,7 @@ M_.Tree = class extends M_.Outlet {
 		if (!silently) this.trigger("noderemove", this, nodeId);
 	}
 	/**
-  	 * @param  {string}	nodeId
+  	 * @param  {String}	nodeId
   	 * @return {NodeObject}
   	 */
 	getNode(nodeId) {
@@ -3321,10 +3371,11 @@ M_.Tree = class extends M_.Outlet {
 /**
  * A graphical list to implement
  * @class
-  * @extends M_.Outlet
+ * @memberof! <global>
+ * @extends M_.Outlet
  * @implements M_.Stored
- * @property {string} autoLoad
- * @property {string} tpl
+ * @property {String} autoLoad
+ * @property {String} tpl
  */
 M_.List = class extends M_.Outlet {
 	constructor(opts) {
@@ -3381,7 +3432,8 @@ M_.List = class extends M_.Outlet {
 /**
  * A simple list "à la Apple"
  * @class
-  * @extends M_.List
+ * @memberof! <global>
+ * @extends M_.List
  * @property {type} classItems
  * @property {type} itemValue
  * @property {type} itemKey
@@ -3668,7 +3720,8 @@ M_.SimpleList = class extends M_.List {
 /**
  * A multi columns list, a table
  * @class
-  * @extends M_.SimpleList
+ * @memberof! <global>
+ * @extends M_.SimpleList
  * @property {type} colsDef
  * @property {type} classHeader
  * @property {type} classItems
@@ -3694,17 +3747,15 @@ M_.TableList = class extends M_.SimpleList {
 			withMouseOverRaw: true,
 			headerHeight: 30,
 			_colsToHide: [],
-			draggableRows: false,
-			group: null,
-			groupLabel: null
+			draggableRows: false
 		};
 		opts = opts ? opts : {};
 		var optsTemp = $.extend({}, defaults, opts);
 		super(optsTemp);
 	}
 	/**
- 	 * @return {type}
- 	 */
+	 * @return {type}
+	 */
 	create() {
 		var html = "",
 			cls = "";
@@ -3713,14 +3764,14 @@ M_.TableList = class extends M_.SimpleList {
 		this._idMore = M_.Utils.id();
 
 		html += `<div class='M_TableList ${cls}' style='${this.styleTable}'>
- 					<div>
- 						<table cellpadding="0" cellspacing="0">
- 							<thead></thead>
- 							<tbody></tbody>
- 						</table>
- 					</div>
- 					<div class="M_AlignRight"><a id="${this._idMore}" href='javascript:void(0);'>${this.getMoreText()}</a></div>
- 				</div>`;
+					<div>
+						<table cellpadding="0" cellspacing="0">
+							<thead></thead>
+							<tbody></tbody>
+						</table>
+					</div>
+					<div class="M_AlignRight"><a id="${this._idMore}" href='javascript:void(0);'>${this.getMoreText()}</a></div>
+				</div>`;
 		this.jEl = $(html);
 		this.container.append(this.jEl);
 		this.jEl.css("padding-top", this.headerHeight);
@@ -3758,24 +3809,24 @@ M_.TableList = class extends M_.SimpleList {
 		return this.store.count() - this.limitRows;
 	}
 	/**
- 	 * @return {type}
- 	 */
+	 * @return {type}
+	 */
 	getMoreText() {
 		var val = this.moreText;
 		val = val.replace(/%n/, this._getNbRowsLimited());
 		return val;
 	}
 	/**
- 	 * @return {type}
- 	 */
+	 * @return {type}
+	 */
 	getLessText() {
 		var val = this.lessText;
 		val = val.replace(/%n/, this._getNbRowsLimited());
 		return val;
 	}
 	/**
- 	 * @return {type}
- 	 */
+	 * @return {type}
+	 */
 	render() {
 		var html = "",
 			mid = this.store.primaryKey,
@@ -3805,7 +3856,6 @@ M_.TableList = class extends M_.SimpleList {
 			.html(html);
 
 		html = "";
-		let previousgroup = "----";
 		this.store.each((model, indexTemp) => {
 			// log("model",model)
 			if (this.limitRows && indexTemp >= this.limitRows && this._limitRows) return true;
@@ -3816,16 +3866,6 @@ M_.TableList = class extends M_.SimpleList {
 			}
 			var draggable = "";
 			if (this.draggableRows) draggable = "draggable='true'";
-			if (this.group) {
-				let g1 = this.group(model, this.store);
-				let g2 = this.groupLabel(model, this.store);
-				if (previousgroup != g1) {
-					html += "<tr class='M_TableGroup'>";
-					html += "<td colspan=" + colsDef.length + ">" + g2 + "</td>";
-					html += "</tr>";
-				}
-				previousgroup = g1;
-			}
 			html += "<tr class='" + clsTr + "' " + draggable + ">";
 			for (var i = 0; i < colsDef.length; i++) {
 				let val = "",
@@ -3866,16 +3906,9 @@ M_.TableList = class extends M_.SimpleList {
 				direction = direction * -1;
 				colDef._sortDirection = direction;
 				// console.log("colDef._sortDirection", colDef._sortDirection);
+
 				if (colDef.sort) this.store.sort(colDef.sort, direction);
 				else this.store.sort(colDef.val, direction);
-				if (this.group) {
-					let f = model => {
-						// console.log("colDef", colDef);
-						if (colDef.sort) {
-						}
-					};
-					this.store.sort(this.group, 1);
-				}
 				// this.render() ;
 			}
 		});
@@ -3941,7 +3974,8 @@ M_.TableList = class extends M_.SimpleList {
 /**
  * Implements this to get CRUD (get/post/put/delete) ajax requests
  * @interface
-  */
+ * @memberof! <global>
+ */
 M_.CRUD = {
 	/**
 	 * @return {type}
@@ -3961,7 +3995,7 @@ M_.CRUD = {
 	/**
 	 * @param  {type}
 	 * @param  {Object}
-	 * @param  {function}
+	 * @param  {Function}
 	 * @return {type}
 	 */
 	load(id, args = {}, callback = null) {
@@ -4023,7 +4057,7 @@ M_.CRUD = {
 	/**
 	 * @param  {type}
 	 * @param  {Object}
-	 * @param  {function}
+	 * @param  {Function}
 	 * @return {type}
 	 */
 	save(modelOrData = null, args = {}, callback = null) {
@@ -4140,7 +4174,7 @@ M_.CRUD = {
 	/**
 	 * @param  {type}
 	 * @param  {Object}
-	 * @param  {function}
+	 * @param  {Function}
 	 * @return {type}
 	 */
 	delete(id, args = {}, callback = null) {
@@ -4178,7 +4212,8 @@ M_.CRUD = {
 /**
  * To do
  * @class
-  * @extends M_.SimpleList
+ * @memberof! <global>
+ * @extends M_.SimpleList
  * @implements M_.Observable
  * @property {type} jEl
  * @property {type} alignTo
@@ -4341,7 +4376,8 @@ M_.Drawer = class {
 /**
  * Display a background on html document
  * @class
-  * @implements M_.Observable
+ * @memberof! <global>
+ * @implements M_.Observable
  * @property {type} visible
  * @property {type} focusOn
  * @property {type} clickHide
@@ -4514,7 +4550,8 @@ M_.Modal = class {
 /**
  * Display a window from a template
  * @class
-  * @implements M_.Observable
+ * @memberof! <global>
+ * @implements M_.Observable
  * @property {type} visible
  * @property {type} clickHide
  * @property {type} alpha
@@ -4785,7 +4822,8 @@ M_.Window._escapeButtonListener();
 /**
  * Display a button
  * @class
-  * @extends M_.Outlet
+ * @memberof! <global>
+ * @extends M_.Outlet
  * @property {type} text
  * @property {type} cls
  * @property {type} handler
@@ -4814,7 +4852,8 @@ M_.Button = class extends M_.Outlet {
 
 /**
  * Display a alert dialog window or a confirm dialog window
-  * @property {type} textButtonOk
+ * @memberof! <global>
+ * @property {type} textButtonOk
  * @property {type} textButtonCancel
  */
 M_.Dialog = new class {
@@ -4899,10 +4938,10 @@ M_.Dialog = new class {
 	}
 	/**
 	 * alert user
-	 * @param  {string} text
-	 * @param  {string} position
+	 * @param  {String} text
+	 * @param  {String} position
 	 * @param  {Number} time      number of milliseconds
-	 * @param  {function} callbackClose
+	 * @param  {Function} callbackClose
 	 */
 	notify(text, time = 2000, position = "top", callbackClose = null) {
 		var html = "";
@@ -4928,7 +4967,8 @@ M_.Dialog = new class {
 /**
  * Create a dropdown
  * @class
-  * @extends M_.Outlet
+ * @memberof! <global>
+ * @extends M_.Outlet
  * @property {type} destroyOnHide
  * @property {type} alignTo
  * @property {type} offsetTop
@@ -5237,7 +5277,8 @@ M_.Dropdown._goGlobalListeners();
 /**
  * Create month calendar to display directly on page or in a M_.Form.Date
  * @class
-  * @implements M_.Observable
+ * @memberof! <global>
+ * @implements M_.Observable
  * @property {type} container
  * @property {type} dateViewed
  * @property {type} dateSelected
@@ -5906,12 +5947,14 @@ M_.Calendar.MonthView = class extends M_.CalendarMonth {
 /**
  * All form elements
  * @namespace
+ * @memberof! <global>
  */
 M_.Form = {};
 
 /**
  * Manage a form
  * @class
+ * @memberof! <global>
  * @implements M_.Observable
  * @implements M_.CRUD
  * @property {type} useWebsocket
@@ -5964,6 +6007,13 @@ M_.Form.Form = class {
 			_items[i].reset();
 		}
 		this.trigger("reset", this);
+	}
+	disable() {
+		var _items = this._items;
+		for (var i = 0; i < _items.length; i++) {
+			_items[i].disable();
+		}
+		this.trigger("disable", this);
 	}
 	enable() {
 		var _items = this._items;
@@ -6288,23 +6338,17 @@ M_.Form.Form = class {
 		return this._currentModel;
 	}
 	disable() {
-		var _items = this._items;
-		for (var i = 0; i < _items.length; i++) {
-			_items[i].disable();
+		for (var i = 0; i < this._items.length; i++) {
+			if (this._items[i].disable) this._items[i].disable();
 		}
-		this.trigger("disable", this);
 	}
-	// disable() {
-	// 	for (var i = 0; i < this._items.length; i++) {
-	// 		if (this._items[i].disable) this._items[i].disable();
-	// 	}
-	// }
 };
 
 /**
  * Base class to input form
  * @class
-  * @extends M_.Outlet
+ * @memberof! <global>
+ * @extends M_.Outlet
  * @property {type} name
  * @property {type} value
  * @property {type} autoContainer
@@ -6658,7 +6702,8 @@ M_.Form.Slider = class extends M_.Form.Input {
  * Hidden input form
  * @class
  * @extends M_.Form.Input
-  */
+ * @memberof! <global>
+ */
 M_.Form.Hidden = class extends M_.Form.Input {
 	setValue(val) {
 		if (_.isPlainObject(val)) val = val[this.name];
@@ -6669,7 +6714,8 @@ M_.Form.Hidden = class extends M_.Form.Input {
 /**
  * A multi is a combobox + a list of values
  * @class
-  * @extends M_.Form.Input
+ * @memberof! <global>
+ * @extends M_.Form.Input
  * @property {type} inputType
  * @property {type} confirmDelete
  * @property {type} confirmDeleteMessage
@@ -6685,8 +6731,7 @@ M_.Form.Multi = class extends M_.Form.Input {
 			value: [],
 			onClickBtAdd: null,
 			chooseValues: null,
-			chooseValuesAreNumbers: true,
-			chooseValuesAreObjects: false
+			chooseValuesAreNumbers: true
 		};
 		opts._idBtAddKeyword = M_.Utils.id();
 		if (opts.label) opts.label += " <span id='" + opts._idBtAddKeyword + "' class='fa fa-plus faa-pulse animated-hover'>";
@@ -6718,28 +6763,24 @@ M_.Form.Multi = class extends M_.Form.Input {
 			let ids = [];
 			this.dd.jEl.find(".M_FormMultiItem input:checked").each((ind, el) => {
 				let id = $(el).attr("data-id");
-				let v2 = id;
-				if (!isNaN(id)) v2 = id * 1;
-				ids.push(v2);
+				ids.push(id * 1);
 			});
 			this.setValue(ids);
 		});
 	}
 	/**
- 	 * @return {type}
- 	 */
+	 * @return {type}
+	 */
 	drawContainer() {
 		// log("this.value",this.value,this.name);
 		this.jEl.empty();
 		_.each(this.value, val => {
 			let valtxt = "",
 				valid = "";
-			// console.log("val", val);
 			if (this.chooseValues) {
 				let v2 = val;
 				if (!isNaN(val)) v2 = val * 1;
 				let v = _.find(this.chooseValues, { key: v2 });
-				// console.log("v2,val", v2, val);
 				if (v) {
 					valid = v.key;
 					valtxt = v.val;
@@ -6770,9 +6811,9 @@ M_.Form.Multi = class extends M_.Form.Input {
 		});
 	}
 	/**
- 	 * @param  {type}
- 	 * @return {type}
- 	 */
+	 * @param  {type}
+	 * @return {type}
+	 */
 	removeValue(valtoremove) {
 		// _.pull(this.value, val);
 		let oks = [];
@@ -6783,37 +6824,23 @@ M_.Form.Multi = class extends M_.Form.Input {
 		this.drawContainer();
 	}
 	/**
- 	 * @param {type}
- 	 */
+	 * @param {type}
+	 */
 	setValue(val) {
-		// console.log("setValue", val);
 		this.previousValue = this.value;
-		if (!_.isArray(val)) val = [];
+		if (val === "") val = [];
 		this.value = val;
-		if (this.chooseValuesAreObjects) {
-			if (this.value.length) {
-				if (_.isPlainObject(this.value[0])) {
-					this.chooseValues = val;
-					let oks = [];
-					_.each(this.value, v => {
-						oks.push(v.key);
-					});
-					this.value = oks;
-				}
-			}
-			// console.log("setValue,this.chooseValues,this.value", this.chooseValues, this.value);
-		}
 		this.drawContainer();
 	}
 	/**
- 	 * @return {type}
- 	 */
+	 * @return {type}
+	 */
 	getValue() {
 		return this.value;
 	}
 	/**
- 	 * @param {type}
- 	 */
+	 * @param {type}
+	 */
 	addValue(val) {
 		this.value.push(val);
 	}
@@ -6822,7 +6849,8 @@ M_.Form.Multi = class extends M_.Form.Input {
 /**
  * Display stars to rate
  * @class
-  * @extends M_.Form.Input
+ * @memberof! <global>
+ * @extends M_.Form.Input
  * @property {type} inputType
  * @property {type} value
  * @property {type} nbStars
@@ -6907,7 +6935,8 @@ M_.Form.Rating = class extends M_.Form.Input {
 /**
  * Input file form
  * @class
-  * @extends M_.Form.Input
+ * @memberof! <global>
+ * @extends M_.Form.Input
  * @property {type} placeholder
  * @property {type} inputType
  * @property {type} regxValidChar
@@ -6984,7 +7013,8 @@ M_.Form.File = class extends M_.Form.Input {
 /**
  * Input text form
  * @class
-  * @extends M_.Form.Input
+ * @memberof! <global>
+ * @extends M_.Form.Input
  * @property {type} placeholder
  * @property {type} inputType
  * @property {type} regxValidChar
@@ -7098,7 +7128,8 @@ M_.Form.Search = class extends M_.Form.Text {
 /**
  * Input textarea form
  * @class
-  * @extends M_.Form.Text
+ * @memberof! <global>
+ * @extends M_.Form.Text
  * @property {type} inputType
  * @property {type} acceptTabulation
  * @property {type} rows
@@ -7191,13 +7222,15 @@ M_.Form.Password = class extends M_.Form.Text {
 /**
  * A wysiwyg editor
  * @class
-  * @extends M_.Form.Textarea
+ * @memberof! <global>
+ * @extends M_.Form.Textarea
  * @property {type} heightEditor
  */
 M_.Form.TextEditor = class extends M_.Form.Textarea {
 	constructor(opts) {
 		var defaults = {
-			heightEditor: 200
+			heightEditor: 200,
+			optionsEditor: {}
 		};
 		opts = opts ? opts : {};
 		opts = $.extend({}, defaults, opts);
@@ -7215,10 +7248,9 @@ M_.Form.TextEditor = class extends M_.Form.Textarea {
 		var idTemp2 = M_.Utils.id();
 		this.jEl.after("<div id='" + idTemp1 + "'></div><div><div class='M_FormEditor-Content' id='" + idTemp2 + "'></div></div>");
 		$("#" + idTemp2).height(this.heightEditor);
-		this.editor = new M_.Editor({
-			buttonsContainer: $("#" + idTemp1),
-			container: $("#" + idTemp2)
-		});
+		this.optionsEditor.buttonsContainer = $("#" + idTemp1);
+		this.optionsEditor.container = $("#" + idTemp2);
+		this.editor = new M_.Editor(this.optionsEditor);
 	}
 	/**
 	 * @param {type}
@@ -7248,7 +7280,8 @@ M_.Form.TextEditor = class extends M_.Form.Textarea {
 /**
  * A radio buttons group
  * @class
-  * @extends M_.Form.Input
+ * @memberof! <global>
+ * @extends M_.Form.Input
  * @property {type} inputType
  * @property {type} radioPosition
  * @property {type} items
@@ -7343,7 +7376,8 @@ M_.Form.RadioGroup = class extends M_.Form.Input {
 /**
  * Input checkbox form
  * @class
-  * @extends M_.Form.Input
+ * @memberof! <global>
+ * @extends M_.Form.Input
  * @property {type} inputType
  * @property {type} labelWidth
  * @property {type} labelFocusInput
@@ -7434,7 +7468,8 @@ M_.Form.Checkbox = class extends M_.Form.Input {
 /**
  * Input number form ; only number are accepted
  * @class
-  * @extends M_.Form.Text
+ * @memberof! <global>
+ * @extends M_.Form.Text
  * @property {type} decimalLength
  * @property {type} decimalSeparator
  * @property {type} decimalForced
@@ -7512,7 +7547,8 @@ M_.Form.Number = class extends M_.Form.Text {
 /**
  * Input price form ; only number are accepted
  * @class
-  * @extends M_.Form.Number
+ * @memberof! <global>
+ * @extends M_.Form.Number
  * @property {type} decimalLength
  * @property {type} decimalSeparator
  * @property {type} decimalForced
@@ -7535,7 +7571,8 @@ M_.Form.Price = class extends M_.Form.Number {
 /**
  * Input color form ; TO implement !!!!
  * @class
-  * @extends M_.Form.Input
+ * @memberof! <global>
+ * @extends M_.Form.Input
  * @property {type} inputType
  */
 M_.Form.Color = class extends M_.Form.Input {
@@ -7552,7 +7589,8 @@ M_.Form.Color = class extends M_.Form.Input {
 /**
  * A base class to add a picker to input text form
  * @class
-  * @extends M_.Form.Text
+ * @memberof! <global>
+ * @extends M_.Form.Text
  * @property {type} hidePicker
  * @property {type} showDropdownOnFocus
  * @property {type} icon
@@ -7681,7 +7719,8 @@ M_.Form.Picker = class extends M_.Form.Text {
 /**
  * Input date form ; display a date picker and a month view
  * @class
-  * @extends M_.Form.Picker
+ * @memberof! <global>
+ * @extends M_.Form.Picker
  * @property {type} icon
  * @property {type} dateFormat
  * @property {type} dateFormatInput
@@ -7835,7 +7874,8 @@ M_.Form.DateWeek = class extends M_.Form.Date {
 /**
  * Input hour form ; display a date picker and a hour view
  * @class
-  * @extends M_.Form.Date
+ * @memberof! <global>
+ * @extends M_.Form.Date
  * @property {type} icon
  * @property {type} dateFormat
  * @property {type} dateFormatInput
@@ -8021,7 +8061,8 @@ M_.Form.Hour = class extends M_.Form.Date {
 /**
  * Input datehour form ; display 2 pickers for date and hour
  * @class
-  * @extends M_.Form.Input
+ * @memberof! <global>
+ * @extends M_.Form.Input
  * @property {type} configDateDef
  * @property {type} configHourDef
  */
@@ -8139,7 +8180,8 @@ M_.Form.DateHour = class extends M_.Form.Input {
 /**
  * Input combobox form ; display a comobobox
  * @class
-  * @extends M_.Form.Picker
+ * @memberof! <global>
+ * @extends M_.Form.Picker
  * @property {type} store
  * @property {type} modelKey
  * @property {type} modelValue
@@ -8344,7 +8386,8 @@ M_.Form.Combobox = class extends M_.Form.Picker {
 /**
  * Input combobox form ; display a comobobox + a list of values
  * @class
-  * @extends M_.Form.Combobox
+ * @memberof! <global>
+ * @extends M_.Form.Combobox
  */
 M_.Form.ComboboxMulti = class extends M_.Form.Combobox {
 	constructor(opts) {
@@ -8449,7 +8492,8 @@ M_.Form.ComboboxMulti = class extends M_.Form.Combobox {
 /**
  * A simple div to use in forms (no label)
  * @class
-  * @property {type} html
+ * @memberof! <global>
+ * @property {type} html
  */
 M_.Form.Div = class {
 	constructor(opts) {
@@ -8465,7 +8509,8 @@ M_.Form.Div = class {
 /**
  * A simple div with label
  * @class
-  * @extends M_.Form.Input
+ * @memberof! <global>
+ * @extends M_.Form.Input
  * @property {type} inputType
  */
 M_.Form.Display = class extends M_.Form.Input {
@@ -8496,7 +8541,8 @@ M_.Form.Display = class extends M_.Form.Input {
 /**
  * A wysiwyg editor to use directly or in a textarea
  * @class
-  * @property {type} buttonsContainer
+ * @memberof! <global>
+ * @property {type} buttonsContainer
  * @property {type} buttons
  */
 M_.Editor = class {
@@ -8597,7 +8643,7 @@ M_.Editor = class {
 						["imagesReplace", "Remplacer image", "fa-magic", "execImageReplace", ""]
 					]
 				],
-				["templates", "Templates", "fa-file", "", ""],
+				["templates", "Templates", "fa-file", "execTemplate", ""],
 				"|",
 				["source", "Code source", "fa-terminal", "execSource"]
 			]
@@ -8690,6 +8736,10 @@ M_.Editor = class {
 			}
 			tr.after(newTr);
 		}
+	}
+	execTemplate(data, evt) {
+		// this.trigger("clicktemplate", this);
+		if (this.clickTemplate) this.clickTemplate(evt);
 	}
 	/**
 	 * @return {type}
@@ -9329,7 +9379,7 @@ M_.Editor = class {
 					});
 				} else {
 					button.click({ items: bt[5] }, evt => {
-						this[bt[3]](bt[4]);
+						this[bt[3]](bt[4], evt);
 					});
 				}
 			}
@@ -9440,12 +9490,6 @@ $.postJSON = function(url, data, callback) {
 		dataType: "json",
 		success: callback
 	});
-};
-
-window.log = function() {
-	if (window.console) {
-		console.log.apply(window.console, arguments);
-	}
 };
 
 // (function(factory) {
@@ -9559,28 +9603,3 @@ window.log = function() {
 // 			}
 // 		}, this)) ;
 // 	}
-
-// changer update en change pour les événements combobox
-
-//// voir http://jsfiddle.net/jhfrench/GpdgF/ pour un treeview
-//// mettre un appel bouton "téléphonique reçu" accessible sur toutes les pages
-//// excellent : http://dropthebit.com/demos/fancy_input/fancyInput.html
-/// pour du scroll : http://johnpolacek.github.io/superscrollorama/
-/// peut servir, d'autres trucs bien sur ce site : http://tympanus.net/codrops/2012/01/24/arctext-js-curving-text-with-css3-and-jquery/
-/// à utiliser sur un site web : http://www.seanmccambridge.com/tubular/
-/// excellent : http://tutorialzine.com/2011/09/jquery-pointpoint-plugin/
-/// peut-être pas mal, pour rafraichir les listes : http://usehook.com/
-// à étudier : http://www.chartjs.org/docs/#getting-started-creating-a-chart
-// à copier ??? http://paulkinzett.github.io/toolbar/
-
-/// http://codecanyon.net/item/fun-captcha-jquery-plugin/6705437?ref=yuzuruishikawa
-
-// Mac OS X: http://blog.coolaj86.com/articles/how-to-create-an-osx-pkg-installer.html
-// Ubuntu Linux: http://blog.coolaj86.com/articles/how-to-create-a-debian-installer.html
-// Microsoft Windows: http://blog.coolaj86.com/articles/how-to-create-an-innosetup-installer.html
-
-// à annalyser : http://www.corm.fr/demonstration/
-// à analyser également (permet de faire des applications locales en nodejs) : https://github.com/rogerwang/node-webkit
-
-// l'utiliser pour la création du PDF ? http://www.jqueryrain.com/?l1iRfaTH
-/// ...pas mal du tout, car çà permet de laisser en colonne !!!!
