@@ -2626,10 +2626,12 @@ M_.Store = class {
 				this._treatDataStore(data, callback);
 			});
 		} else {
-			// if (this.loadAjaxXHR) this.loadAjaxXHR.abort() ;
-			// log("okArgs",okArgs)
+			if (this.loadAjaxXHR) this.loadAjaxXHR.abort();
 			this.loadAjaxXHR = M_.Utils.getJson(obj.url, okArgs, data => {
+				// log("this.loadAjaxXHR", this.loadAjaxXHR, data);
+				if (this.loadAjaxXHR.statusText == "abort") return;
 				this._treatDataStore(data, callback);
+				this.loadAjaxXHR = null;
 			});
 			// this.loadAjaxXHR = $.ajax({
 			// 	url: obj.url,
@@ -3471,35 +3473,40 @@ M_.SimpleList = class extends M_.List {
 		// this.create() ;
 	}
 	/**
-	 * @return {type}
-	 */
+ 	 * @return {type}
+ 	 */
 	updateStore() {
 		super.updateStore();
 		this.setSelection(this.currentSelection);
 	}
 	/**
-	 * @return {type}
-	 */
+ 	 * @return {type}
+ 	 */
 	create() {
 		var html = "";
 		html += `<div class='M_SimpleList'>
-					<div class='M_SimpleListContent'>
-						<div class='M_SimpleListContentFake1'></div>
-						<div class='M_SimpleListContentReal'></div>
-						<div class='M_SimpleListContentFake2'></div>
-					</div>
-				</div>`;
+ 					<div class='M_SimpleListContent'>
+ 						<div class='M_SimpleListContentFake1'></div>
+ 						<div class='M_SimpleListContentReal'></div>
+ 						<div class='M_SimpleListContentFake2'></div>
+ 					</div>
+ 				</div>`;
 		this.jEl = $(html);
 		this.container.append(this.jEl);
 		if (!this.dynamic) this.jEl.find(".M_SimpleListContent").css("background-image", "none");
 
 		if (this.dynamic) {
+			// console.log("this.jEl",this.jEl);
 			this.jEl.scroll(evt => {
+				// console.log("scroll", this.isrendering);
+				if (this.isrendering) return;
 				M_.Utils.delay(
 					() => {
-						var diff = this.jEl.offset().top - this.jEl.find(".M_SimpleListContent").offset().top;
+						var diff = this.jEl.scrollTop();
 						var _skipPosition = Math.ceil(diff / this.lineHeight) - Math.ceil(this.loadLimit / 4);
 						if (_skipPosition < 0) _skipPosition = 0;
+						this._lastscrolltop = this.jEl.scrollTop();
+						if (this.store.skip == _skipPosition) return;
 						this.store.reload(false, { skip: _skipPosition, limit: this.loadLimit });
 					},
 					100,
@@ -3509,21 +3516,28 @@ M_.SimpleList = class extends M_.List {
 		}
 	}
 	/**
-	 * @return {type}
-	 */
+ 	 * @return {type}
+ 	 */
 	render() {
 		// log("render")
+		this.isrendering = true;
 		var html = "",
 			mid = this.store.primaryKey;
 		this.store.each((model, indexTemp) => {
+			// console.log("model.getData()", model.getData());
 			// log("cg_created",model.get('cg_name'))
 			var val = "";
 			if ($.isFunction(this.itemValue)) val = this.itemValue(model);
 			else val = model.get(this.itemValue);
 			var clsTr = this.classItems;
 			if (this.oddEven) {
-				if (indexTemp % 2 === 0) clsTr += " M_TableListOdd";
-				else clsTr += " M_TableListEven";
+				if (this.dynamic) {
+					if ((indexTemp + this.store.skip) % 2 === 0) clsTr += " M_TableListOdd";
+					else clsTr += " M_TableListEven";
+				} else {
+					if (indexTemp % 2 === 0) clsTr += " M_TableListOdd";
+					else clsTr += " M_TableListEven";
+				}
 			}
 			html += "<div class='" + clsTr + " M_Noselectable' data-m_id='" + model.get(mid) + "'>" + val + "</div>";
 		});
@@ -3538,11 +3552,13 @@ M_.SimpleList = class extends M_.List {
 		// 		return $( "<div class='ui-widget-header' style='z-index:100000;'>I'm a custom helper</div>" );
 		// 	}
 		// });
+		// console.log("this.jEl.scrollTop()", this.jEl.scrollTop());
 
 		if (this.dynamic) {
 			var totalHeight = this.lineHeight * this.store.countTotal();
-			this.jEl.find(".M_SimpleListContent").height(totalHeight);
 			this.jEl.find(".M_SimpleListContentFake1").height(this.store.skip * this.lineHeight);
+			this.jEl.find(".M_SimpleListContent").height(totalHeight);
+			this.jEl.scrollTop(this._lastscrolltop);
 		}
 		// this.jEl.find('.M_SimpleListContentFake2').height(totalHeight - ((this._skipPosition+100)*this.lineHeight)) ;
 
@@ -3633,27 +3649,30 @@ M_.SimpleList = class extends M_.List {
 		// this.jEl.find('.M_SimpleListContentReal').draggable();
 		this.setSelection(this.currentSelection);
 		this.trigger("render", this);
+		window.setTimeout(() => {
+			this.isrendering = false;
+		}, 200);
 	}
 	/**
-	 * @param  {type}
-	 * @return {type}
-	 */
+ 	 * @param  {type}
+ 	 * @return {type}
+ 	 */
 	leaveViewable(evt) {
 		$(evt.target).removeClass("over");
 	}
 	/**
-	 * @param  {type}
-	 * @return {type}
-	 */
+ 	 * @param  {type}
+ 	 * @return {type}
+ 	 */
 	enterViewable(evt) {
 		// log("evt.target", $(evt.target))
 		// $(this.itemsDraggableTo).removeClass('over') ;
 		$(evt.target).addClass("over");
 	}
 	/**
-	 * @param  {type}
-	 * @return {type}
-	 */
+ 	 * @param  {type}
+ 	 * @return {type}
+ 	 */
 	moveViewable(evt) {
 		evt.preventDefault();
 		// log("this._dragStarted",this._dragStarted)
@@ -3670,8 +3689,8 @@ M_.SimpleList = class extends M_.List {
 		this._dragStarted = true;
 	}
 	/**
-	 * @param {type}
-	 */
+ 	 * @param {type}
+ 	 */
 	setSelection(m_id) {
 		// log("setSelection",m_id)
 		// if (!m_id) return ;
@@ -3704,8 +3723,8 @@ M_.SimpleList = class extends M_.List {
 		}
 	}
 	/**
-	 * @return {type}
-	 */
+ 	 * @return {type}
+ 	 */
 	getSelection() {
 		var tabSelection = [];
 		// log("this.currentSelection",this.currentSelection)
