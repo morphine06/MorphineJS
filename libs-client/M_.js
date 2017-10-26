@@ -6406,7 +6406,10 @@ M_.Form.Input = class extends M_.Outlet {
 			minLength: null,
 			maxLength: null,
 			disabled: false,
-			previousValue: null
+			previousValue: null,
+			addon: "",
+			addonStyle: "",
+			addonClass: ""
 		};
 		opts = opts ? opts : {};
 		opts = $.extend({}, defaults, opts);
@@ -6499,7 +6502,34 @@ M_.Form.Input = class extends M_.Outlet {
 		if (this.disabled) this.jEl.prop("disabled", true);
 		// this.jEl = this.container.find('.M_Input') ;
 		// this.jEl.attr('data-m-after', this.placeholder) ;
+		if (this.addon) {
+			// console.log("addon")
+			this.jEl.addClass("M_Addon");
+			var moreCls = "",
+				moreStyle = "";
+			if ((this.labelPosition == "left" || this.labelPosition == "right") && this.label !== "") {
+				moreCls += " M_InputLeft";
+				moreStyle += " width:calc(100% - " + this.labelWidth + "px);";
+			}
+			this.jEl.outerWidth("100%");
+			this.jEl.removeClass("M_InputLeft");
+			this.jEl.wrap("<div class='M_FormInputGroup " + moreCls + "' style='" + moreStyle + "'>");
+			var htmlCaret = `<div class="M_FormAddon ${this.addonClass}" style='${this.addonStyle}'>${this.addon}</div>`;
+			this._addon = $(htmlCaret);
+			this.container.find(".M_FormInputGroup").append(this._addon);
+			this._addon.click(evt => {
+				// this.clickAddon(this, evt);
+				this.trigger("clickaddon", this, evt);
+			});
+		}
 	}
+	changeAddon(txt) {
+		this.jEl
+			.parent()
+			.find(".M_FormAddon")
+			.html(txt);
+	}
+
 	/**
 	 * @return {type}
 	 */
