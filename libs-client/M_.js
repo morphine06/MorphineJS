@@ -3559,6 +3559,7 @@ M_.SimpleList = class extends M_.List {
 			this.jEl.find(".M_SimpleListContentFake1").height(this.store.skip * this.lineHeight);
 			this.jEl.find(".M_SimpleListContent").height(totalHeight);
 			this.jEl.scrollTop(this._lastscrolltop);
+			this._lastscrolltop = 0;
 		}
 		// this.jEl.find('.M_SimpleListContentFake2').height(totalHeight - ((this._skipPosition+100)*this.lineHeight)) ;
 
