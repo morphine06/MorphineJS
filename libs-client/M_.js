@@ -3462,6 +3462,7 @@ M_.SimpleList = class extends M_.List {
 			dynamic: false,
 			lineHeight: 34,
 			loadLimit: 400,
+			delayScroll: 100,
 			oddEven: true,
 			// _startPosition: 0,
 			itemsDraggableTo: false,
@@ -3512,7 +3513,7 @@ M_.SimpleList = class extends M_.List {
 						if (this.store.skip == _skipPosition) return;
 						this.store.reload(false, { skip: _skipPosition, limit: this.loadLimit });
 					},
-					100,
+					this.delayScroll,
 					"m_simplelist_scroll"
 				);
 			});
@@ -6814,7 +6815,8 @@ M_.Form.Multi = class extends M_.Form.Input {
 		opts = $.extend({}, defaults, opts);
 		super(opts);
 		if (this.value.length) this.setValue(this.value);
-		$("#" + this._idBtAddKeyword).click(evt => {
+		// $("#" + this._idBtAddKeyword).click(evt => {
+		$(this.container.find("label")).click(evt => {
 			evt.stopPropagation();
 			if (this.onClickBtAdd) this.onClickBtAdd(this, this.value);
 			else if (this.chooseValues) this.showChooseValues();
