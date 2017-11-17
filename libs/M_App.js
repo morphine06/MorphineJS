@@ -166,7 +166,7 @@ module.exports = class MorphineServer {
 
 	initIoSocket() {
 		io.on("connection", function(socket) {
-			console.log("process.cwd()", process.cwd());
+			// console.log("process.cwd()", process.cwd());
 			Sockets.onConnection(socket);
 		});
 		if (Sockets.initListeners) Sockets.initListeners();

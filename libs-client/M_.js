@@ -501,12 +501,16 @@ M_.Controller = class {
 
 		if (anim) {
 			// console.log("anim");
-			this.jEl.css("left", $(window).width()).transition({
-				left: 0,
-				delay: 100
-			}, 500, () => {
-				// console.log("finit");
-			});
+			this.jEl.css("left", $(window).width()).transition(
+				{
+					left: 0,
+					delay: 100
+				},
+				500,
+				() => {
+					// console.log("finit");
+				}
+			);
 		} else {
 			this.jEl.css("left", 0);
 		}
@@ -846,6 +850,7 @@ M_.Utils = class {
 	static urlIze(str) {
 		str = M_.Utils.trim(str);
 		if (str.substring(0, 7) == "http://") return str;
+		if (str.substring(0, 8) == "https://") return str;
 		return "http://" + str;
 	}
 
@@ -1999,9 +2004,9 @@ M_.Model = class {
 		this.updateRow();
 	}
 	/**
-     * You must extends this class to return a definition
+	 * You must extends this class to return a definition
 	 * @function M_.Model#getDefinition
-     */
+	 */
 	getDefinition() {
 		return {};
 	}
@@ -2037,9 +2042,9 @@ M_.Model = class {
 		}
 	}
 	/**
-     * Get an object that represent the data model
-     * @returns {object} un nombre
-     */
+	 * Get an object that represent the data model
+	 * @returns {object} un nombre
+	 */
 	getData() {
 		return this.getArray();
 	}
@@ -2061,10 +2066,10 @@ M_.Model = class {
 		return ret;
 	}
 	/**
-     * Set a object that represent the data model
+	 * Set a object that represent the data model
 	 * @param  {object} row - The row
 	 * @param  {object} silently - Event "update" is not called
-     */
+	 */
 	setRow(row, silently = false) {
 		this.row = row;
 		if (silently !== true) {
@@ -2073,11 +2078,11 @@ M_.Model = class {
 		}
 	}
 	/**
-     * Set only one field of model
+	 * Set only one field of model
 	 * @param  {String} field - The field name
 	 * @param  {something} val - The value
 	 * @param  {object} silently - Event "update" is not called
-     */
+	 */
 	set(field, val, silently) {
 		//log("val",field,val)
 		this.row[field] = val;
@@ -2087,8 +2092,8 @@ M_.Model = class {
 		}
 	}
 	/**
-     * Create an empty model
-     */
+	 * Create an empty model
+	 */
 	createEmptyRow() {
 		var fields = this.fields;
 		for (var j = 0; j < fields.length; j++) {
@@ -2098,9 +2103,9 @@ M_.Model = class {
 
 	//warning : stocker le résultat ???
 	/**
-     * Get a field
+	 * Get a field
 	 * @param  {String} field - The field name
-     */
+	 */
 	get(field) {
 		var val,
 			fields = this.fields;
@@ -2141,8 +2146,8 @@ M_.Model = class {
 		return val;
 	}
 	/**
-     * Get the id of row (defined in primaryKey)
-     */
+	 * Get the id of row (defined in primaryKey)
+	 */
 	getId() {
 		return this.get(this.primaryKey);
 	}
@@ -3074,8 +3079,9 @@ M_.Tree = class extends M_.Outlet {
 			cls: "M_Tree",
 			retractable: true,
 			movable: true,
+			dynamic: false,
 			rootNode: {
-				expended: true,
+				opened: true,
 				hidden: false,
 				label: "RootNode",
 				id: "rootnode",
@@ -3090,209 +3096,126 @@ M_.Tree = class extends M_.Outlet {
 		super(opts);
 	}
 	/**
-  	 * @return {type}
-  	 */
+	 * @return {type}
+	 */
 	create() {
 		this.jEl = $("<div class='" + this.cls + "'></div>");
 		this.container.append(this.jEl);
-		this._drawNodes();
+		// this._drawNodes();
 	}
 	/**
-  	 * Draw the tree
-  	 */
+	 * Draw the tree
+	 */
 	draw() {
 		this._drawNodes();
 	}
-	_drawNodes() {
-		var html = "";
-		html += "<ul>";
-		html += this._createChildNodes(this.rootNode);
-		html += "</ul>";
-		this.jEl.html(html);
-
-		this.jEl
-			.find("li:has(ul)")
-			.addClass("M_TreeParentLi")
-			.find(" > span"); //.attr('title', 'Collapse this branch')
-		if (this.retractable) {
-			this.jEl.find("li.M_TreeParentLi > span > i").on("click", evt => {
-				var target = $(evt.target);
-				var children = target.closest("li.M_TreeParentLi").find(" > ul > li");
-				if (children.is(":visible")) {
-					children.slideUp();
-					target
-						.find(" > i")
-						.addClass("fa-plus-square")
-						.removeClass("fa-minus-square"); //.attr('title', 'Expand this branch')
-				} else {
-					children.slideDown();
-					target
-						.find(" > i")
-						.addClass("fa-minus-square")
-						.removeClass("fa-plus-square"); //.attr('title', 'Collapse this branch')
-				}
-				evt.stopPropagation();
-			});
-		}
-		this.jEl.find("li > span").on("click", evt => {
-			var nodeId = $(evt.target)
-				.closest("li")
-				.attr("m_id");
-			this.setSelected(nodeId);
-
-			var node = this.getNode(nodeId);
-			if (node.clickable !== false) this.trigger("nodeclick", this, nodeId, node);
+	appendNodes(parentId, nodes) {
+		let parentNode = this.jEl.find("li[m_id=" + parentId + "]");
+		parentNode.find(" > ul").empty();
+		_.each(nodes, node => {
+			this._createNode(parentId, node);
 		});
-		this._dragMID = null;
-		if (this.movable) {
-			this.jEl
-				.find("li.draggable > span")
-				.attr("draggable", true)
-				.on("drag", (evt, evt2) => {
-					// console.log("drag",evt);
-					this._dragMID = $(evt.target)
-						.closest("li")
-						.attr("m_id");
-				});
-			this.jEl
-				.find("li.droppable > span")
-				.on("dragover", evt => {
-					// console.log("dragover",evt);
-					var nodeDrop = $(evt.target)
-						.closest("li")
-						.attr("m_id");
-					if (nodeDrop != this._dragMID) evt.preventDefault();
-				})
-				.on("drop", evt => {
-					// console.log("drop",evt);
-					evt.preventDefault();
-					var mid = this._dragMID;
-					var nodeDrop = $(evt.target)
-						.closest("li")
-						.attr("m_id");
-					console.log("this.isNodeParentOf(mid, nodeDrop)", this.isNodeParentOf(mid, nodeDrop));
-					if (mid != nodeDrop && !this.isNodeParentOf(mid, nodeDrop)) {
-						let ok = this.trigger("beforenodemove", this, mid, nodeDrop);
-						if (ok === false) return;
-						this.moveNode(mid, nodeDrop);
-					}
-				});
-		}
+		parentNode.addClass("loaded");
 	}
-	_createChildNodes(parent) {
-		var html = "";
-		if (!parent.id) parent.id = M_.Utils.id();
-		let myclass = "";
-		if (parent.draggable) myclass += " draggable";
-		if (parent.droppable) myclass += " droppable";
-		html += "<li m_id='" + parent.id + "' class='" + myclass + "'>";
-		let fa = "";
-		if (parent.nodes && parent.nodes.length) fa = "fa fa-minus-square";
-		html += "<span><i class='" + fa + "'></i><div class='txt'>" + parent.label + "</div></span>";
-		if (parent.nodes && parent.nodes.length) {
-			html += "<ul>";
-			_.each(parent.nodes, (node, index) => {
-				html += this._createChildNodes(node);
-			});
-			html += "</ul>";
-		}
-		html += "</li>";
-		return html;
-	}
-	_iter(parent, nodeId, action) {
-		// if (action=='path') this._nodepath.push(parent.id) ;
-		if (nodeId == "rootnode") {
-			if (action == "get") {
-				this._nodeparent = null;
-				this._resNodeId = parent;
-			}
-			if (action == "add") {
-				if (!parent.nodes) parent.nodes = [];
-				parent.nodes.push(this._nodeToAdd);
-			}
-			return;
-		}
-		if (parent.nodes && parent.nodes.length) {
-			_.each(parent.nodes, (node, index) => {
-				if (!node) return;
-				if (node.id == nodeId) {
-					if (action == "remove") parent.nodes.splice(index, 1);
-					if (action == "get") {
-						this._nodeparent = parent;
-						this._resNodeId = node;
-					}
-					if (action == "add") {
-						if (!node.nodes) node.nodes = [];
-						node.nodes.push(this._nodeToAdd);
-					}
-				}
-				this._iter(node, nodeId, action);
-			});
-		}
-		// return '' ;
-	}
-	/**
-  	 * @param {NodeObject} node
-  	 * @param {String} parentId
-  	 */
-	addNode(node, parentId, silently) {
-		this._nodeToAdd = node;
-		this._iter(this.rootNode, parentId, "add");
-		this._drawNodes();
-		if (!silently) this.trigger("nodeadd", this, node, parentId);
-	}
-	/**
-  	 * @param  {String}	nodeId
-  	 * @param  {String}	parentId
-  	 */
-	moveNode(nodeId, parentId, silently) {
-		// log("nodeId, parentId",nodeId, parentId)
-		var node = this.getNode(nodeId);
-		this.removeNode(nodeId, true);
-		this.addNode(node, parentId, true);
-		this._drawNodes();
-		if (!silently) this.trigger("nodemove", this, nodeId, parentId);
-	}
-	/**
-  	 * @param  {type}
-  	 * @return {Array}
-  	 */
+	// _drawNodes() {
+	// 	var html = "";
+	// 	html += "<ul>";
+	// 	html += this._createChildNodes(this.rootNode);
+	// 	html += "</ul>";
+	// 	this.jEl.html(html);
+	//
+	// 	this.jEl
+	// 		.find("li:has(ul)")
+	// 		.addClass("M_TreeParentLi")
+	// 		.find(" > span"); //.attr('title', 'Collapse this branch')
+	// 	if (this.retractable) {
+	// 		this.jEl.find("li.M_TreeParentLi > span > i").on("click", evt => {
+	// 			var target = $(evt.target);
+	// 			var children = target.closest("li.M_TreeParentLi").find(" > ul > li");
+	// 			if (children.is(":visible")) {
+	// 				children.slideUp();
+	// 				target
+	// 					.find(" > i")
+	// 					.addClass("fa-plus-square")
+	// 					.removeClass("fa-minus-square"); //.attr('title', 'Expand this branch')
+	// 			} else {
+	// 				children.slideDown();
+	// 				target
+	// 					.find(" > i")
+	// 					.addClass("fa-minus-square")
+	// 					.removeClass("fa-plus-square"); //.attr('title', 'Collapse this branch')
+	// 			}
+	// 			evt.stopPropagation();
+	// 		});
+	// 	}
+	// 	this.jEl.find("li > span").on("click", evt => {
+	// 		var nodeId = $(evt.target)
+	// 			.closest("li")
+	// 			.attr("m_id");
+	// 		this.setSelected(nodeId);
+	//
+	// 		var node = this.getNode(nodeId);
+	// 		if (node.clickable !== false) {
+	// 			this.trigger("nodeclick", this, nodeId, node);
+	// 			if (this.dynamic) this.trigger("nodeopen", this, nodeId, node);
+	// 		}
+	// 	});
+	// 	this._dragMID = null;
+	// 	if (this.movable) {
+	// 		this.jEl
+	// 			.find("li.draggable > span")
+	// 			.attr("draggable", true)
+	// 			.on("drag", (evt, evt2) => {
+	// 				// console.log("drag",evt);
+	// 				this._dragMID = $(evt.target)
+	// 					.closest("li")
+	// 					.attr("m_id");
+	// 			});
+	// 		this.jEl
+	// 			.find("li.droppable > span")
+	// 			.on("dragover", evt => {
+	// 				// console.log("dragover",evt);
+	// 				var nodeDrop = $(evt.target)
+	// 					.closest("li")
+	// 					.attr("m_id");
+	// 				if (nodeDrop != this._dragMID) evt.preventDefault();
+	// 			})
+	// 			.on("drop", evt => {
+	// 				// console.log("drop",evt);
+	// 				evt.preventDefault();
+	// 				var mid = this._dragMID;
+	// 				var nodeDrop = $(evt.target)
+	// 					.closest("li")
+	// 					.attr("m_id");
+	// 				// console.log("this.isNodeParentOf(mid, nodeDrop)", this.isNodeParentOf(mid, nodeDrop));
+	// 				if (mid != nodeDrop && !this.isNodeParentOf(mid, nodeDrop)) {
+	// 					let ok = this.trigger("beforenodemove", this, mid, nodeDrop);
+	// 					if (ok === false) return;
+	// 					this.moveNode(mid, nodeDrop);
+	// 				}
+	// 			});
+	// 	}
+	// }
+
 	getNodePath(nodeId, names) {
 		// console.log("getNodePath",nodeId);
-		var nodepath = [];
-		let node = this.getNode(nodeId);
-		if (!node) return nodepath;
-		if (names) nodepath.push(node.label);
-		else nodepath.push(node.id);
-		// this._iter(this.rootNode, nodeId, 'path') ;
-		var nodeIdStart = nodeId;
-		if (nodeId == "rootnode") return nodepath;
-		for (var i = 0; i < 100; i++) {
-			var parentNode = this.getNodeParent(nodeIdStart);
-			if (names) {
-				nodepath.unshift(parentNode.label);
-			} else {
-				nodepath.unshift(parentNode.id);
+		let nodepath = [];
+		let jEl = this.jEl.find("li[m_id=" + nodeId + "]");
+		function iter(el, nodepath, scope) {
+			let n = scope._recreateNode(el.attr("m_id"));
+			nodepath.unshift(n);
+			let p = el.parent().parent();
+			if (p.is("li")) {
+				iter(p, nodepath, scope);
 			}
-			nodeIdStart = parentNode.id;
-			if (parentNode.id == "rootnode") break;
 		}
+		iter(jEl, nodepath, this);
 		return nodepath;
-	}
-	getNodeParent(nodeId) {
-		this._nodeparent = null;
-		this._iter(this.rootNode, nodeId, "get");
-		// return M_.Utils.clone(this._nodeparent) ;
-		return this._nodeparent;
-	}
-	isNodeChildOf(nodeId, childOfNodeId) {
-		let path1 = this.getNodePath(nodeId);
-		let path2 = this.getNodePath(childOfNodeId);
 	}
 	isNodeParentOf(nodeId, childOfNodeId) {
 		let path1 = this.getNodePath(nodeId);
 		let path2 = this.getNodePath(childOfNodeId);
-		// 	console.log("path1,path2",path1,path2);
+		// console.log("path1,path2", path1, path2);
 		let dif = [];
 		let ok = false;
 		_.each(path2, (p2, i2) => {
@@ -3300,36 +3223,367 @@ M_.Tree = class extends M_.Outlet {
 				ok = true;
 				return false;
 			}
-			if (p2 == path1[i2]) return;
-			if (p2 != path1[i2]) return false;
+			if (p2.id == path1[i2].id) return;
+			if (p2.id != path1[i2].id) return false;
 		});
 		return ok;
 	}
+	_recreateNode(nodeId) {
+		let parentNodeEl = this.jEl.find("li[m_id='" + nodeId + "']");
+		let hasChild = false;
+		if (parentNodeEl.find(" > ul > li").length) hasChild = true;
+		return {
+			hidden: false,
+			label: parentNodeEl.find(" > span > .txt").html(),
+			draggable: parentNodeEl.hasClass("draggable"),
+			droppable: parentNodeEl.hasClass("draggable"),
+			id: nodeId,
+			hasChild: hasChild,
+			opened: parentNodeEl.hasClass("opened")
+			// nodes: []
+		};
+	}
+	_createNode(parentId, node) {
+		let parentNodeEls = this.jEl.find("li[m_id=" + parentId + "] > ul");
+		if (parentId == "-1") parentNodeEls = this.jEl.find(" > ul");
+		var html = "";
+		if (!node.id) node.id = M_.Utils.id();
+		let myclass = "";
+		if (node.draggable) myclass += " draggable";
+		if (node.droppable) myclass += " droppable";
+		if (node.clickable !== false) myclass += " clickable";
+		let fa = "",
+			fa2 = "";
+		if (node.hasChild || (node.nodes && node.nodes.length)) {
+			myclass += " openable";
+		} else {
+			fa = "display:none;";
+		}
+		if (node.opened || !this.dynamic) {
+			myclass += " opened";
+			fa2 = "fa-minus-square";
+		} else {
+			fa2 = "fa-plus-square";
+		}
+		// console.log("node.hasChild", node.hasChild, myclass);
+		html += "<li m_id='" + node.id + "' class='" + myclass + "'>";
+		html += "<span><i class='fa " + fa2 + "' style='" + fa + "'></i><div class='txt'>" + node.label + "</div></span>";
+		html += "<ul></ul>";
+		html += "</li>";
+		let jEl = $(html);
+		// console.log("html", html, parentNodeEls);
+		parentNodeEls.append(jEl);
+		jEl.find(" > span").on("click", evt => {
+			var jEl = $(evt.target).closest("li");
+			var nodeId = jEl.attr("m_id");
+			var node = this._recreateNode(nodeId);
+
+			if (node.clickable !== false) {
+				this.setSelected(nodeId);
+				this.trigger("nodeclick", this, nodeId, node);
+				if (node.opened) {
+					this.closeNode(nodeId);
+				} else {
+					this.openNode(nodeId);
+				}
+			}
+		});
+		this._dragMID = null;
+		if (this.movable && node.draggable) {
+			jEl
+				.find(" > span")
+				.attr("draggable", true)
+				.on("drag", (evt, evt2) => {
+					// console.log("drag",evt);
+					this._dragMID = $(evt.target)
+						.closest("li")
+						.attr("m_id");
+				});
+			if (node.droppable) {
+				jEl.find(" > span").on("dragover", evt => {
+					var nodeDrop = $(evt.target)
+						.closest("li")
+						.attr("m_id");
+					// console.log("dragover", nodeDrop);
+					if (nodeDrop != this._dragMID) evt.preventDefault();
+				});
+				jEl.find(" > span").on("drop", evt => {
+					evt.preventDefault();
+					var mid = this._dragMID;
+					var nodeDrop = $(evt.target)
+						.closest("li")
+						.attr("m_id");
+					// console.log("this.isNodeParentOf(mid, nodeDrop)", this.isNodeParentOf(mid, nodeDrop));
+					if (mid != nodeDrop && !this.isNodeParentOf(mid, nodeDrop)) {
+						let ok = this.trigger("beforenodemove", this, mid, nodeDrop);
+						if (ok === false) return;
+						this.moveNode(mid, nodeDrop);
+					}
+				});
+			}
+		}
+	}
+	// _createChildNodes(parent) {
+	// 	var html = "";
+	// 	if (!parent.id) parent.id = M_.Utils.id();
+	// 	let myclass = "";
+	// 	if (parent.draggable) myclass += " draggable";
+	// 	if (parent.droppable) myclass += " droppable";
+	// 	html += "<li m_id='" + parent.id + "' class='" + myclass + "'>";
+	// 	let fa = "";
+	// 	if (parent.nodes && parent.nodes.length) fa = "fa fa-minus-square";
+	// 	html += "<span><i class='" + fa + "'></i><div class='txt'>" + parent.label + "</div></span>";
+	// 	html += "<ul>";
+	// 	if (parent.nodes && parent.nodes.length) {
+	// 		_.each(parent.nodes, (node, index) => {
+	// 			html += this._createChildNodes(node);
+	// 		});
+	// 	}
+	// 	html += "</ul>";
+	// 	html += "</li>";
+	// 	return html;
+	// }
+	// _iter(parent, nodeId, action) {
+	// 	// if (action=='path') this._nodepath.push(parent.id) ;
+	// 	if (nodeId == "rootnode") {
+	// 		if (action == "get") {
+	// 			this._nodeparent = null;
+	// 			this._resNodeId = parent;
+	// 		}
+	// 		if (action == "add") {
+	// 			if (!parent.nodes) parent.nodes = [];
+	// 			parent.nodes.push(this._nodeToAdd);
+	// 		}
+	// 		return;
+	// 	}
+	// 	if (parent.nodes && parent.nodes.length) {
+	// 		_.each(parent.nodes, (node, index) => {
+	// 			if (!node) return;
+	// 			if (node.id == nodeId) {
+	// 				if (action == "remove") parent.nodes.splice(index, 1);
+	// 				if (action == "get") {
+	// 					this._nodeparent = parent;
+	// 					this._resNodeId = node;
+	// 				}
+	// 				if (action == "add") {
+	// 					if (!node.nodes) node.nodes = [];
+	// 					node.nodes.push(this._nodeToAdd);
+	// 				}
+	// 			}
+	// 			this._iter(node, nodeId, action);
+	// 		});
+	// 	}
+	// 	// return '' ;
+	// }
 	/**
-  	 * @param  {String}	nodeId
-  	 */
+	 * @param {NodeObject} node
+	 * @param {String} parentId
+	 */
+	addNode(node, parentId, silently) {
+		this.trigger("nodeadd", this, node, parentId, node => {
+			this._createNode(parentId, node);
+			// this._checkAllOpenable();
+		});
+	}
+	closeNode(nodeId) {
+		let jEl = this.jEl.find("li[m_id=" + nodeId + "]");
+		var node = this._recreateNode(nodeId);
+		node.opened = false;
+		jEl.removeClass("opened");
+		jEl.find(" > ul").hide();
+		if (jEl.hasClass("openable")) {
+			jEl.find(" > span > i").removeClass("fa-minus-square");
+			jEl.find(" > span > i").addClass("fa-plus-square");
+		}
+	}
+	openPath(path, cb) {
+		function iter(num, scope, cb) {
+			console.log("num", num);
+			scope.setSelected(path[num]);
+			scope.openNode(path[num], () => {
+				if (path[num + 1]) iter(num + 1, scope, cb);
+				else if (cb) cb();
+			});
+		}
+		iter(0, this, cb);
+	}
+	openNode(nodeId, cb) {
+		let jEl = this.jEl.find("li[m_id=" + nodeId + "]");
+		var node = this._recreateNode(nodeId);
+		node.opened = true;
+		jEl.addClass("opened");
+		jEl.find(" > ul").show();
+		if (jEl.hasClass("openable")) {
+			jEl.find(" > span > i").addClass("fa-minus-square");
+			jEl.find(" > span > i").removeClass("fa-plus-square");
+		}
+		// console.log("openNode");
+		if (!cb) cb = function() {};
+		if (this.dynamic && jEl.hasClass("openable") && !jEl.hasClass("loaded")) this.trigger("nodeopen", this, nodeId, node, cb);
+	}
+	// addNode(node, parentId, silently) {
+	// 	this._nodeToAdd = node;
+	// 	this._iter(this.rootNode, parentId, "add");
+	// 	this._drawNodes();
+	// 	if (!silently) this.trigger("nodeadd", this, node, parentId);
+	// }
+	/**
+	 * @param  {String}	nodeId
+	 * @param  {String}	parentId
+	 */
+	// moveNode(nodeId, parentId, silently) {
+	// 	// log("nodeId, parentId",nodeId, parentId)
+	// 	var node = this.getNode(nodeId);
+	// 	this.removeNode(nodeId, true);
+	// 	this.addNode(node, parentId, true);
+	// 	this._drawNodes();
+	// 	if (!silently) this.trigger("nodemove", this, nodeId, parentId);
+	// }
+	// _checkAllOpenable() {
+	// 	this.jEl.find("li[m_id]").each((ind, el) => {
+	// 		if ($(el).find(" > ul > li").length) {
+	// 			$(el)
+	// 				.find(" > span > i")
+	// 				.show();
+	// 			$(el).addClass("openable");
+	// 			// if (
+	// 			// 	$(el)
+	// 			// 		.find(" > ul")
+	// 			// 		.css("display") == "none"
+	// 			// )
+	// 			// 	$(el).addClass("opened");
+	// 			// else $(el).removeClass("opened");
+	// 		} else {
+	// 			$(el)
+	// 				.find(" > span > i")
+	// 				.hide();
+	// 			$(el).removeClass("opened");
+	// 			// .removeClass("openable")
+	// 		}
+	// 	});
+	// }
+	moveNode(nodeId, parentId, silently) {
+		let jEl = this.jEl.find("li[m_id=" + nodeId + "]");
+		let parentjEl = jEl.parent().parent();
+		let jEl2 = this.jEl.find("li[m_id=" + parentId + "]");
+		let p = jEl.detach();
+		jEl2.find(" > ul").append(p);
+		// this._checkAllOpenable();
+
+		if (!silently) this.trigger("nodemove", this, nodeId, parentId);
+		// log("nodeId, parentId",nodeId, parentId)
+		// var node = this.getNode(nodeId);
+		// this.removeNode(nodeId, true);
+		// this.addNode(node, parentId, true);
+		// this._drawNodes();
+	}
+
+	/**
+	 * @param  {type}
+	 * @return {Array}
+	 */
+	// getNodePath(nodeId, names) {
+	// 	// console.log("getNodePath",nodeId);
+	// 	var nodepath = [];
+	// 	let node = this.getNode(nodeId);
+	// 	if (!node) return nodepath;
+	// 	if (names) nodepath.push(node.label);
+	// 	else nodepath.push(node.id);
+	// 	// this._iter(this.rootNode, nodeId, 'path') ;
+	// 	var nodeIdStart = nodeId;
+	// 	if (nodeId == "rootnode") return nodepath;
+	// 	for (var i = 0; i < 100; i++) {
+	// 		var parentNode = this.getNodeParent(nodeIdStart);
+	// 		if (names) {
+	// 			nodepath.unshift(parentNode.label);
+	// 		} else {
+	// 			nodepath.unshift(parentNode.id);
+	// 		}
+	// 		nodeIdStart = parentNode.id;
+	// 		if (parentNode.id == "rootnode") break;
+	// 	}
+	// 	return nodepath;
+	// }
+	// getNodeParent(nodeId) {
+	// 	this._nodeparent = null;
+	// 	this._iter(this.rootNode, nodeId, "get");
+	// 	// return M_.Utils.clone(this._nodeparent) ;
+	// 	return this._nodeparent;
+	// }
+	// isNodeChildOf(nodeId, childOfNodeId) {
+	// 	let path1 = this.getNodePath(nodeId);
+	// 	let path2 = this.getNodePath(childOfNodeId);
+	// }
+	// isNodeParentOf(nodeId, childOfNodeId) {
+	// 	let path1 = this.getNodePath(nodeId);
+	// 	let path2 = this.getNodePath(childOfNodeId);
+	// 	// 	console.log("path1,path2",path1,path2);
+	// 	let dif = [];
+	// 	let ok = false;
+	// 	_.each(path2, (p2, i2) => {
+	// 		if (!path1[i2]) {
+	// 			ok = true;
+	// 			return false;
+	// 		}
+	// 		if (p2 == path1[i2]) return;
+	// 		if (p2 != path1[i2]) return false;
+	// 	});
+	// 	return ok;
+	// }
+	/**
+	 * @param  {String}	nodeId
+	 */
 	removeNode(nodeId, silently) {
 		// this.jEl.find("li[m_id='"++"']").remove() ;
-		this._iter(this.rootNode, nodeId, "remove");
-		this._drawNodes();
+		// this._iter(this.rootNode, nodeId, "remove");
+		// this._drawNodes();
+		let jEl = this.jEl.find("li[m_id=" + nodeId + "]");
+		jEl.remove();
+		// this._checkAllOpenable();
 		if (!silently) this.trigger("noderemove", this, nodeId);
 	}
 	/**
-  	 * @param  {String}	nodeId
-  	 * @return {NodeObject}
-  	 */
+	 * @param  {String}	nodeId
+	 * @return {NodeObject}
+	 */
+	// getNode(nodeId) {
+	// 	this._resNodeId = null;
+	// 	this._iter(this.rootNode, nodeId, "get");
+	// 	// return M_.Utils.clone(this._resNodeId) ;
+	// 	return this._resNodeId;
+	// }
 	getNode(nodeId) {
-		this._resNodeId = null;
-		this._iter(this.rootNode, nodeId, "get");
-		// return M_.Utils.clone(this._resNodeId) ;
-		return this._resNodeId;
+		return this._recreateNode(nodeId);
+	}
+	initDynamic(rootNode) {
+		this.rootNode = rootNode;
+		let myclass = "";
+		var html = "";
+		html += "<ul>";
+		html += "</ul>";
+		this.jEl.html(html);
+		this._createNode("-1", rootNode);
+		// this._checkAllOpenable();
 	}
 	/**
-  	 * @param {NodeObject} rootNode
-  	 */
+	 * @param {NodeObject} rootNode
+	 */
 	setRootNode(rootNode) {
 		this.rootNode = rootNode;
-		this._drawNodes();
+		let myclass = "";
+		var html = "";
+		html += "<ul>";
+		html += "</ul>";
+		this.jEl.html(html);
+		function iter(parentId, node, scope) {
+			scope._createNode(parentId, node);
+			_.each(node.nodes, n => {
+				iter(node.id, n, scope);
+			});
+		}
+		iter("-1", rootNode, this);
+		// this._checkAllOpenable();
+		// this._drawNodes();
 	}
 	getSelected() {
 		let sel = "rootnode";
@@ -3347,7 +3601,17 @@ M_.Tree = class extends M_.Outlet {
 	}
 	_listenDocClick(evt) {
 		// console.log("_listenDocClick", this._currentRenameId, $(evt.target).closest('li'));
+		this._listenDoc(evt, false);
+	}
+	_listenDocKeypress(evt) {
+		if (evt.which == 13) {
+			evt.preventDefault();
+			this._listenDoc(evt, true);
+		}
+	}
+	_listenDoc(evt, nevermind) {
 		if (
+			!nevermind &&
 			$(evt.target)
 				.closest("li")
 				.attr("m_id") == this._currentRenameId
@@ -3355,6 +3619,7 @@ M_.Tree = class extends M_.Outlet {
 			return;
 		this.jEl.find('li[m_id="' + this._currentRenameId + '"] > span > div').attr("contenteditable", false);
 		$(document).off("click", $.proxy(this._listenDocClick, this));
+		$(document).off("keypress", $.proxy(this._listenDocKeypress, this));
 		let label = this.jEl.find('li[m_id="' + this._currentRenameId + '"] > span > div').text();
 		this.trigger("noderename", this, this._currentRenameId, label);
 	}
@@ -3369,6 +3634,7 @@ M_.Tree = class extends M_.Outlet {
 		txtsel.addRange(range);
 		window.setTimeout(() => {
 			$(document).on("click", $.proxy(this._listenDocClick, this));
+			$(document).on("keypress", $.proxy(this._listenDocKeypress, this));
 		}, 200);
 	}
 };
@@ -3477,15 +3743,15 @@ M_.SimpleList = class extends M_.List {
 		// this.create() ;
 	}
 	/**
- 	 * @return {type}
- 	 */
+	 * @return {type}
+	 */
 	updateStore() {
 		super.updateStore();
 		this.setSelection(this.currentSelection);
 	}
 	/**
- 	 * @return {type}
- 	 */
+	 * @return {type}
+	 */
 	create() {
 		var html = "";
 		html += `<div class='M_SimpleList'>
@@ -3520,8 +3786,8 @@ M_.SimpleList = class extends M_.List {
 		}
 	}
 	/**
- 	 * @return {type}
- 	 */
+	 * @return {type}
+	 */
 	render() {
 		// log("render")
 		this.isrendering = true;
@@ -3659,25 +3925,25 @@ M_.SimpleList = class extends M_.List {
 		}, 200);
 	}
 	/**
- 	 * @param  {type}
- 	 * @return {type}
- 	 */
+	 * @param  {type}
+	 * @return {type}
+	 */
 	leaveViewable(evt) {
 		$(evt.target).removeClass("over");
 	}
 	/**
- 	 * @param  {type}
- 	 * @return {type}
- 	 */
+	 * @param  {type}
+	 * @return {type}
+	 */
 	enterViewable(evt) {
 		// log("evt.target", $(evt.target))
 		// $(this.itemsDraggableTo).removeClass('over') ;
 		$(evt.target).addClass("over");
 	}
 	/**
- 	 * @param  {type}
- 	 * @return {type}
- 	 */
+	 * @param  {type}
+	 * @return {type}
+	 */
 	moveViewable(evt) {
 		evt.preventDefault();
 		// log("this._dragStarted",this._dragStarted)
@@ -3694,8 +3960,8 @@ M_.SimpleList = class extends M_.List {
 		this._dragStarted = true;
 	}
 	/**
- 	 * @param {type}
- 	 */
+	 * @param {type}
+	 */
 	setSelection(m_id) {
 		// log("setSelection",m_id)
 		// if (!m_id) return ;
@@ -3728,8 +3994,8 @@ M_.SimpleList = class extends M_.List {
 		}
 	}
 	/**
- 	 * @return {type}
- 	 */
+	 * @return {type}
+	 */
 	getSelection() {
 		var tabSelection = [];
 		// log("this.currentSelection",this.currentSelection)
@@ -3988,6 +4254,9 @@ M_.TableList = class extends M_.SimpleList {
 		this._colsToHide = [];
 		$("#" + this.id)
 			.find("tr td")
+			.show();
+		$("#" + this.id)
+			.find("tr th")
 			.show();
 	}
 	showColumns(cols) {
@@ -4652,6 +4921,7 @@ M_.Window = class {
 			if (this.tsResize) window.clearTimeout(this.tsResize);
 			this.tsResize = window.setTimeout(() => {
 				// this.showOrHide(this.visible, false) ;
+				this.center();
 			}, 100);
 		});
 
@@ -6520,22 +6790,25 @@ M_.Form.Input = class extends M_.Outlet {
 			var multiple = "";
 			if (this.multiple) multiple = "multiple";
 			if (this.inputType == "file") {
-				html += `<input ${tabindex} ${readOnly} id="${this.id}" type="${this.inputType}" style="${this
-					.styleInput}" ${multiple} class="M_Input M_InputFile ${this.clsInput}" name="${this.name}" value="${v}" placeholder="${this
-					.placeholder}"><label class='M_InputFileLabel' for="${this.id}">${this.txtChooseFile}</label>`;
+				html += `<input ${tabindex} ${readOnly} id="${this.id}" type="${this.inputType}" style="${this.styleInput}" ${
+					multiple
+				} class="M_Input M_InputFile ${this.clsInput}" name="${this.name}" value="${v}" placeholder="${
+					this.placeholder
+				}"><label class='M_InputFileLabel' for="${this.id}">${this.txtChooseFile}</label>`;
 			} else if (this.inputType == "textarea") {
 				if (!this.height) this.height = 100;
 				this.styleInput += " height:" + this.height + "px;";
-				html += `<textarea ${tabindex} placeholder="${this.placeholder}" ${readOnly} id="${this.id}" class="M_Input ${this
-					.clsInput}" style="${this.styleInput}" rows="${this.rows}" name="${this.name}">${v}</textarea>`;
+				html += `<textarea ${tabindex} placeholder="${this.placeholder}" ${readOnly} id="${this.id}" class="M_Input ${
+					this.clsInput
+				}" style="${this.styleInput}" rows="${this.rows}" name="${this.name}">${v}</textarea>`;
 			} else if (this.inputType == "none") {
 				html += `<div id="${this.id}"></div>`;
 			} else {
 				var incremental = "";
 				if (this.incremental) incremental = 'incremental="incremental"';
-				html += `<input ${tabindex} ${readOnly} id="${this.id}" ${incremental} type="${this.inputType}" style="${this
-					.styleInput}" class="M_Input ${this._clsMore} ${this.clsInput}" name="${this.name}" value="${v}" placeholder="${this
-					.placeholder}">`;
+				html += `<input ${tabindex} ${readOnly} id="${this.id}" ${incremental} type="${this.inputType}" style="${
+					this.styleInput
+				}" class="M_Input ${this._clsMore} ${this.clsInput}" name="${this.name}" value="${v}" placeholder="${this.placeholder}">`;
 			}
 			// if (this._addInputGroup) html += `</div>` ;
 			if (this.label !== "" && (this.labelPosition == "bottom" || this.labelPosition == "right"))
@@ -6828,7 +7101,9 @@ M_.Form.Multi = class extends M_.Form.Input {
 			let idTemp = M_.Utils.id();
 			let checked = "";
 			if (_.indexOf(this.value, c.key) >= 0) checked = "checked";
-			html += `<div class="M_FormMultiItem"><label for="${idTemp}"><input type='checkbox' id='${idTemp}' name='${idTemp}' data-id="${c.key}" ${checked}>${c.val}</label></div>`;
+			html += `<div class="M_FormMultiItem"><label for="${idTemp}"><input type='checkbox' id='${idTemp}' name='${idTemp}' data-id="${c.key}" ${
+				checked
+			}>${c.val}</label></div>`;
 		});
 		this.dd = new M_.Dropdown({
 			autoShow: true,
@@ -6865,7 +7140,9 @@ M_.Form.Multi = class extends M_.Form.Input {
 			} else {
 				valid = valtxt = val;
 			}
-			let html = `<div class="M_ComboboxMultiItem selected" data-kw-id="${valid}">${valtxt} <span class="fa fa-trash faa-pulse animated-hover"></span></div>`;
+			let html = `<div class="M_ComboboxMultiItem selected" data-kw-id="${valid}">${
+				valtxt
+			} <span class="fa fa-trash faa-pulse animated-hover"></span></div>`;
 			let jEl = $(html);
 			this.jEl.append(jEl);
 			jEl.find(".fa-trash").click(evt => {
@@ -7418,8 +7695,9 @@ M_.Form.RadioGroup = class extends M_.Form.Input {
 		var nameTemp = M_.Utils.id();
 		_.each(this.items, item => {
 			let idTemp = M_.Utils.id();
-			html += `<div class="M_RadioGroupItem ${this
-				.radioPosition}"><input type='radio' name="${nameTemp}" id="${idTemp}" value="${item.key}" class="M_InputRight"/><label for="${idTemp}" class="M_LabelRight">${item.val}</label></div>`;
+			html += `<div class="M_RadioGroupItem ${this.radioPosition}"><input type='radio' name="${nameTemp}" id="${idTemp}" value="${
+				item.key
+			}" class="M_InputRight"/><label for="${idTemp}" class="M_LabelRight">${item.val}</label></div>`;
 		});
 		html += `</div></div>`;
 
@@ -8208,8 +8486,9 @@ M_.Form.DateHour = class extends M_.Form.Input {
 		html += `<div style="${this.styleGroup}" class="M_FormGroup ${this.clsGroup}">`;
 		if (this.label !== "" && (this.labelPosition == "left" || this.labelPosition == "top"))
 			html += `<label style="${this.styleLabel}" class="${this.clsLabel}" ${forattr}>${this.label}</label>`;
-		html += `<div id="${this.id}" type="${this.inputType}" style="${this.styleInput}" class="M_Input ${this
-			.clsInput}"><div id='${id1}' class='M_FloatLeft'></div><div id='${id2}' class='M_FloatLeft'></div>`;
+		html += `<div id="${this.id}" type="${this.inputType}" style="${this.styleInput}" class="M_Input ${this.clsInput}"><div id='${
+			id1
+		}' class='M_FloatLeft'></div><div id='${id2}' class='M_FloatLeft'></div>`;
 		html += `</div>`;
 
 		this.container.append(html);
