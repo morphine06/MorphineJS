@@ -7115,7 +7115,9 @@ M_.Form.Multi = class extends M_.Form.Input {
 			let ids = [];
 			this.dd.jEl.find(".M_FormMultiItem input:checked").each((ind, el) => {
 				let id = $(el).attr("data-id");
-				ids.push(id * 1);
+				let v2 = id;
+				if (!isNaN(id)) v2 = id * 1;
+				ids.push(v2);
 			});
 			this.setValue(ids);
 		});
