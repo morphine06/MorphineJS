@@ -190,7 +190,7 @@ module.exports = class MorphineServer {
 		if (morphineserver.config.tasks.livereloadPort) {
 			this.livereloadServer = livereload.createServer({
 				port: morphineserver.config.tasks.livereloadPort,
-				exts: morphineserver.config.tasks.livereloadExtensions
+				extensions: morphineserver.config.tasks.livereloadExtensions
 				// debug: true
 			});
 		}

@@ -2452,13 +2452,13 @@ M_.Store = class {
 		}
 	}
 	_sortRemote(fields, direction) {
-		//log("sortRemote")
+		// console.log("_sortRemote", fields, direction);
 		if (!this.lastLoadArgs) this.lastLoadArgs = {};
-		// this.lastLoadArgs.sort = this.currentSort[0] ;
-		// this.lastLoadArgs.direction = this.currentSort[1] ;
-		// this.lastLoadArgs.sort = fields ;
-		// if (direction>0) this.lastLoadArgs.sort += " ASC" ;
-		// else this.lastLoadArgs.sort += " ASC" ;
+		// this.lastLoadArgs.sort = this.currentSort[0];
+		// this.lastLoadArgs.direction = this.currentSort[1];
+		this.lastLoadArgs.sort = fields;
+		if (direction > 0) this.lastLoadArgs.sort += " ASC";
+		else this.lastLoadArgs.sort += " DESC";
 		this.reload();
 	}
 	/**
@@ -2477,16 +2477,14 @@ M_.Store = class {
 		if (!direction) direction = 0;
 		if (_.isFunction(fields)) {
 		} else {
-			if (direction === 0) {
-				if (!this._tabFieldsForSort[fields]) {
-					this._tabFieldsForSort[fields] = 1;
-				} else {
-					this._tabFieldsForSort[fields] = this._tabFieldsForSort[fields] * -1;
-				}
-				direction = this._tabFieldsForSort[fields];
-			} else {
-				this._tabFieldsForSort[fields] = direction;
-			}
+			if (!this._tabFieldsForSort[fields]) this._tabFieldsForSort[fields] = -1;
+			this._tabFieldsForSort[fields] = this._tabFieldsForSort[fields] * -1;
+			direction = this._tabFieldsForSort[fields];
+			// console.log("direction,fields", direction, fields);
+			// if (direction === 0) {
+			// } else {
+			// 	this._tabFieldsForSort[fields] = direction;
+			// }
 			this.currentSort = [fields, direction];
 		}
 		if (this.trigger("beforeSort", this, fields, direction) === false) return false;
@@ -2495,6 +2493,7 @@ M_.Store = class {
 			this._sortRemote(fields, direction);
 			return;
 		}
+
 		// console.log("ok");
 		this.rowsModel.sort((a, b) => {
 			// log("a,b",a,b)
@@ -3726,9 +3725,8 @@ M_.SimpleList = class extends M_.List {
 			multipleSelection: false,
 			currentSelection: [],
 			dynamic: false,
-			lineHeight: 34,
 			loadLimit: 400,
-			delayScroll: 100,
+			lineHeight: 34,
 			oddEven: true,
 			// _startPosition: 0,
 			itemsDraggableTo: false,
@@ -3755,12 +3753,12 @@ M_.SimpleList = class extends M_.List {
 	create() {
 		var html = "";
 		html += `<div class='M_SimpleList'>
- 					<div class='M_SimpleListContent'>
- 						<div class='M_SimpleListContentFake1'></div>
- 						<div class='M_SimpleListContentReal'></div>
- 						<div class='M_SimpleListContentFake2'></div>
- 					</div>
- 				</div>`;
+  					<div class='M_SimpleListContent'>
+  						<div class='M_SimpleListContentFake1'></div>
+  						<div class='M_SimpleListContentReal'></div>
+  						<div class='M_SimpleListContentFake2'></div>
+  					</div>
+  				</div>`;
 		this.jEl = $(html);
 		this.container.append(this.jEl);
 		if (!this.dynamic) this.jEl.find(".M_SimpleListContent").css("background-image", "none");
@@ -3769,21 +3767,36 @@ M_.SimpleList = class extends M_.List {
 			// console.log("this.jEl",this.jEl);
 			this.jEl.scroll(evt => {
 				// console.log("scroll", this.isrendering);
-				if (this.isrendering) return;
+				if (this._scrollisloading) return;
 				M_.Utils.delay(
 					() => {
 						var diff = this.jEl.scrollTop();
 						var _skipPosition = Math.ceil(diff / this.lineHeight) - Math.ceil(this.loadLimit / 4);
 						if (_skipPosition < 0) _skipPosition = 0;
-						this._lastscrolltop = this.jEl.scrollTop();
+						this._lastscrolltop = diff;
+
+						this._triggerFromTo();
+
 						if (this.store.skip == _skipPosition) return;
-						this.store.reload(false, { skip: _skipPosition, limit: this.loadLimit });
+						let h1 = this.jEl.find(".M_SimpleListContentFake1").height() + this.jEl.find(".M_SimpleListContentReal").height();
+						let h2 = diff + this.jEl.height();
+						if (h1 < h2 || this.jEl.find(".M_SimpleListContentFake1").height() > diff) {
+							this._lastscrolltop = diff;
+							this._scrollisloading = true;
+							this.store.reload(false, { skip: _skipPosition, limit: this.loadLimit });
+						}
 					},
-					this.delayScroll,
+					100,
 					"m_simplelist_scroll"
 				);
 			});
 		}
+	}
+	_triggerFromTo() {
+		let from = Math.ceil(this.jEl.scrollTop() / this.lineHeight) + 1;
+		let to = Math.ceil(this.jEl.height() / this.lineHeight) + from;
+		if (to > this.store.countTotal()) to = this.store.countTotal();
+		this.trigger("showfromto", this, from, to);
 	}
 	/**
 	 * @return {type}
@@ -3829,7 +3842,12 @@ M_.SimpleList = class extends M_.List {
 			this.jEl.find(".M_SimpleListContentFake1").height(this.store.skip * this.lineHeight);
 			this.jEl.find(".M_SimpleListContent").height(totalHeight);
 			this.jEl.scrollTop(this._lastscrolltop);
-			this._lastscrolltop = 0;
+			// this._lastscrolltop = 0;
+			window.setTimeout(() => {
+				this.jEl.scrollTop(this._lastscrolltop);
+				this._scrollisloading = false;
+				this._triggerFromTo();
+			}, 1);
 		}
 		// this.jEl.find('.M_SimpleListContentFake2').height(totalHeight - ((this._skipPosition+100)*this.lineHeight)) ;
 
@@ -4056,11 +4074,14 @@ M_.TableList = class extends M_.SimpleList {
 		this._idMore = M_.Utils.id();
 
 		html += `<div class='M_TableList ${cls}' style='${this.styleTable}'>
-					<div>
-						<table cellpadding="0" cellspacing="0">
-							<thead></thead>
-							<tbody></tbody>
-						</table>
+					<div class='M_TableListOverflow' style="overflow:auto; height:100%;">
+						<div class='M_SimpleListContent'>
+							<div class='M_TableListFake1'></div>
+							<table cellpadding="0" cellspacing="0">
+								<thead></thead>
+								<tbody></tbody>
+							</table>
+						</div>
 					</div>
 					<div class="M_AlignRight"><a id="${this._idMore}" href='javascript:void(0);'>${this.getMoreText()}</a></div>
 				</div>`;
@@ -4085,6 +4106,40 @@ M_.TableList = class extends M_.SimpleList {
 			this._limitRows = !this._limitRows;
 			this.render();
 		});
+
+		if (this.dynamic) {
+			this.jEl.find(".M_TableListOverflow").scroll(evt => {
+				if (this._scrollisloading) return;
+				M_.Utils.delay(
+					() => {
+						var diff = this.jEl.find(".M_TableListOverflow").scrollTop();
+						var _skipPosition = Math.ceil(diff / this.lineHeight) - Math.ceil(this.loadLimit / 4);
+						if (_skipPosition < 0) _skipPosition = 0;
+						this._lastscrolltop = diff;
+
+						this._triggerFromTo();
+						if (this.store.skip == _skipPosition) return;
+
+						let h1 = this.jEl.find(".M_TableListFake1").height() + this.jEl.find("table").height();
+						let h2 = diff + this.jEl.find(".M_TableListOverflow").height();
+						// console.log("h1,h2", h1, h2, diff);
+						if (h1 < h2 || this.jEl.find(".M_TableListFake1").height() > diff) {
+							this._lastscrolltop = diff;
+							this._scrollisloading = true;
+							this.store.reload(false, { skip: _skipPosition, limit: this.loadLimit });
+						}
+					},
+					100,
+					"m_tablelist_scroll"
+				);
+			});
+		}
+	}
+	_triggerFromTo() {
+		let from = Math.ceil(this.jEl.find(".M_TableListOverflow").scrollTop() / this.lineHeight) + 1;
+		let to = Math.ceil(this.jEl.find(".M_TableListOverflow").height() / this.lineHeight) + from;
+		if (to > this.store.countTotal()) to = this.store.countTotal();
+		this.trigger("showfromto", this, from, to);
 	}
 	_setMoreLessText() {
 		if (this.limitRows) {
@@ -4146,6 +4201,18 @@ M_.TableList = class extends M_.SimpleList {
 			.find("thead")
 			.empty()
 			.html(html);
+
+		if (this.dynamic) {
+			var totalHeight = this.lineHeight * this.store.countTotal();
+			this.jEl.find(".M_TableListFake1").height(this.store.skip * this.lineHeight);
+			this.jEl.find(".M_SimpleListContent").height(totalHeight);
+			this.jEl.find(".M_TableListOverflow").scrollTop(this._lastscrolltop);
+			window.setTimeout(() => {
+				this.jEl.find(".M_TableListOverflow").scrollTop(this._lastscrolltop);
+				this._scrollisloading = false;
+				this._triggerFromTo();
+			}, 1);
+		}
 
 		html = "";
 		let previousgroup = "----";
