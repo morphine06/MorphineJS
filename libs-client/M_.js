@@ -8156,6 +8156,7 @@ M_.Form.Date = class extends M_.Form.Picker {
 			dateFormat: "DD/MM/YYYY",
 			dateFormatInput: "YYYY-MM-DD",
 			noDays: false,
+			noMonths: false,
 			showWeekNumber: false,
 			selectWeek: false,
 			disabledDates: null
@@ -8199,6 +8200,7 @@ M_.Form.Date = class extends M_.Form.Picker {
 			controller: this,
 			container: this.dropdown.jEl,
 			noDays: this.noDays,
+			noMonths: this.noMonths,
 			showWeekNumber: this.showWeekNumber,
 			selectWeek: this.selectWeek,
 			disabledDates: this.disabledDates,
