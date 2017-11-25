@@ -60,7 +60,8 @@
 		"Entities": false,
 		"Users": false,
 		"Groups": false,
-		"process": false
+		"process": false,
+		"Image": false
 	},
 	"globalstrict": true,
 	"newcap": false,

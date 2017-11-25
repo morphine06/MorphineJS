@@ -536,15 +536,16 @@ M_.Utils = class {
 	static preloadImages(preload, cb) {
 		// var preload = ["a.gif", "b.gif", "c.gif"];
 		var promises = [];
-		for (var i = 0; i < preload.length; i++) {
+		// for (var i = 0; i < preload.length; i++) {
+		_.each(preload, (p, i) => {
 			(function(url, promise) {
 				var img = new Image();
 				img.onload = function() {
 					promise.resolve();
 				};
 				img.src = url;
-			})(preload[i], (promises[i] = $.Deferred()));
-		}
+			})(p, (p = $.Deferred()));
+		});
 		$.when.apply($, promises).done(function() {
 			// alert("All images ready sir!");
 			cb();
@@ -975,13 +976,13 @@ M_.Utils = class {
 		});
 
 		var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-		return result
-			? {
-					r: parseInt(result[1], 16),
-					g: parseInt(result[2], 16),
-					b: parseInt(result[3], 16)
-				}
-			: null;
+		if (result)
+			return {
+				r: parseInt(result[1], 16),
+				g: parseInt(result[2], 16),
+				b: parseInt(result[3], 16)
+			};
+		else return null;
 	}
 	/**
 	 * Convert RGB to Hexa
@@ -2248,8 +2249,7 @@ M_.Store = class {
 			pushRows: [],
 			_loaded: false,
 			_loading: false,
-			group: null,
-			groupLabel: null
+			group: null
 		};
 		opts = opts ? opts : {};
 		$.extend(this, defaults, opts);
@@ -3749,7 +3749,12 @@ M_.SimpleList = class extends M_.List {
 			// _startPosition: 0,
 			itemsDraggableTo: false,
 			_dragStarted: false,
-			_lastSelection: null
+			_lastSelection: null,
+			group: null,
+			groupLabel: null,
+			groupStartClosed: false,
+			groupClose: false,
+			_groupsclosed: []
 		};
 		opts = opts ? opts : {};
 		var optsTemp = $.extend({}, defaults, opts);
@@ -3826,7 +3831,9 @@ M_.SimpleList = class extends M_.List {
 		// log("render")
 		this.isrendering = true;
 		var html = "",
-			mid = this.store.primaryKey;
+			mid = this.store.primaryKey,
+			previousgroup = "----",
+			previousgroupnum = 0;
 		this.store.each((model, indexTemp) => {
 			// console.log("model.getData()", model.getData());
 			// log("cg_created",model.get('cg_name'))
@@ -3834,6 +3841,25 @@ M_.SimpleList = class extends M_.List {
 			if ($.isFunction(this.itemValue)) val = this.itemValue(model);
 			else val = model.get(this.itemValue);
 			var clsTr = this.classItems;
+			if (this.store.group) {
+				let g1 = this.store.group(model, this.store);
+				let g2 = this.groupLabel(model, this.store);
+				if (previousgroup != g1) {
+					previousgroupnum++;
+					let closeopenfa = "";
+					if (this.groupClose) {
+						let chevtemp = "down";
+						if (_.indexOf(this._groupsclosed, previousgroupnum) >= 0) chevtemp = "left";
+						closeopenfa = '<div style="float:right;"><span class="fa fa-chevron-' + chevtemp + ' M_TableGroupChevron"></span></div>';
+					}
+					html += "<div class='M_SimpleListGroup' data-groupnum='" + previousgroupnum + "'>";
+					html += "" + closeopenfa + g2 + "";
+					html += "</div>";
+				}
+				previousgroup = g1;
+				clsTr += " M_TableGroupItem_" + previousgroupnum;
+				// if (_.indexOf(this._groupsclosed, previousgroupnum) >= 0) styleTr += "display:none;";
+			}
 			if (this.oddEven) {
 				if (this.dynamic) {
 					if ((indexTemp + this.store.skip) % 2 === 0) clsTr += " M_TableListOdd";
@@ -4076,12 +4102,7 @@ M_.TableList = class extends M_.SimpleList {
 			withMouseOverRaw: true,
 			headerHeight: 30,
 			_colsToHide: [],
-			draggableRows: false,
-			group: null,
-			groupLabel: null,
-			groupStartClosed: false,
-			groupClose: false,
-			_groupsclosed: []
+			draggableRows: false
 		};
 		opts = opts ? opts : {};
 		var optsTemp = $.extend({}, defaults, opts);
@@ -6447,13 +6468,6 @@ M_.Form.Form = class {
 		}
 		this.trigger("reset", this);
 	}
-	disable() {
-		var _items = this._items;
-		for (var i = 0; i < _items.length; i++) {
-			_items[i].disable();
-		}
-		this.trigger("disable", this);
-	}
 	enable() {
 		var _items = this._items;
 		for (var i = 0; i < _items.length; i++) {
@@ -6777,10 +6791,17 @@ M_.Form.Form = class {
 		return this._currentModel;
 	}
 	disable() {
-		for (var i = 0; i < this._items.length; i++) {
-			if (this._items[i].disable) this._items[i].disable();
+		var _items = this._items;
+		for (var i = 0; i < _items.length; i++) {
+			if (this._items[i].disable) _items[i].disable();
 		}
+		this.trigger("disable", this);
 	}
+	// disable() {
+	// 	for (var i = 0; i < this._items.length; i++) {
+	// 		if (this._items[i].disable) this._items[i].disable();
+	// 	}
+	// }
 };
 
 /**
