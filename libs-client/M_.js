@@ -2241,12 +2241,15 @@ M_.Store = class {
 			primaryKey: "",
 			limit: null,
 			sortOnRemote: false,
+			sortAfterLoad: false,
 			skip: 0,
 			lastTotal: 0,
 			unshiftRows: [],
 			pushRows: [],
 			_loaded: false,
-			_loading: false
+			_loading: false,
+			group: null,
+			groupLabel: null
 		};
 		opts = opts ? opts : {};
 		$.extend(this, defaults, opts);
@@ -2473,7 +2476,7 @@ M_.Store = class {
 	 * 	store.sort([['co_name', 1], ['co_date',-1]]) ;
 	 */
 	sort(fields, direction, silently) {
-		// console.log("fields", fields);
+		// console.log("fields", fields, direction, silently, group);
 		if (!direction) direction = 0;
 		if (_.isFunction(fields)) {
 		} else {
@@ -2497,30 +2500,41 @@ M_.Store = class {
 		// console.log("ok");
 		this.rowsModel.sort((a, b) => {
 			// log("a,b",a,b)
-			var a0;
-			var b0;
+			let a0;
+			let b0;
+			let firstres = 0;
 			if (_.isFunction(fields)) {
 				a0 = fields(a);
 				b0 = fields(b);
-				// console.log("a0, b0", a0, b0);
 			} else {
 				a0 = a.get(fields);
 				b0 = b.get(fields);
 			}
 			if (a0 === null || b0 === null) return 0;
 			if (typeof a0 == "number") {
-				if (direction == -1) return b0 - a0;
-				return a0 - b0;
+				if (direction == -1) firstres = b0 - a0;
+				else firstres = a0 - b0;
 			} else if (a0 instanceof Date) {
-				if (direction == -1) return b0 - a0;
-				return a0 - b0;
+				if (direction == -1) firstres = b0 - a0;
+				else firstres = a0 - b0;
 			} else if (a0 && b0 && a0.getDate && a0.getDate() instanceof Date) {
-				if (direction == -1) return b0.getDate() - a0.getDate();
-				return a0.getDate() - b0.getDate();
-			} else if (a0 && b0) {
-				if (direction == -1) return b0.localeCompare(a0);
-				return a0.localeCompare(b0);
-			} else return 0;
+				if (direction == -1) firstres = b0.getDate() - a0.getDate();
+				else firstres = a0.getDate() - b0.getDate();
+			} else if (_.isString(a0) && _.isString(b0)) {
+				if (direction == -1) firstres = b0.localeCompare(a0);
+				else firstres = a0.localeCompare(b0);
+			} else firstres = 0;
+			// console.log("a0, b0", a0, b0, firstres);
+			if (this.group) {
+				let a1, b1;
+				a1 = this.group(a, this);
+				b1 = this.group(b, this);
+				let lc = a1.localeCompare(b1);
+				// console.log('group',a1,b1,lc);
+				if (lc === 0) return firstres;
+				return lc;
+			}
+			return firstres;
 		});
 		this.trigger("sort", this);
 		if (silently !== true) {
@@ -2681,6 +2695,10 @@ M_.Store = class {
 		// if (this.currentSort && !this.sortOnRemote && _.isArray(this.currentSort))
 		// 	this.sort(this.currentSort[0], this.currentSort[1], true) ;
 		//this.setKeysOnRows() ;
+
+		if (this.sortAfterLoad) {
+			this.sort(this.sortAfterLoad, 1, true);
+		}
 
 		this.trigger("load", this, this.rowsModel);
 		this.trigger("update", this, this.rowsModel);
@@ -3735,6 +3753,9 @@ M_.SimpleList = class extends M_.List {
 		};
 		opts = opts ? opts : {};
 		var optsTemp = $.extend({}, defaults, opts);
+		if (optsTemp && optsTemp.store && optsTemp.group) {
+			optsTemp.store.group = optsTemp.group;
+		}
 		super(optsTemp);
 
 		// this.setSelection(this.currentSelection) ;
@@ -3753,12 +3774,12 @@ M_.SimpleList = class extends M_.List {
 	create() {
 		var html = "";
 		html += `<div class='M_SimpleList'>
-  					<div class='M_SimpleListContent'>
-  						<div class='M_SimpleListContentFake1'></div>
-  						<div class='M_SimpleListContentReal'></div>
-  						<div class='M_SimpleListContentFake2'></div>
-  					</div>
-  				</div>`;
+   					<div class='M_SimpleListContent'>
+   						<div class='M_SimpleListContentFake1'></div>
+   						<div class='M_SimpleListContentReal'></div>
+   						<div class='M_SimpleListContentFake2'></div>
+   					</div>
+   				</div>`;
 		this.jEl = $(html);
 		this.container.append(this.jEl);
 		if (!this.dynamic) this.jEl.find(".M_SimpleListContent").css("background-image", "none");
@@ -4057,7 +4078,10 @@ M_.TableList = class extends M_.SimpleList {
 			_colsToHide: [],
 			draggableRows: false,
 			group: null,
-			groupLabel: null
+			groupLabel: null,
+			groupStartClosed: false,
+			groupClose: false,
+			_groupsclosed: []
 		};
 		opts = opts ? opts : {};
 		var optsTemp = $.extend({}, defaults, opts);
@@ -4069,22 +4093,25 @@ M_.TableList = class extends M_.SimpleList {
 	create() {
 		var html = "",
 			cls = "";
+		if (this.groupStartClosed) {
+			for (let ig = 0; ig < 100; ig++) this._groupsclosed.push(ig);
+		}
 		if (this.fullHeight) cls += "M_FullHeight";
 		if (this.withMouseOverRaw) cls += " M_TableListOverRaw";
 		this._idMore = M_.Utils.id();
 
 		html += `<div class='M_TableList ${cls}' style='${this.styleTable}'>
-					<div class='M_TableListOverflow' style="overflow:auto; height:100%;">
-						<div class='M_SimpleListContent'>
-							<div class='M_TableListFake1'></div>
-							<table cellpadding="0" cellspacing="0">
-								<thead></thead>
-								<tbody></tbody>
-							</table>
-						</div>
-					</div>
-					<div class="M_AlignRight"><a id="${this._idMore}" href='javascript:void(0);'>${this.getMoreText()}</a></div>
-				</div>`;
+ 					<div class='M_TableListOverflow' style="overflow:auto; height:100%;">
+ 						<div class='M_SimpleListContent'>
+ 							<div class='M_TableListFake1'></div>
+ 							<table cellpadding="0" cellspacing="0">
+ 								<thead></thead>
+ 								<tbody></tbody>
+ 							</table>
+ 						</div>
+ 					</div>
+ 					<div class="M_AlignRight"><a id="${this._idMore}" href='javascript:void(0);'>${this.getMoreText()}</a></div>
+ 				</div>`;
 		this.jEl = $(html);
 		this.container.append(this.jEl);
 		this.jEl.css("padding-top", this.headerHeight);
@@ -4215,28 +4242,40 @@ M_.TableList = class extends M_.SimpleList {
 		}
 
 		html = "";
-		let previousgroup = "----";
+		let previousgroup = "----",
+			previousgroupnum = 0;
+		// console.log('this._groupsclosed',this._groupsclosed);
 		this.store.each((model, indexTemp) => {
 			// log("model",model)
 			if (this.limitRows && indexTemp >= this.limitRows && this._limitRows) return true;
 			var clsTr = "";
+			var styleTr = "";
 			if (this.oddEven) {
 				if (indexTemp % 2 === 0) clsTr += " M_TableListOdd";
 				else clsTr += " M_TableListEven";
 			}
 			var draggable = "";
 			if (this.draggableRows) draggable = "draggable='true'";
-			if (this.group) {
-				let g1 = this.group(model, this.store);
+			if (this.store.group) {
+				let g1 = this.store.group(model, this.store);
 				let g2 = this.groupLabel(model, this.store);
 				if (previousgroup != g1) {
-					html += "<tr class='M_TableGroup'>";
-					html += "<td colspan=" + colsDef.length + ">" + g2 + "</td>";
+					previousgroupnum++;
+					let closeopenfa = "";
+					if (this.groupClose) {
+						let chevtemp = "down";
+						if (_.indexOf(this._groupsclosed, previousgroupnum) >= 0) chevtemp = "left";
+						closeopenfa = '<div style="float:right;"><span class="fa fa-chevron-' + chevtemp + ' M_TableGroupChevron"></span></div>';
+					}
+					html += "<tr class='M_TableGroup' data-groupnum='" + previousgroupnum + "'>";
+					html += "<td colspan=" + colsDef.length + ">" + closeopenfa + g2 + "</td>";
 					html += "</tr>";
 				}
 				previousgroup = g1;
+				clsTr += " M_TableGroupItem_" + previousgroupnum;
+				if (_.indexOf(this._groupsclosed, previousgroupnum) >= 0) styleTr += "display:none;";
 			}
-			html += "<tr class='" + clsTr + "' " + draggable + ">";
+			html += "<tr class='" + clsTr + "' style='" + styleTr + "' " + draggable + ">";
 			for (var i = 0; i < colsDef.length; i++) {
 				let val = "",
 					cls = this.classItems + " M_Noselectable",
@@ -4266,7 +4305,6 @@ M_.TableList = class extends M_.SimpleList {
 
 		this.jEl.find("." + this.classHeader).on("click", evt => {
 			// console.log("evt", evt);
-			// this.store.sort()
 			var item = $(evt.target).closest("." + this.classHeader);
 			var numcol = item.attr("data-m-col");
 			var colDef = this.colsDef[numcol];
@@ -4279,16 +4317,34 @@ M_.TableList = class extends M_.SimpleList {
 
 				if (colDef.sort) this.store.sort(colDef.sort, direction);
 				else this.store.sort(colDef.val, direction);
+			}
+		});
 
-				if (this.group) {
-					let f = model => {
-						// console.log("colDef", colDef);
-						if (colDef.sort) {
-						}
-					};
-					this.store.sort(this.group, 1);
+		this.jEl.find(".M_TableGroup").on("click", evt => {
+			if (this.groupClose) {
+				let trtemp = $(evt.target).closest("tr");
+				let groupnum = trtemp.attr("data-groupnum") * 1;
+				let jelsg = this.jEl.find(".M_TableGroupItem_" + groupnum);
+				if (jelsg.is(":visible")) {
+					jelsg.hide();
+					if (_.indexOf(this._groupsclosed, groupnum) < 0) this._groupsclosed.push(groupnum);
+					if (this.groupClose) {
+						trtemp
+							.find(".M_TableGroupChevron")
+							.removeClass("fa-chevron-down")
+							.addClass("fa-chevron-left");
+					}
+				} else {
+					jelsg.show();
+					_.pull(this._groupsclosed, groupnum);
+					if (this.groupClose) {
+						trtemp
+							.find(".M_TableGroupChevron")
+							.removeClass("fa-chevron-left")
+							.addClass("fa-chevron-down");
+					}
 				}
-				// this.render() ;
+				// console.log('this._groupsclosed',this._groupsclosed);
 			}
 		});
 
@@ -5841,9 +5897,9 @@ M_.CalendarMonth = class {
 		// if ($.type(date)=="string") date = moment(date) ; //date = M_.Utils.parseDate(date, 'Y-m-d') ;
 		this.dateViewed = moment(date);
 		if (this.noMonths) {
-			date.month(0).date(1);
+			this.dateViewed.month(0).date(1);
 			//this.selectDate(date) ;
-			this.trigger("selected", this, moment(date));
+			this.trigger("selected", this, moment(this.dateViewed));
 		} else {
 			this.showMonths();
 			this.trigger("yearViewedChanged", this, moment(this.dateViewed));
