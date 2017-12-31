@@ -355,7 +355,7 @@ M_.App = new class {
 
 		if (action === "") action = this[module].defaultAction;
 		if (!this[module][action + "Action"]) {
-			log("You must define function '" + action + "Action" + "()' in " + this[module].controllerName + " controller");
+			console.warn("You must define function '" + action + "Action" + "()' in " + this[module].controllerName + " controller");
 			this.open(module, "index");
 		} else {
 			args.splice(0, 2);
@@ -831,7 +831,7 @@ M_.Utils = class {
 		var doc = this.getIframeDocument($("#M_FileDownload"));
 		// console.log("html", html);
 		doc.write("<html><head></head><body><form method='" + method + "' action='" + url + "'>" + html + "</form></body></html>");
-		var started = false;
+		// var started = false;
 		$(doc)
 			.find("form")
 			.submit();
@@ -840,8 +840,8 @@ M_.Utils = class {
 		$("#M_FileDownload").remove();
 		$(document.body).append("<iframe id='M_FileDownload' src='" + url + "' style='display:block; width:100%; height:200px;'></iframe>");
 		window.setTimeout(() => {
-			var doc = this.getIframeDocument($("#M_FileDownload"));
-			var toto = doc.toString();
+			// var doc = this.getIframeDocument($("#M_FileDownload"));
+			// var toto = doc.toString();
 			// console.log("doc.window", doc);
 			// var txt = $(doc).html() ;
 			// console.log("txt", txt, JSON.parse(txt));
@@ -1030,11 +1030,11 @@ M_.Utils = class {
 			var tab = $._data(document, "events").click;
 			// log("tab",tab)
 			if (!tab) return;
-			var nb = 0;
+			// var nb = 0;
 			var tabToRemove = [];
 			for (var i = 0; i < tab.length; i++) {
 				if (tab[i].selector && $(tab[i].selector).length === 0 && tab[i].selector.substring(0, 7) == "#_M_el_") {
-					nb++;
+					// nb++;
 					tabToRemove.push(tab[i].selector);
 				}
 			}
@@ -1996,7 +1996,7 @@ M_.Model = class {
 		_.mixin(this, M_.Observable);
 		this.initObservable();
 
-		if (!this.row) log("Vous devez définir opts.row");
+		if (!this.row) console.warn("Vous devez définir opts.row");
 		// if (!this.store) log("Vous devez définir opts.store") ;
 		var fields = this.fields;
 		for (var j = 0; j < fields.length; j++) {
@@ -2822,7 +2822,7 @@ M_.Stored = {
 	 * Call this method in your init() function
 	 */
 	initStored: function() {
-		if (!this.store) log("store is mandatory in M_.Stored");
+		if (!this.store) console.warn("store is mandatory in M_.Stored");
 		else
 			//if (this.store) this.setStore(this.store) ;
 			this.store.addListener("update", $.proxy(this.updateStore, this));
@@ -3233,7 +3233,7 @@ M_.Tree = class extends M_.Outlet {
 		let path1 = this.getNodePath(nodeId);
 		let path2 = this.getNodePath(childOfNodeId);
 		// console.log("path1,path2", path1, path2);
-		let dif = [];
+		// let dif = [];
 		let ok = false;
 		_.each(path2, (p2, i2) => {
 			if (!path1[i2]) {
@@ -3415,7 +3415,7 @@ M_.Tree = class extends M_.Outlet {
 	}
 	openPath(path, cb) {
 		function iter(num, scope, cb) {
-			console.log("num", num);
+			// console.log("num", num);
 			scope.setSelected(path[num]);
 			scope.openNode(path[num], () => {
 				if (path[num + 1]) iter(num + 1, scope, cb);
@@ -3481,7 +3481,7 @@ M_.Tree = class extends M_.Outlet {
 	// }
 	moveNode(nodeId, parentId, silently) {
 		let jEl = this.jEl.find("li[m_id=" + nodeId + "]");
-		let parentjEl = jEl.parent().parent();
+		// let parentjEl = jEl.parent().parent();
 		let jEl2 = this.jEl.find("li[m_id=" + parentId + "]");
 		let p = jEl.detach();
 		jEl2.find(" > ul").append(p);
@@ -3574,7 +3574,7 @@ M_.Tree = class extends M_.Outlet {
 	}
 	initDynamic(rootNode) {
 		this.rootNode = rootNode;
-		let myclass = "";
+		// let myclass = "";
 		var html = "";
 		html += "<ul>";
 		html += "</ul>";
@@ -3587,7 +3587,7 @@ M_.Tree = class extends M_.Outlet {
 	 */
 	setRootNode(rootNode) {
 		this.rootNode = rootNode;
-		let myclass = "";
+		// let myclass = "";
 		var html = "";
 		html += "<ul>";
 		html += "</ul>";
@@ -6000,8 +6000,8 @@ M_.CalendarMonth = class {
 	 * @return {type}
 	 */
 	previousYear() {
-		var d = this.dateViewed.date();
-		if (this.dateViewed.date() * 1 > 28) d = 28;
+		// var d = this.dateViewed.date();
+		// if (this.dateViewed.date() * 1 > 28) d = 28;
 		this.dateViewed.subtract(1, "years");
 		this.showMonths();
 		this.trigger("yearViewedChanged", this, moment(this.dateViewed));
@@ -6010,8 +6010,8 @@ M_.CalendarMonth = class {
 	 * @return {type}
 	 */
 	nextYear() {
-		var d = this.dateViewed.date();
-		if (this.dateViewed.date() * 1 > 28) d = 28;
+		// var d = this.dateViewed.date();
+		// if (this.dateViewed.date() * 1 > 28) d = 28;
 		this.dateViewed.add(1, "years");
 		this.showMonths();
 		this.trigger("yearViewedChanged", this, moment(this.dateViewed));
@@ -6309,7 +6309,7 @@ M_.Calendar.MonthView = class extends M_.CalendarMonth {
 			this.jEl.find(".M_CalendarMonth_days thead tr").css("min-height", this.cellHeadMinHeight);
 			this.jEl.find(".M_CalendarMonth_days thead tr").css("height", this.cellHeadMinHeight);
 		}
-		var widthCell = this.jEl.find("td").outerWidth();
+		// var widthCell = this.jEl.find("td").outerWidth();
 		// var tabNbEventsByDate = {} ; // stock le nb d'événements pour une journée
 		var tabNbEventsByWeek = {}; // stock le nb d'événements dans la semaine
 		var tabBars = [];
@@ -7018,22 +7018,21 @@ M_.Form.Input = class extends M_.Outlet {
 	 */
 	valid() {
 		var ok = true,
-			val = this.getValue(),
-			err = "";
+			val = this.getValue();//,err = ""
 		if (!this.allowEmpty && M_.Utils.isEmpty(val)) {
 			ok = false;
-			err = "Ce champs ne peut pas être vide\n";
+			// err = "Ce champs ne peut pas être vide\n";
 		}
 		if (this.minLength !== null && val.length < this.minLength) {
 			if (val.length === 0 && this.allowEmpty) {
 			} else {
 				ok = false;
-				err = "La longeur minimum est de " + this.minLength + " pour ce champs\n";
+				// err = "La longeur minimum est de " + this.minLength + " pour ce champs\n";
 			}
 		}
 		if (this.maxLength !== null && val.length > this.maxLength) {
 			ok = false;
-			err = "La longeur maximum est de " + this.maxLength + " pour ce champs\n";
+			// err = "La longeur maximum est de " + this.maxLength + " pour ce champs\n";
 		}
 		// console.log("this.maxLength",this.maxLength);
 		this.informValid(ok);
@@ -7107,7 +7106,7 @@ M_.Form.Slider = class extends M_.Form.Input {
 	}
 	create() {
 		if (M_.Utils.isEmpty(this.id)) this.id = M_.Utils.id();
-		var v = this.value;
+		// var v = this.value;
 		var jEl = $(
 			"<div class='M_Slider'><label class='M_SliderLabelLeft'>" +
 				this.labelLeft +
@@ -7827,10 +7826,10 @@ M_.Form.RadioGroup = class extends M_.Form.Input {
 		}
 
 		var html = "";
-		var readOnly = "";
+		// var readOnly = "";
 		var forattr = "";
 		if (this.labelFocusInput) forattr = 'for="' + this.id + '"';
-		if (!this.editable) readOnly = "readonly";
+		// if (!this.editable) readOnly = "readonly";
 
 		// var html = `<div class='M_HorizontalForm'></div></div>` ;
 
@@ -8624,10 +8623,10 @@ M_.Form.DateHour = class extends M_.Form.Input {
 		}
 
 		var html = "";
-		var readOnly = "";
+		// var readOnly = "";
 		var forattr = "";
 		if (this.labelFocusInput) forattr = 'for="' + this.id + '"';
-		if (!this.editable) readOnly = "readonly";
+		// if (!this.editable) readOnly = "readonly";
 
 		// var html = `<div class='M_HorizontalForm'></div></div>` ;
 
@@ -9053,6 +9052,7 @@ M_.Editor = class {
 	constructor(opts) {
 		var defaults = {
 			buttonsContainer: null,
+			uploadurl: "/upload",
 			buttonsToDisplay: [
 				"formatBlock",
 				"bold",
@@ -9666,10 +9666,11 @@ M_.Editor = class {
 	execNewImage() {
 		if (!this.winNewImage) {
 			this.winNewImage = new class extends M_.Window {
-				constructor(containerEditor) {
+				constructor(containerEditor, uploadurl) {
 					super({
 						modal: true,
 						width: 800,
+						uploadurl: uploadurl,
 						tabFilesToSend: []
 					});
 					this.containerEditor = containerEditor;
@@ -9734,7 +9735,7 @@ M_.Editor = class {
 							formData.append("file" + i, this.tabFilesToSend[i]);
 						}
 						var xhr = new XMLHttpRequest();
-						xhr.open("POST", "/upload");
+						xhr.open("POST", this.uploadurl);
 						var me = this;
 						xhr.onload = function() {
 							//console.log(xhr.responseText);
@@ -9797,7 +9798,7 @@ M_.Editor = class {
 					})(f);
 					reader.readAsDataURL(f);
 				}
-			}(this.container);
+			}(this.container, this.uploadurl);
 		}
 		this.winNewImage.resetFileInput();
 		this.winNewImage.show();
@@ -9935,7 +9936,7 @@ M_.Editor = class {
 			"drop",
 			"#" + this.container.get(0).id + " img",
 			$.proxy(function(e) {
-				log("drop on image", e);
+				console.warn("drop on image", e);
 			}, this)
 		);
 		$(document).click(
@@ -9949,7 +9950,7 @@ M_.Editor = class {
 		);
 		this.container.on(
 			"drop",
-			$.proxy(function(e) {
+			$.proxy((e)=> {
 				var files = e.originalEvent.dataTransfer.files;
 				if (files.length === 0) return;
 
@@ -9962,7 +9963,7 @@ M_.Editor = class {
 				var formData = new FormData();
 				formData.append("file0", files[0]);
 				var xhr = new XMLHttpRequest();
-				xhr.open("POST", "/upload");
+				xhr.open("POST", this.uploadurl);
 				var me = this;
 				xhr.onload = function() {
 					//console.log(xhr.responseText);
