@@ -1,8 +1,6 @@
 module.exports = {
-    config: {
-        useSockets: true,
-    },
-    routes: {
-        
-    }
-} ;
+	config: {
+		useSockets: true
+	},
+	routes: {}
+};

@@ -89,11 +89,14 @@
 		"Emailsender": false,
 		"Lists": false,
 		"Addresses": false,
+		"AgencyDetails": false,
 		"Budgets": false,
 		"Campaigns": false,
 		"ContactsContacts": false,
 		"sails": false,
 		"Opportunities": false,
-		"Commandes": false
+		"Commandes": false,
+		"Sockets": false,
+		"ContactsWinImport": false
 	}
 }

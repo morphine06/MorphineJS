@@ -22,7 +22,7 @@ var moment = require("moment");
 var https = require("https");
 var http = require("http");
 var io;
-var colors = require("colors");
+require("colors");
 var skipper = require("skipper");
 
 var responseTime = require("response-time");
@@ -42,7 +42,7 @@ module.exports = class MorphineServer {
 		});
 		// config.packages = require(process.cwd()+'/assets/packages.js');
 		try {
-			var ok = fs.accessSync(process.cwd() + "/config/local.js", fs.R_OK);
+			fs.accessSync(process.cwd() + "/config/local.js", fs.R_OK);
 			var configTemp = require(process.cwd() + "/config/local");
 			// _.each(configTemp, (obj)=> {
 			//     Object.assign(config, obj) ;
@@ -79,7 +79,7 @@ module.exports = class MorphineServer {
 	}
 
 	initServices() {
-		let services = {};
+		// let services = {};
 		let files = fs.readdirSync(process.cwd() + "/services");
 		_.each(files, file => {
 			file = file.substring(0, file.length - 3);
@@ -102,12 +102,12 @@ module.exports = class MorphineServer {
 					let c = require(process.cwd() + "/controllers/" + route.controller);
 					controllers[route.controller] = new c();
 				} catch (e) {
-					console.log("Controller file " + route.controller + " doesn't exists");
+					console.warn("Controller file " + route.controller + " doesn't exists");
 					return;
 				}
 			}
 			if (!controllers[route.controller][route.action]) {
-				console.log("Action " + route.action + " in " + route.controller + " doesn't exists");
+				console.warn("Action " + route.action + " in " + route.controller + " doesn't exists");
 				return;
 			}
 			// console.log("controllers",controllers[route.controller]);
@@ -132,7 +132,7 @@ module.exports = class MorphineServer {
 						route.policies,
 						(policy, nextPolicy) => {
 							if (!Policies[policy]) {
-								console.log("Policy " + policy + " not found");
+								console.warn("Policy " + policy + " not found");
 								ok = false;
 								return nextPolicy();
 							}
@@ -173,15 +173,15 @@ module.exports = class MorphineServer {
 	}
 
 	initTasks(nextinit) {
-		var ok;
+		// var ok;
 
 		try {
-			ok = fs.accessSync(process.cwd() + "/.tmp", fs.R_OK);
+			fs.accessSync(process.cwd() + "/.tmp", fs.R_OK);
 		} catch (err) {
 			fs.mkdirSync(process.cwd() + "/.tmp");
 		}
 		try {
-			ok = fs.accessSync(process.cwd() + "/assets/compiled", fs.R_OK);
+			fs.accessSync(process.cwd() + "/assets/compiled", fs.R_OK);
 		} catch (err) {
 			fs.mkdirSync(process.cwd() + "/assets/compiled");
 		}
@@ -388,9 +388,9 @@ module.exports = class MorphineServer {
 		);
 	}
 	_justStarted() {
-		console.log(("Listen on port " + (this.config.port + "").bold + " in " + this.config.environment.bold + " environment").bgGreen);
-		console.log("Date : " + moment().format("DD MMMM YYYY HH:mm:ss").green);
-		console.log(
+		console.warn(("Listen on port " + (this.config.port + "").bold + " in " + this.config.environment.bold + " environment").bgGreen);
+		console.warn("Date : " + moment().format("DD MMMM YYYY HH:mm:ss").green);
+		console.warn(
 			`
  _.._..,_,_
 (          )

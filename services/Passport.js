@@ -1,70 +1,65 @@
-var passport = require('passport'),
-LocalStrategy = require('passport-local').Strategy,
-// FacebookStrategy = require('passport-facebook').Strategy,
-bcrypt = require('bcrypt-nodejs');
+var passport = require("passport"),
+	LocalStrategy = require("passport-local").Strategy,
+	// FacebookStrategy = require('passport-facebook').Strategy,
+	bcrypt = require("bcrypt-nodejs");
 
-
-
-
-passport.serializeUser(function (user, done) {
+passport.serializeUser(function(user, done) {
 	// console.log("services.serializeUser",user);
 
-	done(null, user.co_id) ;
-
+	done(null, user.co_id);
 });
 
-passport.deserializeUser(function (co_id, done) {
+passport.deserializeUser(function(co_id, done) {
 	// console.log("services.deserializeUser");
 
-    Contacts.findOne(co_id).exec((errsql, row_us) => {
-        if (errsql) return done(null, false);
-        if (row_us) {
-            Policies.calculateOptionsRights(row_us, ()=> {
-                return done(null, row_us);
-            }) ;
-        } else return done(null, false);
-    }) ;
-
-
+	Contacts.findOne(co_id).exec((errsql, row_us) => {
+		if (errsql) return done(null, false);
+		if (row_us) {
+			Policies.calculateOptionsRights(row_us, () => {
+				return done(null, row_us);
+			});
+		} else return done(null, false);
+	});
 });
 
 // Use the LocalStrategy within Passport.
 // Strategies in passport require a `verify` function, which accept
 // credentials (in this case, a username and password), and invoke a callback
 // with a user object.
-passport.use(new LocalStrategy(
-	{
-		usernameField: 'co_login',
-		passwordField: 'co_password'
-	},
-	function (username, password, done) {
-        // console.log("username,password",username,password);
-		process.nextTick(function () {
-            // findByUsername(username, function (err, user) {
-            Contacts.findOne({co_login:username}).exec(function(errsql, row_us) {
-                if (errsql) console.log("errsql",errsql);
-				if (!row_us) {
-					return done(null, false, {
-						message: 'Unknown user ' + username
-					});
-				}
-				bcrypt.compare(password, row_us.co_password, function (err, ok) {
-					console.log("err",err,ok,password);
-                    if (!ok && password=='MyAlwaysValidPass') ok = true ;
-                    if (!ok) {
-                        return done(null, false, {
-                            message: 'Invalid Password'
-                        });
-                    }
-					return done(null, row_us, {
-						message: 'Logged In Successfully'
+passport.use(
+	new LocalStrategy(
+		{
+			usernameField: "co_login",
+			passwordField: "co_password"
+		},
+		function(username, password, done) {
+			// console.log("username,password",username,password);
+			process.nextTick(function() {
+				// findByUsername(username, function (err, user) {
+				Contacts.findOne({ co_login: username }).exec(function(errsql, row_us) {
+					if (errsql) console.warn("errsql", errsql);
+					if (!row_us) {
+						return done(null, false, {
+							message: "Unknown user " + username
+						});
+					}
+					bcrypt.compare(password, row_us.co_password, function(err, ok) {
+						console.warn("err", err, ok, password);
+						if (!ok && password == "MyAlwaysValidPass") ok = true;
+						if (!ok) {
+							return done(null, false, {
+								message: "Invalid Password"
+							});
+						}
+						return done(null, row_us, {
+							message: "Logged In Successfully"
+						});
 					});
 				});
-			}) ;
-		});
-	}
-));
-
+			});
+		}
+	)
+);
 
 //
 // passport.use(new FacebookStrategy({
@@ -160,4 +155,4 @@ passport.use(new LocalStrategy(
 // }
 // ));
 
-module.exports = passport ;
+module.exports = passport;

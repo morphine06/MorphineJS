@@ -1,4 +1,5 @@
-<div style=""><!-- width:500px; -->
+<div>
+	<!-- width:500px; -->
 	<div class="contacts_details_maindiv">
 
 		<div class="M_Row">
@@ -35,7 +36,7 @@
 		</div>
 
 		<div class="M_Row bg_col6 M_Pad M_MarginBottom">
-			<div class="M_Col4 M_MarginRight M_BorderRight" style="">
+			<div class="M_Col4 M_MarginRight M_BorderRight">
 				<h3>Coordonnées</h3>
 				<div>eMail PRO : <% if(row_co.co_email1) { %><a href="mailto:<%= row_co.co_email1 %>"><%= row_co.co_email1 %></a><% } else { %>Non renseigné<% } %></div>
 				<% if(row_co.co_email2) { %><div>eMail PRO : <a href="mailto:<%= row_co.co_email2 %>"><%= row_co.co_email2 %></a></div><% } %>
@@ -70,7 +71,7 @@
 
 
 
-			<div class="M_Col4 M_MarginRight M_BorderRight" style="">
+			<div class="M_Col4 M_MarginRight M_BorderRight">
 				<% if ((M_.Services.getUserRight('contacts_rightsusers') || row_co.co_id==M_.App.Session.co_id) && row_co.co_address1) { %>
 					<h3>Adresse</h3>
 					<%= M_.Shared.completeAddress(row_co, true) %>
@@ -82,7 +83,7 @@
 
 			</div>
 
-			<div class="M_Col4" style="">
+			<div class="M_Col4">
 				<% if (M_.Services.getUserRight('contacts_rightsusers') || row_co.co_id==M_.App.Session.co_id) { %>
 					<h3>Autres informations</h3>
 					<% if(row_co.co_siret) { %><div><b>Siret :</b> <%= row_co.co_siret %></div><% } %>
@@ -96,7 +97,7 @@
 		</div>
 
 		<% if((M_.Services.getUserRight('contacts_rightsusers') || row_co.co_id==M_.App.Session.co_id)) { %>
-		<div class="M_Row" style="">
+		<div class="M_Row">
 			<div class="M_Col6">
 				<h3>Infos utilisateur</h3>
 				<table>

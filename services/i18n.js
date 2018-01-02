@@ -1,5 +1,5 @@
 module.exports = {
-    trans: (txt) => {
-        return 'trans'+txt ;
-    }
-} ;
+	trans: txt => {
+		return "trans" + txt;
+	}
+};

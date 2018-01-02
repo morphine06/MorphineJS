@@ -35,7 +35,7 @@
 
 window.log = function() {
 	if (window.console) {
-		console.log.apply(window.console, arguments);
+		console.warn.apply(window.console, arguments);
 	}
 };
 

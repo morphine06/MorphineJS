@@ -1,8 +1,6 @@
 "use strict";
 
-var fs = require('fs') ;
-
-module.exports = (cb)=> {
-    console.log("Task : killapp...".green) ;
-    process.kill(process.pid, 'SIGUSR2');
-} ;
+module.exports = cb => {
+	console.warn("Task : killapp...".green);
+	process.kill(process.pid, "SIGUSR2");
+};

@@ -1,8 +1,5 @@
-@import './M_';
+@import "./M_";
 @import url( "./variables.less" );
-
-
-
 
 #preferences_table {
 	width: 600px;
@@ -40,12 +37,12 @@ strong {
 }
 
 .unselectable {
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 #mainContent {
@@ -88,23 +85,23 @@ strong {
 		float: left;
 		margin-right: 10px;
 	}
-    .nav.nav-main {
-        li {
-        	color: @grey;
-        	margin: 0;
-        	border-bottom: 1px solid @grey;
-        	-webkit-transition: background-color 0.5s ease 0s;
-        	        transition: background-color 0.5s ease 0s;
-            &:hover, &.over {
-                color: white;
-            }
-            &:hover {
-                background-color: @bluegrey-500;
-            }
-        }
-    }
+	.nav.nav-main {
+		li {
+			color: @grey;
+			margin: 0;
+			border-bottom: 1px solid @grey;
+			-webkit-transition: background-color 0.5s ease 0s;
+			transition: background-color 0.5s ease 0s;
+			&:hover,
+			&.over {
+				color: white;
+			}
+			&:hover {
+				background-color: @bluegrey-500;
+			}
+		}
+	}
 }
-
 
 #mainnav .nav.nav-main a {
 	text-decoration: none;
@@ -113,9 +110,8 @@ strong {
 	color: white;
 }
 #mainnav hr {
-	border-bottom: 1px solid rgba(255,255,255,0.2);
+	border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
-
 
 #maincenter {
 	height: 100%;
@@ -148,8 +144,8 @@ strong {
 }
 .mainlogo {
 	background-image: url(/images/ill_monster1.png?v=1);
-    background-size: contain;
-    background-repeat: no-repeat;
+	background-size: contain;
+	background-repeat: no-repeat;
 	width: 138px;
 	height: 40px;
 	float: left;
@@ -193,9 +189,6 @@ strong {
 	margin: 7px 0 0 20px;
 }
 
-
-
-
 #contacts_simplesearch input {
 	font-weight: 100;
 }
@@ -225,17 +218,16 @@ strong {
 .home_littlepart {
 	float: left;
 	position: relative;
-	width:14.6666%;
-	margin:1%;
+	width: 14.6666%;
+	margin: 1%;
 	background-color: white;
-	padding:15px;
+	padding: 15px;
 	h1 {
 		font-size: 20px;
 		line-height: 22px;
 		color: @grey;
 	}
 }
-
 
 .noUi-connect.bg_colOrange1 {
 	background-color: @yellow;
@@ -251,13 +243,13 @@ strong {
 }
 
 @keyframes bganim {
-		from {
-			background-position: 0;
-		}
-		to {
-			background-position: 42px;
-		}
+	from {
+		background-position: 0;
 	}
+	to {
+		background-position: 42px;
+	}
+}
 .noUi-target.noUi-connect {
 	background-image: url(/images/fond-hachure-ok.png);
 	animation-duration: 1s;
@@ -276,24 +268,29 @@ strong {
 #vacation_gain {
 	padding: 8px 30px 0 0;
 }
-#vacation_cal1title, #vacation_cal2title {
+#vacation_cal1title,
+#vacation_cal2title {
 	text-align: right;
 }
-#vacationwinedit_va_start2 .M_LabelRight, #vacationwinedit_va_end2 .M_LabelRight {
+#vacationwinedit_va_start2 .M_LabelRight,
+#vacationwinedit_va_end2 .M_LabelRight {
 	margin-top: -5px;
 	line-height: 14px;
 }
 
-#vacation_previousmonth, #vacation_nextmonth {
+#vacation_previousmonth,
+#vacation_nextmonth {
 	color: @grey;
 	cursor: pointer;
 	font-size: 40px;
 }
-#vacation_previousmonth:hover, #vacation_nextmonth:hover {
+#vacation_previousmonth:hover,
+#vacation_nextmonth:hover {
 	color: @grey;
 }
 
-#vacationwinedit_va_start2 label, #vacationwinedit_va_end2 label {
+#vacationwinedit_va_start2 label,
+#vacationwinedit_va_end2 label {
 	padding-left: 3px;
 }
 
@@ -330,8 +327,6 @@ strong {
 	line-height: 11px;
 }
 
-
-
 .inputSearch {
 	background-color: transparent;
 	border: 0;
@@ -343,7 +338,6 @@ strong {
 	font-weight: 100;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-
 
 #home_colA1 {
 	height: 340px;
@@ -373,25 +367,24 @@ strong {
 	padding-top: 8px;
 }
 .home_3stats_num_ng {
-  font-size: 50px;
-  line-height: 50px;
-  color: @red;
-  text-align: center;
-  font-weight: 100;
+	font-size: 50px;
+	line-height: 50px;
+	color: @red;
+	text-align: center;
+	font-weight: 100;
 }
 .home_3stats_num_ng .fa {
-  font-size: 30px;
-  display: inline-block;
-  vertical-align: top;
-  padding-top: 8px;
+	font-size: 30px;
+	display: inline-block;
+	vertical-align: top;
+	padding-top: 8px;
 }
 .home_3stats_week {
 	color: @grey;
 }
 
-
 #home_bg {
-	background-image: url(/images/bg_home1.jpg) ;
+	background-image: url(/images/bg_home1.jpg);
 	background-size: cover;
 	background-position: center;
 	height: 380px;
@@ -400,13 +393,51 @@ strong {
 	width: 100%;
 	height: 100%;
 	/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#ffffff+0,000000+100&amp;0+50,0.8+60,0.8+100 */
-	background: -moz-linear-gradient(left,  rgba(255,255,255,0) 0%, rgba(128,128,128,0) 50%, rgba(102,102,102,0.8) 60%, rgba(0,0,0,0.8) 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(50%,rgba(128,128,128,0)), color-stop(60%,rgba(102,102,102,0.8)), color-stop(100%,rgba(0,0,0,0.8))); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(128,128,128,0) 50%,rgba(102,102,102,0.8) 60%,rgba(0,0,0,0.8) 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(128,128,128,0) 50%,rgba(102,102,102,0.8) 60%,rgba(0,0,0,0.8) 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(left,  rgba(255,255,255,0) 0%,rgba(128,128,128,0) 50%,rgba(102,102,102,0.8) 60%,rgba(0,0,0,0.8) 100%); /* IE10+ */
-	background: linear-gradient(to right,  rgba(255,255,255,0) 0%,rgba(128,128,128,0) 50%,rgba(102,102,102,0.8) 60%,rgba(0,0,0,0.8) 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00ffffff', endColorstr='#cc000000',GradientType=1 ); /* IE6-9 */
+	background: -moz-linear-gradient(
+		left,
+		rgba(255, 255, 255, 0) 0%,
+		rgba(128, 128, 128, 0) 50%,
+		rgba(102, 102, 102, 0.8) 60%,
+		rgba(0, 0, 0, 0.8) 100%
+	); /* FF3.6+ */
+	background: -webkit-gradient(
+		linear,
+		left top,
+		right top,
+		color-stop(0%, rgba(255, 255, 255, 0)),
+		color-stop(50%, rgba(128, 128, 128, 0)),
+		color-stop(60%, rgba(102, 102, 102, 0.8)),
+		color-stop(100%, rgba(0, 0, 0, 0.8))
+	); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(
+		left,
+		rgba(255, 255, 255, 0) 0%,
+		rgba(128, 128, 128, 0) 50%,
+		rgba(102, 102, 102, 0.8) 60%,
+		rgba(0, 0, 0, 0.8) 100%
+	); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(
+		left,
+		rgba(255, 255, 255, 0) 0%,
+		rgba(128, 128, 128, 0) 50%,
+		rgba(102, 102, 102, 0.8) 60%,
+		rgba(0, 0, 0, 0.8) 100%
+	); /* Opera 11.10+ */
+	background: -ms-linear-gradient(
+		left,
+		rgba(255, 255, 255, 0) 0%,
+		rgba(128, 128, 128, 0) 50%,
+		rgba(102, 102, 102, 0.8) 60%,
+		rgba(0, 0, 0, 0.8) 100%
+	); /* IE10+ */
+	background: linear-gradient(
+		to right,
+		rgba(255, 255, 255, 0) 0%,
+		rgba(128, 128, 128, 0) 50%,
+		rgba(102, 102, 102, 0.8) 60%,
+		rgba(0, 0, 0, 0.8) 100%
+	); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00ffffff", endColorstr="#cc000000", GradientType=1); /* IE6-9 */
 }
 #home_colB1 {
 	height: 120px;
@@ -418,13 +449,16 @@ strong {
 	height: 220px;
 }
 #home_4stats .M_Col3 {
-
-	h2, h3, h4, h5 {
+	h2,
+	h3,
+	h4,
+	h5 {
 		color: white;
 	}
 	.home_4stats_top {
 		padding: @standard-padding;
-		h2, h3 {
+		h2,
+		h3 {
 			margin: 0;
 		}
 		h2 {
@@ -459,7 +493,6 @@ strong {
 	&:last-child .home_4stats_top {
 		background-color: @green;
 	}
-
 }
 
 @roomsAlltitleHeight: 50px;
@@ -479,10 +512,11 @@ strong {
 	box-sizing: border-box;
 	background-color: white;
 }
-#rooms_list_contacts, #rooms_list_groups, #rooms_list_agencies {
+#rooms_list_contacts,
+#rooms_list_groups,
+#rooms_list_agencies {
 	height: calc(100% - @toolbar2-height - 34px - 34px);
 }
-
 
 @messagesAlltitleHeight: 50px;
 #messages_col_contacts {
@@ -501,7 +535,9 @@ strong {
 	box-sizing: border-box;
 	background-color: white;
 }
-#messages_list_contacts, #messages_list_groups, #messages_list_agencies {
+#messages_list_contacts,
+#messages_list_groups,
+#messages_list_agencies {
 	height: calc(100% - @toolbar2-height - 34px - 34px);
 }
 #messages_list_contacts {
@@ -510,8 +546,6 @@ strong {
 		padding: 9px 15px;
 	}
 }
-
-
 
 @infosAlltitleHeight: 50px;
 #infos_col_contacts {
@@ -530,7 +564,9 @@ strong {
 	box-sizing: border-box;
 	background-color: white;
 }
-#infos_list_contacts, #infos_list_groups, #infos_list_agencies {
+#infos_list_contacts,
+#infos_list_groups,
+#infos_list_agencies {
 	height: calc(100% - @toolbar2-height - 34px - 34px);
 }
 #infos_list_contacts {
@@ -539,12 +575,6 @@ strong {
 		padding: 9px 15px;
 	}
 }
-
-
-
-
-
-
 
 @establishmentsAlltitleHeight: 50px;
 #establishments_col_contacts {
@@ -563,7 +593,9 @@ strong {
 	box-sizing: border-box;
 	background-color: white;
 }
-#establishments_list_contacts, #establishments_list_groups, #establishments_list_agencies {
+#establishments_list_contacts,
+#establishments_list_groups,
+#establishments_list_agencies {
 	height: calc(100% - @toolbar2-height - 34px - 34px);
 }
 #establishments_list_contacts {
@@ -572,7 +604,6 @@ strong {
 		padding: 9px 15px;
 	}
 }
-
 
 @formsAlltitleHeight: 50px;
 #forms_col_contacts {
@@ -591,10 +622,11 @@ strong {
 	box-sizing: border-box;
 	background-color: white;
 }
-#forms_list_contacts, #forms_list_groups, #forms_list_agencies {
+#forms_list_contacts,
+#forms_list_groups,
+#forms_list_agencies {
 	height: calc(100% - @toolbar2-height - 34px - 34px);
 }
-
 
 @documentsAlltitleHeight: 50px;
 #documents_alltitles {
@@ -605,7 +637,6 @@ strong {
 	height: calc(100% - @documentsAlltitleHeight);
 	background-color: white;
 }
-
 
 @contactsAlltitleHeight: 50px;
 #contacts_alltitles {
@@ -637,18 +668,6 @@ strong {
 	box-sizing: border-box;
 	background-color: white;
 }
-#contacts_list_groups {
-	// height: calc(100% - 75px);
-	// padding: 0 0px;
-}
-#contacts_list_contacts {
-	// height: calc(100% - 75px);
-	// padding: 0 0px;
-}
-// #contactedit_main {
-//   height: calc(100% - @toolbar-height);
-// }
-
 
 .M_Window {
 	background-color: @bluegrey-50;
@@ -658,7 +677,6 @@ strong {
 	// font-weight: bold;
 	// font-style: italic;
 }
-
 
 @arrow-size: 8px;
 .messageContent {
@@ -700,13 +718,10 @@ strong {
 	cursor: pointer;
 }
 
-
-
 .winimage_fileslist img {
 	display: inline;
 	margin: 15px 15px 0 0;
 }
-
 
 .contactsdetail_frame {
 	text-align: center;
@@ -731,11 +746,16 @@ strong {
 	margin-top: 0;
 }
 
-#contacts_btsettings, #contacts_btsearch,
-#rooms_btsettings, #rooms_btsearch,
-#messages_btsettings, #messages_btsearch,
-#forms_btsettings, #forms_btsearch,
-#establishments_btsettings, #establishments_btsearch {
+#contacts_btsettings,
+#contacts_btsearch,
+#rooms_btsettings,
+#rooms_btsearch,
+#messages_btsettings,
+#messages_btsearch,
+#forms_btsettings,
+#forms_btsearch,
+#establishments_btsettings,
+#establishments_btsearch {
 	margin: 5px 10px 0 0;
 	font-size: 15px;
 	cursor: pointer;
@@ -745,14 +765,12 @@ strong {
 	}
 }
 
-#contacts_list_contacts, #contacts_list_groups, #contacts_list_agencies {
-}
 .messagelittle {
 	font-size: 11px;
 	margin-bottom: 10px;
 }
 
-#contactswinimport_fields .M_FormGroup  {
+#contactswinimport_fields .M_FormGroup {
 	margin-bottom: 0;
 }
 #contactswinimport_fields .M_FormGroup:after {
@@ -819,12 +837,7 @@ strong {
 	background-color: @blue;
 }
 
-
-
-
 @login-width-form: 400px;
-#loginpage {
-}
 #loginpartimage {
 	background-image: url(/images/bg_login01.jpg);
 	background-size: cover;
@@ -836,7 +849,8 @@ strong {
 	bottom: 100px;
 	left: 15%;
 	width: 70%;
-	h1, h2 {
+	h1,
+	h2 {
 		color: white;
 		font-weight: normal;
 		font-weight: 100;
@@ -850,7 +864,6 @@ strong {
 	h2 {
 		margin: 15px 0 0 0;
 	}
-
 }
 #loginpartimage_quote {
 	position: absolute;
@@ -869,25 +882,25 @@ strong {
 	}
 }
 #loginInfosBt {
-  margin: 5px 15px 0 0;
-  cursor: pointer;
-  display: table;
+	margin: 5px 15px 0 0;
+	cursor: pointer;
+	display: table;
 }
 #loginInfosBt > span {
-  display: table-cell;
-  vertical-align: middle;
-  padding: 0 15px 0 0;
-  line-height: 10px;
+	display: table-cell;
+	vertical-align: middle;
+	padding: 0 15px 0 0;
+	line-height: 10px;
 }
 #loginFullScreen {
-  margin: 18px 0 0 0;
-  cursor: pointer;
-  font-size: 18px;
+	margin: 18px 0 0 0;
+	cursor: pointer;
+	font-size: 18px;
 }
 #loginAlert {
 	margin: 18px 0 0 0;
-    cursor: pointer;
-    font-size: 18px;
+	cursor: pointer;
+	font-size: 18px;
 }
 .loginAlertLi {
 	border-bottom: 1px solid @grey;
@@ -918,8 +931,6 @@ strong {
 	}
 }
 
-
-
 .c3-circle {
 	r: 3px;
 	stroke-width: 1px;
@@ -932,7 +943,7 @@ strong {
 #candidates_dd {
 	min-height: 300px;
 	width: 100%;
-	table-layout:fixed;
+	table-layout: fixed;
 }
 #candidates_dd td {
 	vertical-align: top;
@@ -953,47 +964,47 @@ strong {
 	font-size: @font-size-base;
 }
 #monthlyreports_chartagencies .c3-axis-y text {
-	fill: #3282C3;
+	fill: #3282c3;
 }
 #monthlyreports_chartagencies .c3-axis-y2 text {
-	fill: #977F21;
+	fill: #977f21;
 }
 #monthlyreports_chart1 .c3-axis-y text {
-	fill: #3282C3;
+	fill: #3282c3;
 }
 #monthlyreports_chart2 .c3-axis-y text {
-	fill: #977F21;
+	fill: #977f21;
 }
 
 a.agency_selector {
 	background-color: transparent;
-	color: #C7682A;
-	border: 1px solid #C7682A;
+	color: #c7682a;
+	border: 1px solid #c7682a;
 	text-decoration: none;
 	padding: 3px 5px;
 	font-size: 18px;
 	border-radius: 5px;
 }
 a.agency_selector.checked {
-	background-color: #C7682A;
+	background-color: #c7682a;
 	color: white;
 	border: 1px solid transparent;
 }
 
-
-.agency_picker, .agency_allbt {
-  float: left;
-  background-color: #ffffff;
-  padding: 5px;
-  margin-right: 5px;
-  margin-bottom: 5px;
-  cursor: pointer;
+.agency_picker,
+.agency_allbt {
+	float: left;
+	background-color: #ffffff;
+	padding: 5px;
+	margin-right: 5px;
+	margin-bottom: 5px;
+	cursor: pointer;
 }
 .agency_allbt {
 	background-color: @green;
 }
 .agency_picker.checked {
-  background-color: @blue;
+	background-color: @blue;
 }
 
 #mainbtmenus {
@@ -1015,13 +1026,12 @@ a.agency_selector.checked {
 // 	background-color: white;
 // }
 
-
 #preferences_rightsall td {
 	padding: 0 10px;
 }
 
-
-#search_result1 img, #search_result1 h1 {
+#search_result1 img,
+#search_result1 h1 {
 	float: left;
 	display: block;
 	margin-right: 30px;
@@ -1039,7 +1049,6 @@ a.agency_selector.checked {
 	color: white;
 }
 
-
 .M_Button.primary {
 	background-color: @orange;
 }
@@ -1052,7 +1061,9 @@ a.agency_selector.checked {
 .M_Button.primary.M_ModalSave:hover {
 	background-color: @blue-700;
 }
-.M_Button.primary.M_ModalSave[disabled], .M_Button.primary.M_ModalSave:disabled, .M_Button.primary.M_ModalSave:hover[disabled] {
+.M_Button.primary.M_ModalSave[disabled],
+.M_Button.primary.M_ModalSave:disabled,
+.M_Button.primary.M_ModalSave:hover[disabled] {
 	background-color: transparent;
 }
 
@@ -1061,7 +1072,7 @@ a.agency_selector.checked {
 	line-height: 13px;
 }
 
-@media only screen and (max-width : 1024px) {
+@media only screen and (max-width: 1024px) {
 	// .mainsearch {
 	// 	display: none;
 	// }
@@ -1079,13 +1090,3 @@ a.agency_selector.checked {
 .m_gantt-task.purple {
 	background-color: @purple;
 }
-
-
-
-
-
-
-
-
-
-

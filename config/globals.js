@@ -1,5 +1,5 @@
 module.exports = {
-    _: 'lodash',
-    async: 'async',
-    moment: 'moment'
-} ;
+	_: "lodash",
+	async: "async",
+	moment: "moment"
+};
