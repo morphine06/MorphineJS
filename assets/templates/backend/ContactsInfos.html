@@ -1,0 +1,141 @@
+<div class="contactsinfos-container" data-coid="<%=row_co.co_id%>">
+
+
+	<% if (withName) { %>
+	<div style="background-color:white; padding:5px 15px 0 15px">
+		<div class="M_FloatRight contactsinfos-trash" style="display:none; margin-right:40px;"><span class="fa fa-trash"></span></div>
+		<h1 style="margin:0;">
+			<b>
+			<%= M_.Shared.completeName(row_co, true) %>
+			</b>
+		</h1>
+		<% if(row_co.co_code) { %><div><b>Code société :</b> <%= row_co.co_code %></div><% } %>
+		<div class="M_Clear"></div>
+	</div>
+	<% } %>
+
+	<div class="M_FlexRow" style="background-color:<% if (withName) { %>white<% } else { %>#f0f0f0<% } %>; padding:15px;">
+
+		<div style="padding-right:30px;">
+			<h3>Coordonnées</h3>
+			<% if(row_co.co_email1) { %><div>eMail PRO : <a href="mailto:<%= row_co.co_email2 %>"><%= row_co.co_email1 %></a></div><% } %>
+			<% if(row_co.co_email2) { %><div>eMail PRO : <a href="mailto:<%= row_co.co_email2 %>"><%= row_co.co_email2 %></a></div><% } %>
+			<% if(row_co.co_email3) { %><div>eMail PRO : <a href="mailto:<%= row_co.co_email3 %>"><%= row_co.co_email3 %></a></div><% } %>
+			<% if(row_co.co_emailperso1) { %><div>eMail PERSO : <a href="mailto:<%= row_co.co_emailperso1 %>"><%= row_co.co_emailperso1 %></a></div><% } %>
+			<% if(row_co.co_emailperso2) { %><div>eMail PERSO : <a href="mailto:<%= row_co.co_emailperso2 %>"><%= row_co.co_emailperso2 %></a></div><% } %>
+			<% if(row_co.co_emailperso3) { %><div>eMail PERSO : <a href="mailto:<%= row_co.co_emailperso3 %>"><%= row_co.co_emailperso3 %></a></div><% } %>
+			<% if(row_co.co_tel1) { %><div>Tél : <a href="tel:<%= row_co.co_tel1_formated %>"><%= row_co.co_tel1_normalized %></a></div><% } %>
+			<% if(row_co.co_tel2) { %><div>Tél : <a href="tel:<%= row_co.co_tel2_formated %>"><%= row_co.co_tel2_normalized %></a></div><% } %>
+			<% if(row_co.co_tel3) { %><div>Tél : <a href="tel:<%= row_co.co_tel3_formated %>"><%= row_co.co_tel3_normalized %></a></div><% } %>
+			<% if(row_co.co_mobile1) { %><div>Mobile : <a href="tel:<%= row_co.co_mobile1_formated %>"><%= row_co.co_mobile1_normalized %></a></div><% } %>
+			<% if(row_co.co_mobile2) { %><div>Mobile : <a href="tel:<%= row_co.co_mobile2_formated %>"><%= row_co.co_mobile2_normalized %></a></div><% } %>
+			<% if(row_co.co_mobile3) { %><div>Mobile : <a href="tel:<%= row_co.co_mobile3_formated %>"><%= row_co.co_mobile3_normalized %></a></div><% } %>
+			<% if(row_co.co_fax1) { %><div>Fax : <a href="fax:<%= row_co.co_fax1_formated %>"><%= row_co.co_fax1_normalized %></a></div><% } %>
+			<% if(row_co.co_fax2) { %><div>Fax : <a href="fax:<%= row_co.co_fax2_formated %>"><%= row_co.co_fax2_normalized %></a></div><% } %>
+			<% if(row_co.co_fax3) { %><div>Fax : <a href="fax:<%= row_co.co_fax2_formated %>"><%= row_co.co_fax3_normalized %></a></div><% } %>
+			<% if(row_co.co_web1) { %><div>Web : <a href="<%= row_co.co_web1_formated %>" target="_blank"><%= row_co.co_web1_formated %></a></div><% } %>
+			<% if(row_co.co_web2) { %><div>Web : <a href="<%= row_co.co_web2_formated %>" target="_blank"><%= row_co.co_web2_formated %></a></div><% } %>
+			<% if(row_co.co_web3) { %><div>Web : <a href="<%= row_co.co_web3_formated %>" target="_blank"><%= row_co.co_web3_formated %></a></div><% } %>
+		</div>
+
+
+		<div style="padding-right:30px;">
+			<h3><% if (row_co.co_type=='contact') { %>Société<% } else { %>Contacts<% } %></h3>
+			<% if (!row_co.contacts || row_co.contacts.length==0) { %><b>Aucun contact</b><% } %>
+			<% _.each(row_co.contacts, function(row_co2) { %>
+				<div class="contactsinfos-address">
+					<div><b><%= M_.Shared.completeName(row_co2) %></b></div>
+					<% if(row_co2.co_email1) { %><div>eMail PRO : <a href="mailto:<%= row_co2.co_email2 %>"><%= row_co2.co_email1 %></a></div><% } %>
+					<% if(row_co2.co_email2) { %><div>eMail PRO : <a href="mailto:<%= row_co2.co_email2 %>"><%= row_co2.co_email2 %></a></div><% } %>
+					<% if(row_co2.co_email3) { %><div>eMail PRO : <a href="mailto:<%= row_co2.co_email3 %>"><%= row_co2.co_email3 %></a></div><% } %>
+					<% if(row_co2.co_emailperso1) { %><div>eMail PERSO : <a href="mailto:<%= row_co2.co_emailperso1 %>"><%= row_co2.co_emailperso1 %></a></div><% } %>
+					<% if(row_co2.co_emailperso2) { %><div>eMail PERSO : <a href="mailto:<%= row_co2.co_emailperso2 %>"><%= row_co2.co_emailperso2 %></a></div><% } %>
+					<% if(row_co2.co_emailperso3) { %><div>eMail PERSO : <a href="mailto:<%= row_co2.co_emailperso3 %>"><%= row_co2.co_emailperso3 %></a></div><% } %>
+					<% if(row_co2.co_tel1) { %><div>Tél : <a href="tel:<%= row_co2.co_tel1_formated %>"><%= row_co2.co_tel1_normalized %></a></div><% } %>
+					<% if(row_co2.co_tel2) { %><div>Tél : <a href="tel:<%= row_co2.co_tel2_formated %>"><%= row_co2.co_tel2_normalized %></a></div><% } %>
+					<% if(row_co2.co_tel3) { %><div>Tél : <a href="tel:<%= row_co2.co_tel3_formated %>"><%= row_co2.co_tel3_normalized %></a></div><% } %>
+					<% if(row_co2.co_mobile1) { %><div>Mobile : <a href="tel:<%= row_co2.co_mobile1_formated %>"><%= row_co2.co_mobile1_normalized %></a></div><% } %>
+					<% if(row_co2.co_mobile2) { %><div>Mobile : <a href="tel:<%= row_co2.co_mobile2_formated %>"><%= row_co2.co_mobile2_normalized %></a></div><% } %>
+					<% if(row_co2.co_mobile3) { %><div>Mobile : <a href="tel:<%= row_co2.co_mobile3_formated %>"><%= row_co2.co_mobile3_normalized %></a></div><% } %>
+					<% if(row_co2.co_fax1) { %><div>Fax : <a href="fax:<%= row_co2.co_fax1_formated %>"><%= row_co2.co_fax1_normalized %></a></div><% } %>
+					<% if(row_co2.co_fax2) { %><div>Fax : <a href="fax:<%= row_co2.co_fax2_formated %>"><%= row_co2.co_fax2_normalized %></a></div><% } %>
+					<% if(row_co2.co_fax3) { %><div>Fax : <a href="fax:<%= row_co2.co_fax2_formated %>"><%= row_co2.co_fax3_normalized %></a></div><% } %>
+					<% if(row_co2.co_web1) { %><div>Web : <a href="<%= row_co2.co_web1_formated %>" target="_blank"><%= row_co2.co_web1_formated %></a></div><% } %>
+					<% if(row_co2.co_web2) { %><div>Web : <a href="<%= row_co2.co_web2_formated %>" target="_blank"><%= row_co2.co_web2_formated %></a></div><% } %>
+					<% if(row_co2.co_web3) { %><div>Web : <a href="<%= row_co2.co_web3_formated %>" target="_blank"><%= row_co2.co_web3_formated %></a></div><% } %>
+				</div>
+			<% }) %>
+		</div>
+
+
+		<div style="padding-right:30px;">
+			<h3>Adresses</h3>
+			<% if (!row_co.addresses || row_co.addresses.length==0) { %><b>Aucune adresse</b><% } %>
+			<% _.each(row_co.addresses, function(row_ad) { %>
+				<div class="contactsinfos-address">
+					<div><b><%= row_ad.ad_label %></b></div>
+					<a href="<%= row_ad.ad_googlemap %>" target="_blank">
+						<div><%= row_ad.ad_address1 %></div>
+						<% if(row_ad.ad_address2) { %><div><%= row_ad.ad_address2 %></div><% } %>
+						<% if(row_ad.ad_address3) { %><div><%= row_ad.ad_address3 %></div><% } %>
+						<% if(row_ad.ad_zip || row_ad.ad_city) { %><div><%= row_ad.ad_zip %> <%= row_ad.ad_city %></div><% } %>
+						<% if(row_ad.ad_country) { %><div><%= row_ad.ad_country %></div><% } %>
+					</a>
+				</div>
+			<% }) %>
+		</div>
+
+
+
+	</div>
+
+	<% if (!withName) { %>
+	<div class="" style="margin-top:0;">
+		<div class="" style="background-color:#e8e8e8; padding:15px; margin:0 -7px;">
+			<h3>Autres informations</h3>
+			<div style="column-count:2; column-gap:40px; column-rule: 1px solid #9e9e9e;">
+				<% if(row_co.co_siret) { %><div><b>Siret :</b> <%= row_co.co_siret %></div><% } %>
+				<% if(row_co.co_ape) { %><div><b>Code APE :</b> <%= row_co.co_ape %></div><% } %>
+				<% if(row_co.co_naf) { %><div><b>Code NAF :</b> <%= row_co.co_naf %></div><% } %>
+				<% if(row_co.co_manpower) { %><div><b>Effectif :</b> <%= row_co.co_manpower %></div><% } %>
+				<% if(row_co.co_sales) { %><div><b>Chiffre d'affaire :</b> <%= row_co.co_sales %>€</div><% } %>
+				<% if(row_co.co_comment) { %><div><b>Commentaire :</b> <%= row_co.co_comment %></div><% } %>
+
+				<% if(row_co.co_tvaintra) { %><div><b>Code TVA Intracom :</b> <%= row_co.co_tvaintra %></div><% } %>
+				<% if(row_co.co_representant) { %><div><b>Représentant :</b> <%= row_co.co_representant %></div><% } %>
+				<% if(row_co.co_marche) { %><div><b>Marché :</b> <%= row_co.co_marche %></div><% } %>
+				<% if(row_co.co_tarif) { %><div><b>Tarif :</b> <%= row_co.co_tarif %></div><% } %>
+				<% if(row_co.co_activite) { %><div><b>Activité :</b> <%= row_co.co_activite %></div><% } %>
+				<% if(row_co.co_bank) { %><div><b>Banque :</b> <%= row_co.co_bank %></div><% } %>
+				<% if(row_co.co_bank_iban) { %><div><b>IBAN :</b> <%= row_co.co_bank_iban %></div><% } %>
+				<% if(row_co.co_bank_bic) { %><div><b>BIC :</b> <%= row_co.co_bank_bic %></div><% } %>
+				<% if(row_co.co_rgtcompta) { %><div><b>RGT Compta :</b> <%= row_co.co_rgtcompta %></div><% } %>
+				<% if(row_co.co_rgtmfg) { %><div><b>RGT MFG :</b> <%= row_co.co_rgtmfg %></div><% } %>
+
+				<% if (row_co.co_linkedin) { %><div><span class="fa fa-linkedin-square"></span>&nbsp;&nbsp;<a target="_blank" href="<%= M_.Utils.urlIze(row_co.co_linkedin) %>">Voir sur Linkedin</a></div><% } %>
+				<% if (row_co.co_viadeo) { %><div><span class="fa fa-bitbucket"></span>&nbsp;&nbsp;<a target="_blank" href="<%= M_.Utils.urlIze(row_co.co_viadeo) %>">Voir sur Viadeo</a></div><% } %>
+				<% console.log('row_co.co_birthday',row_co.co_birthday); %>
+				<% if(moment(row_co.co_birthday).isAfter(moment('1950-01-01'))) { %><div><b>Anniversaire :</b> <%= moment(row_co.co_birthday).format('DD MMMM') %>(<%= moment().diff(moment(row_co.co_birthday), 'years') %> ans)</div><% } %>
+				<% if (row_co.co_keywords && row_co.co_keywords.length) { %>
+				<div style="margin-top:15px;">
+					<% _.each(row_co.co_keywords, function(keyword) { %>
+						<div class="M_ComboboxMultiItem selected"><%= keyword %></div>
+					<% }) %>
+					<div class="M_Clear"></div>
+				</div>
+				<% } %>
+			</div>
+		</div>
+		
+		<h2><div class="M_FloatRight"><button type="button" class="M_Button little" id="contactsinfos_btnewdocument">
+			<span class="fa fa-plus"></span> Nouveau document</button></div>Documents</h2>
+		<div id="contactsinfos_documents"></div>
+
+		<h2><div class="M_FloatRight"><button type="button" class="M_Button little" id="contactsinfos_btnewaction">
+			<span class="fa fa-plus"></span> Nouvelle action</button></div>Historique</h2>
+		<div id="contactsinfos_history"></div>
+
+	</div>
+	<% } %>
+
+</div>

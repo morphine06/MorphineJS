@@ -1,11 +1,9 @@
 "use strict";
 
 import { M_ } from "./../../../libs-client/M_.js";
-// import {MT_Jobs} from '../../compiled/models/MT_Jobs.js' ;
 
 export class Home extends M_.Controller {
 	constructor(opts) {
-		// console.log("MT_Jobs",MT_Jobs);
 		opts.tpl = JST["assets/templates/backend/Home.html"];
 		super(opts);
 	}

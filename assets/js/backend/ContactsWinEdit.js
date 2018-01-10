@@ -5,6 +5,7 @@ import { Services } from "./Services.js";
 import { Shared } from "./../../compiled/Shared.js";
 import { MT_Contacts } from "./../../compiled/models/MT_Contacts.js";
 import { MT_Keywords } from "./../../compiled/models/MT_Keywords.js";
+import { MT_Addresses } from "./../../compiled/models/MT_Addresses.js";
 
 export class ContactsWinEdit extends M_.Window {
 	constructor(opts) {
@@ -14,7 +15,7 @@ export class ContactsWinEdit extends M_.Window {
 			modal: true,
 			// controller: this,
 			width: 900,
-			_contractNum: 0
+			_contactstodelete: []
 		};
 		opts = opts ? opts : {};
 		var optsTemp = $.extend({}, defaults, opts);
@@ -32,72 +33,14 @@ export class ContactsWinEdit extends M_.Window {
 	create() {
 		super.create();
 
-		this.tree = new M_.Tree({
-			name: "mytree",
-			container: $("#contactedit_tree"),
-			listeners: [
-				[
-					"beforenodemove",
-					(tree, nodeId, nodeDropId) => {
-						// console.log("beforenodemove",nodeId, nodeDropId);
-						return true;
-					}
-				]
-			],
-			rootNode: {
-				expended: true,
-				hidden: false,
-				label: "RootNode",
-				draggable: false,
-				droppable: true,
-				id: "rootnode",
-				nodes: [
-					{
-						expended: true,
-						hidden: false,
-						label: "Node 1",
-						draggable: true,
-						droppable: true,
-						id: "node1"
-					},
-					{
-						expended: true,
-						hidden: false,
-						label: "Node 2",
-						draggable: true,
-						droppable: true,
-						id: "node2",
-						nodes: [
-							{
-								expended: true,
-								hidden: false,
-								label: "Node 3",
-								draggable: true,
-								droppable: true,
-								id: "node3"
-							},
-							{
-								expended: true,
-								hidden: false,
-								label: "Node 4",
-								draggable: true,
-								droppable: true,
-								id: "node4"
-							}
-						]
-					}
-				]
-			}
-		});
-
 		this.form = new M_.Form.Form({
-			// url: '/1.0/contacts',
-			urls: {
-				findone: "GET /1.0/contacts/findone",
-				create: "POST /1.0/contacts/create",
-				update: "PUT /1.0/contacts/update",
-				destroy: "DELETE /1.0/contacts/destroy"
-			},
+			url: "/1.0/contacts",
+			// urls: {
+			// 	findone: 'GET /1.0/contacts/findone',
+			// 	create: 'POST /1.0/contacts/create',
+			// 	update: 'PUT /1.0/contacts/update',
+			// 	destroy: 'DELETE /1.0/contacts/destroy',
+			// },
 			model: MT_Contacts,
 			controller: this,
 			processData: function(data) {
@@ -110,9 +53,11 @@ export class ContactsWinEdit extends M_.Window {
 						if (
 							form.find("co_id").getValue() === "" &&
 							form.find("co_password").getValue() === "" &&
-							form.find("co_type").getValue() != "contact" &&
-							form.find("co_type").getValue() != "customer" &&
-							form.find("co_type").getValue() != "candidate"
+							(form.find("co_type").getValue() == "user" ||
+								form.find("co_type").getValue() == "commercial" ||
+								form.find("co_type").getValue() == "secretary" ||
+								form.find("co_type").getValue() == "director" ||
+								form.find("co_type").getValue() == "admin")
 						) {
 							err.push({ key: "co_password", label: "Le mot de passe est vide" });
 							return false;
@@ -131,10 +76,24 @@ export class ContactsWinEdit extends M_.Window {
 					}
 				],
 				[
+					"beforeSave",
+					(form, args) => {
+						// this.currentModel.get("contacts")
+						let contacts = [];
+						_.each(this.currentModel.get("contacts"), contact => {
+							contacts.push(contact.co_id);
+						});
+						args.args.contacts = contacts;
+						args.args.contactstodelete = this._contactstodelete;
+					}
+				],
+				[
 					"save",
 					(form, data) => {
-						this.hide();
 						if (this.controller.currentModelContact) this.controller.currentModelContact.set("co_id", data.data.co_id);
+						this.currentModel.set("co_id", data.data.co_id);
+						this.form.find("co_id").setValue(data.data.co_id);
+
 						if (form.find("co_avatar_send").getValue() !== "") {
 							M_.Utils.saveFiles(
 								[form.find("co_avatar_send").jEl.get(0)],
@@ -143,12 +102,24 @@ export class ContactsWinEdit extends M_.Window {
 								data => {
 									form.deleteItem("co_avatar_send");
 									Services.updateAvatar();
-									if (this.controller.onSaveContactsWinEdit) this.controller.onSaveContactsWinEdit(data.data);
 									this.checkMine();
+									if (this.thenAction) {
+										this.thenAction(data);
+										this.thenAction = null;
+									} else {
+										if (this.controller.onSaveContactsWinEdit) this.controller.onSaveContactsWinEdit(data.data);
+										this.hide();
+									}
 								}
 							);
 						} else {
-							if (this.controller.onSaveContactsWinEdit) this.controller.onSaveContactsWinEdit(data.data);
+							if (this.thenAction) {
+								this.thenAction(data);
+								this.thenAction = null;
+							} else {
+								if (this.controller.onSaveContactsWinEdit) this.controller.onSaveContactsWinEdit(data.data);
+								this.hide();
+							}
 							this.checkMine();
 						}
 					}
@@ -163,6 +134,7 @@ export class ContactsWinEdit extends M_.Window {
 					}
 				]
 			],
+
 			itemsDefaults: {
 				type: M_.Form.Text,
 				hideIfEmpty: true,
@@ -187,21 +159,37 @@ export class ContactsWinEdit extends M_.Window {
 					store: new M_.Store({
 						controller: this,
 						model: M_.ModelKeyVal,
-						rows: Shared.getRoles(!Shared.canEditContactsRights(M_.App.Session))
+						rows: Shared.getRoles() //!Shared.canEditContactsRights(M_.App.Session)
 					}),
 					listeners: [
 						[
 							"itemclick",
 							(store, models) => {
 								this.showHideLoginInfos();
-								if (this.form.find("co_function").getValue() === "")
-									this.form
-										.find("co_function")
-										.setValue(_.result(_.find(Shared.getRoles(), { key: this.form.find("co_type").getValue() }), "val"));
+								// if (this.form.find("co_function").getValue() === "")
+								// 	this.form
+								// 		.find("co_function")
+								// 		.setValue(_.result(_.find(Shared.getRoles(), { key: this.form.find("co_type").getValue() }), "val"));
 							}
 						]
 					]
 				},
+				// {
+				// 	type: M_.Form.Checkbox,
+				// 	name: "co_maintype",
+				// 	container: $("#contactedit_co_maintype"),
+				// 	label: "Société",
+				// 	labelPosition: "right",
+				// 	listeners: [
+				// 		[
+				// 			"change",
+				// 			(tf, val) => {
+				// 				// console.log("ooo", val);
+				// 				this.showHideLoginInfos();
+				// 			}
+				// 		]
+				// 	]
+				// },
 				{
 					name: "co_name",
 					placeholder: "",
@@ -293,78 +281,6 @@ export class ContactsWinEdit extends M_.Window {
 					]
 				},
 				{
-					name: "co_idpld",
-					placeholder: "",
-					label: "ID PLD",
-					labelPosition: "top",
-					container: $("#contactedit_co_idpld")
-				},
-				{
-					type: M_.Form.Number,
-					name: "co_vacation_acquisn1",
-					placeholder: "",
-					label: "Congés acquis n-1",
-					labelPosition: "top",
-					decimalLength: 2,
-					decimalSeparator: ",",
-					decimalForced: true,
-					allowNegative: true,
-					// labelWidth: 180,
-					addon: "J",
-					container: $("#contactedit_co_vacation_acquisn1")
-				},
-				{
-					type: M_.Form.Number,
-					name: "co_vacation_prisn1",
-					placeholder: "",
-					label: "Congés pris n-1",
-					labelPosition: "top",
-					decimalLength: 2,
-					decimalSeparator: ",",
-					decimalForced: true,
-					allowNegative: true,
-					// labelWidth: 180,
-					addon: "J",
-					container: $("#contactedit_co_vacation_prisn1")
-				},
-				{
-					type: M_.Form.Number,
-					name: "co_vacation_acquis",
-					placeholder: "",
-					label: "Congés acquis n",
-					labelPosition: "top",
-					decimalLength: 2,
-					decimalSeparator: ",",
-					decimalForced: true,
-					allowNegative: true,
-					// labelWidth: 180,
-					addon: "J",
-					container: $("#contactedit_co_vacation_acquis")
-				},
-				{
-					type: M_.Form.Number,
-					name: "co_vacation_pris",
-					placeholder: "",
-					label: "Congés pris n",
-					labelPosition: "top",
-					decimalLength: 2,
-					decimalSeparator: ",",
-					decimalForced: true,
-					allowNegative: true,
-					// labelWidth: 180,
-					addon: "J",
-					container: $("#contactedit_co_vacation_pris")
-				},
-				{
-					type: M_.Form.Date,
-					name: "co_vacation_import",
-					placeholder: "",
-					label: "Date",
-					labelPosition: "top",
-					// labelWidth: 180,
-					container: $("#contactedit_co_vacation_import")
-				},
-				{
 					name: "co_society",
 					label: "Société",
 					labelPosition: "top",
@@ -389,7 +305,7 @@ export class ContactsWinEdit extends M_.Window {
 					store: new M_.Store({
 						controller: this,
 						model: M_.ModelKeyVal,
-						url: "/1.0/contacts/combo/co_function"
+						url: "/1.0/combo/contacts/co_function"
 					})
 				},
 				{
@@ -427,32 +343,97 @@ export class ContactsWinEdit extends M_.Window {
 					labelPosition: "top",
 					container: $("#contactedit_co_matricule")
 				},
+
 				{
-					type: M_.Form.Date,
-					name: "co_date_start_society",
+					name: "co_vacations_acquisn1",
 					placeholder: "",
-					label: "Employé depuis le",
+					label: "Vacances acquises N-1",
 					labelPosition: "top",
-					container: $("#contactedit_co_date_start_society")
+					container: $("#contactedit_co_vacations_acquisn1")
 				},
 				{
-					type: M_.Form.Date,
-					name: "co_date_end_society",
+					name: "co_vacations_prisn1",
 					placeholder: "",
-					label: "Employé jusqu'au",
+					label: "Vacances prises N-1",
 					labelPosition: "top",
-					container: $("#contactedit_co_date_end_society")
+					container: $("#contactedit_co_vacations_prisn1")
 				},
+				{
+					name: "co_vacations_acquis",
+					placeholder: "",
+					label: "Vacances acquises",
+					labelPosition: "top",
+					container: $("#contactedit_co_vacations_acquis")
+				},
+				{
+					name: "co_vacations_pris",
+					placeholder: "",
+					label: "Vacances prises",
+					labelPosition: "top",
+					container: $("#contactedit_co_vacations_pris")
+				},
+
+				{
+					type: M_.Form.Number,
+					name: "co_manpower",
+					placeholder: "",
+					label: "Effectif",
+					labelPosition: "top",
+					container: $("#contactedit_co_manpower")
+				},
+				{
+					name: "co_code",
+					placeholder: "",
+					label: "Code société/Code ERP",
+					labelPosition: "top",
+					container: $("#contactedit_co_code")
+				},
+				{
+					name: "co_naf",
+					placeholder: "",
+					label: "Code NAF",
+					labelPosition: "top",
+					container: $("#contactedit_co_naf")
+				},
+				{
+					name: "co_ape",
+					placeholder: "",
+					label: "Code APE",
+					labelPosition: "top",
+					container: $("#contactedit_co_ape")
+				},
+				{
+					type: M_.Form.Number,
+					name: "co_sales",
+					placeholder: "",
+					label: "Chiffre d'affaire",
+					labelPosition: "top",
+					container: $("#contactedit_co_sales")
+				},
+				// {
+				// 	type: M_.Form.Date,
+				// 	name: "co_date_start_society",
+				// 	placeholder: "",
+				// 	label: "Employé depuis le",
+				// 	labelPosition: "top",
+				// 	container: $("#contactedit_co_date_start_society")
+				// },
+				// {
+				// 	type: M_.Form.Date,
+				// 	name: "co_date_end_society",
+				// 	placeholder: "",
+				// 	label: "Employé jusqu'au",
+				// 	labelPosition: "top",
+				// 	container: $("#contactedit_co_date_end_society")
+				// },
 				{
 					type: M_.Form.Multi,
 					name: "co_keywords",
 					label: "Mots clés",
-					labelPosition: "top",
 					container: $("#contactedit_co_keywords"),
-					chooseValues: [{ key: 1, val: "toto" }, { key: 2, val: "tutu" }, { key: 3, val: "tyty" }]
-					// onClickBtAdd: (formEl, vals)=> {
-					// 	this.openWinKeywords(vals) ;
-					// }
+					onClickBtAdd: (formEl, vals) => {
+						this.openWinKeywords(vals);
+					}
 				},
 				{
 					name: "co_login",
@@ -584,78 +565,6 @@ export class ContactsWinEdit extends M_.Window {
 					container: $("#contactedit_co_mobile3")
 				},
 				{
-					name: "co_address1",
-					placeholder: "Adresse 1",
-					container: $("#contactedit_co_address1")
-				},
-				{
-					name: "co_address2",
-					placeholder: "Adresse 2",
-					container: $("#contactedit_co_address2")
-				},
-				{
-					name: "co_address3",
-					placeholder: "Adresse 3",
-					container: $("#contactedit_co_address3")
-				},
-				{
-					name: "co_zip",
-					placeholder: "Code postal",
-					container: $("#contactedit_co_zip")
-				},
-				{
-					type: M_.Form.Combobox,
-					name: "co_country",
-					placeholder: "Pays",
-					container: $("#contactedit_co_country"),
-					useRawValue: true,
-					store: new M_.Store({
-						controller: this,
-						model: M_.ModelKeyVal,
-						url: "/1.0/combo/contacts/co_country"
-					})
-				},
-				{
-					name: "co_city",
-					placeholder: "Ville",
-					container: $("#contactedit_co_city")
-					// }, {
-					// 	name: 'co_address_liv1',
-					// 	placeholder: "Adresse 1 livraison",
-					// 	container: $("#contactedit_co_address_liv1")
-					// }, {
-					// 	name: 'co_address_liv2',
-					// 	placeholder: "Adresse 2 livraison",
-					// 	container: $("#contactedit_co_address_liv2")
-					// }, {
-					// 	name: 'co_address_liv3',
-					// 	placeholder: "Adresse 3 livraison",
-					// 	container: $("#contactedit_co_address_liv3")
-					// }, {
-					// 	name: 'co_zip_liv',
-					// 	placeholder: "Code postal",
-					// 	container: $("#contactedit_co_zip_liv")
-					// }, {
-					// 	name: 'co_city_liv',
-					// 	placeholder: "Ville",
-					// 	container: $("#contactedit_co_city_liv")
-					// }, {
-					// 	name: 'co_country_liv',
-					// 	placeholder: "Pays",
-					// 	container: $("#contactedit_co_country_liv")
-					// }, {
-					// 	name: 'co_telephons',
-					// 	placeholder: "Téléphones",
-					// 	label: "Téléphones",
-					// 	container: $("#contactedit_co_telephons")
-					// }, {
-					// 	name: 'co_web',
-					// 	placeholder: "Site web",
-					// 	label: "Site web",
-					// 	help: "Saisir avec ou sans le http://",
-					// 	container: $("#contactedit_co_web")
-				},
-				{
 					type: M_.Form.Textarea,
 					name: "co_comment",
 					placeholder: "Commentaire",
@@ -783,116 +692,124 @@ export class ContactsWinEdit extends M_.Window {
 					help: "Saisir avec ou sans le http://",
 					container: $("#contactedit_co_web3")
 				},
+
 				{
-					type: M_.Form.Number,
-					name: "co_annualincomes",
-					label: "Revenu / mois",
-					labelWidth: 200,
-					allowComparison: true,
-					autoContainer: $("#contactedit_financial1")
+					name: "co_tvaintra",
+					placeholder: "",
+					label: "Code TVA Intracom",
+					labelPosition: "top",
+					container: $("#contactedit_co_tvaintra")
 				},
 				{
-					type: M_.Form.Number,
-					name: "co_familybenefits",
-					label: "Allocations familiales / mois",
-					labelWidth: 200,
-					autoContainer: $("#contactedit_financial1")
+					type: M_.Form.Combobox,
+					name: "co_representant",
+					editable: false,
+					allowEmpty: true,
+					placeholder: "",
+					label: "Représentant",
+					labelPosition: "top",
+					container: $("#contactedit_co_representant"),
+					store: new M_.Store({
+						controller: this,
+						model: M_.ModelKeyVal,
+						rows: [
+							{ key: "1", val: "1 France Nord" },
+							{ key: "3", val: "3 France Sud" },
+							{ key: "2A", val: "2A Export Nord" },
+							{ key: "2B", val: "2B Export Sud" },
+							{ key: "4", val: "4 Carte" },
+							{ key: "5", val: "5 Medical" }
+						]
+					}),
+					listeners: [["itemclick", (store, models) => {}]]
 				},
 				{
-					type: M_.Form.Number,
-					name: "co_realincomes",
-					label: "Revenus immobiliers / mois",
-					labelWidth: 200,
-					autoContainer: $("#contactedit_financial1")
+					type: M_.Form.Combobox,
+					name: "co_marche",
+					label: "Marché",
+					labelPosition: "top",
+					container: $("#contactedit_co_marche"),
+					useRawValue: true,
+					store: new M_.Store({
+						controller: this,
+						model: M_.ModelKeyVal,
+						url: "/1.0/combo/contacts/co_marche"
+					})
 				},
 				{
-					type: M_.Form.Number,
-					name: "co_othersincomes",
-					label: "Autres revenus / mois",
-					labelWidth: 200,
-					autoContainer: $("#contactedit_financial1")
+					name: "co_tarif",
+					placeholder: "",
+					label: "Tarif",
+					labelPosition: "top",
+					container: $("#contactedit_co_tarif")
 				},
 				{
-					type: M_.Form.Number,
-					name: "co_alimonies",
-					label: "Pensions alimentaires / mois",
-					labelWidth: 200,
-					autoContainer: $("#contactedit_financial2")
+					type: M_.Form.Combobox,
+					name: "co_activite",
+					label: "Activité",
+					labelPosition: "top",
+					container: $("#contactedit_co_activite"),
+					useRawValue: true,
+					store: new M_.Store({
+						controller: this,
+						model: M_.ModelKeyVal,
+						url: "/1.0/combo/contacts/co_activite"
+					})
 				},
 				{
-					type: M_.Form.Number,
-					name: "co_consumercredit",
-					label: "Crédits consommation / mois",
-					labelWidth: 200,
-					autoContainer: $("#contactedit_financial2")
+					name: "co_bank",
+					placeholder: "",
+					label: "Nom de la banque",
+					labelPosition: "top",
+					container: $("#contactedit_co_bank")
 				},
 				{
-					type: M_.Form.Number,
-					name: "co_automobilecredit",
-					label: "Crédits automobile / mois",
-					labelWidth: 200,
-					autoContainer: $("#contactedit_financial2")
+					name: "co_bank_iban",
+					placeholder: "",
+					label: "IBAN",
+					labelPosition: "top",
+					container: $("#contactedit_co_bank_iban")
 				},
 				{
-					type: M_.Form.Number,
-					name: "co_otherscredit",
-					label: "Autres crédits / mois",
-					labelWidth: 200,
-					autoContainer: $("#contactedit_financial2")
+					name: "co_bank_bic",
+					placeholder: "",
+					label: "BIC",
+					labelPosition: "top",
+					container: $("#contactedit_co_bank_bic")
 				},
 				{
-					type: M_.Form.Number,
-					name: "co_personalcapital",
-					label: "Apport personnel",
-					labelWidth: 200,
-					autoContainer: $("#contactedit_financial3")
+					name: "co_rgtcompta",
+					placeholder: "",
+					label: "Mode RGT compta",
+					labelPosition: "top",
+					container: $("#contactedit_co_rgtcompta")
 				},
 				{
-					type: M_.Form.Number,
-					name: "co_ratedebt",
-					label: "Taux endettement maxi (%)",
-					labelWidth: 200,
-					autoContainer: $("#contactedit_financial3")
-				},
-				{
-					type: M_.Form.Number,
-					name: "co_rateloan",
-					label: "Taux du prêt (%)",
-					labelWidth: 200,
-					autoContainer: $("#contactedit_financial3")
-				},
-				{
-					type: M_.Form.Number,
-					name: "co_durationloan",
-					label: "Durée du prêt (années)",
-					labelWidth: 200,
-					autoContainer: $("#contactedit_financial3")
-				},
-				{
-					type: M_.Form.Number,
-					name: "co_financialallocation",
-					label: "Enveloppe financière",
-					labelWidth: 200,
-					autoContainer: $("#contactedit_financial3")
-				},
-				{
-					type: M_.Form.Number,
-					name: "co_km_homework",
-					label: "Kilomètres domicile/travail",
-					labelWidth: 200,
-					allowComparison: true,
-					autoContainer: $("#contactedit_co_km_homework"),
-					addon: "Km"
+					name: "co_rgtmfg",
+					placeholder: "",
+					label: "Mode RGT sur MFG",
+					labelPosition: "top",
+					container: $("#contactedit_co_rgtmfg")
 				}
 			]
 		});
 
 		// this.controller = this ;
 
-		// $("#contactedit_btaddkeyword").click(()=> {
-		// 	this.openWinKeywords() ;
-		// }) ;
+		$("#contactedit_btaddkeyword").click(() => {
+			this.openWinKeywords();
+		});
 
+		$("#contactedit_btaddaddress").click(() => {
+			this.saveContact(() => {
+				this.openWinAddress("-1", this.currentModel.get("co_id"));
+			});
+		});
+		$("#contactedit_addnewcontacts").click(() => {
+			this.saveContact(() => {
+				// this.openWinAddress("-1", this.currentModel.get("co_id"));
+			});
+		});
 		this.jEl.find(".M_ModalSave").click(() => {
 			if (this.modeSearch) this.search();
 			else this.saveContact();
@@ -901,17 +818,11 @@ export class ContactsWinEdit extends M_.Window {
 			this.deleteContact();
 		});
 		this.jEl.find(".M_ModalCancel").click(() => {
-			// $("#contacts_details").transition({opacity:0}, 100, ()=> {
-			// 	this.drawContact(this.currentModel) ;
-			// 	$("#contacts_details").transition({opacity:1}, 100) ;
-			// }) ;
-			// if (this.currentModel) this.controller.loadContact(this.controller.currentModel.get('co_id')) ;
-			// else this.controller.currentModel.loadContact('-1') ;
 			if (this.controller.onCancelContactsWinEdit) this.controller.onCancelContactsWinEdit();
 			this.hide();
 		});
 
-		var tabTemp = ["co_email", "co_emailperso", "co_tel", "co_mobile", "co_fax", "co_web", "co_address"]; //,'co_address_liv'
+		var tabTemp = ["co_email", "co_emailperso", "co_tel", "co_mobile", "co_fax", "co_web"]; //,'co_address_liv', "co_address"
 		for (let i = 0; i < tabTemp.length; i++) {
 			for (let j = 1; j <= 3; j++) {
 				this.form.find(tabTemp[i] + j).addListener("keyup", () => {
@@ -950,10 +861,6 @@ export class ContactsWinEdit extends M_.Window {
 			});
 		});
 
-		$("#contactedit_addcontract").click(() => {
-			this.addContract(null);
-		});
-
 		this.rightAllCheckboxs = 2;
 		$("#contactedit_rightsbtall").click(() => {
 			var ok = false;
@@ -976,117 +883,49 @@ export class ContactsWinEdit extends M_.Window {
 			this.rightAllCheckboxs++;
 			if (this.rightAllCheckboxs >= 3) this.rightAllCheckboxs = 0;
 		});
-	}
-	addContract(row_cc) {
-		if (!row_cc) {
-			row_cc = {
-				cc_id: "",
-				cc_start: moment(),
-				cc_end: moment(),
-				cc_type: 1,
-				cc_entity: 1
-			};
-		}
 
-		// if (!this._contractNum) this._contractNum = 0 ;
-		this._contractNum++;
-
-		var id0 = M_.Utils.id(),
-			id1 = M_.Utils.id(),
-			id2 = M_.Utils.id(),
-			id3 = M_.Utils.id(),
-			id4 = M_.Utils.id(),
-			id5 = M_.Utils.id();
-		var html = `<div class='M_Flex' id='${id0}'>
-						<div id='${id1}'></div>
-						<div id='${id2}'></div>
-						<div id='${id3}'></div>
-						<div id='${id4}'></div>
-						<div style="padding:19px 0 0 0; flex-grow:0.2; text-align:right;"><span style="cursor:pointer;" id='${id5}' class="fa fa-trash"></span></div>
-					</div>`;
-		$("#contactedit_contracts").append(html);
-
-		$("#" + id5).data("contractNum", this._contractNum);
-		$("#" + id5).data("idLine", id0);
-		$("#" + id5).click(evt => {
-			this.form.deleteByFakeGroup("cc_group_" + $(evt.target).data("contractNum"));
-			$("#" + $(evt.target).data("idLine")).remove();
+		this.cb_addcontact = new M_.Form.Combobox({
+			name: "co_id2",
+			label: "Ajouter",
+			labelPosition: "left",
+			labelWidth: 80,
+			placeholder: "",
+			container: $("#contactedit_addcontacts"),
+			modelKey: "co_id",
+			modelValue: model => {
+				return Shared.completeName(model.getData(), true);
+			},
+			allowEmpty: false,
+			store: new M_.Store({
+				controller: this,
+				model: MT_Contacts,
+				url: "/1.0/contacts",
+				limit: 200,
+				listeners: [
+					[
+						"beforeLoad",
+						(store, args) => {
+							if (this.currentModel.get("co_type") == "society") args.args.onlycontacts = "true";
+							else args.args.onlysociety = "true";
+						}
+					]
+				]
+			}),
+			listeners: [
+				[
+					"itemclick",
+					(tf, model) => {
+						M_.Utils.getJson("/1.0/contacts/" + model.get("co_id"), {}, data => {
+							this.currentModel.get("contacts").push(data.data);
+							this.drawContacts();
+							tf.setValue("");
+						});
+					}
+				]
+			]
 		});
-		this.form.addItem([
-			{
-				type: M_.Form.Hidden,
-				name: "cc_id_" + this._contractNum,
-				fakeGroup: "cc_group_" + this._contractNum,
-				container: $("#" + id1),
-				value: row_cc.cc_id
-			},
-			{
-				type: M_.Form.Date,
-				name: "cc_start_" + this._contractNum,
-				labelPosition: "top",
-				label: "Début de contrat",
-				fakeGroup: "cc_group_" + this._contractNum,
-				container: $("#" + id1),
-				value: row_cc.cc_start,
-				allowEmpty: false,
-				disabledDates: (cal, d) => {
-					if (d.day() === 0 || d.day() == 6) return true;
-					return false;
-				}
-			},
-			{
-				type: M_.Form.Date,
-				name: "cc_end_" + this._contractNum,
-				labelPosition: "top",
-				label: "Fin de contrat",
-				fakeGroup: "cc_group_" + this._contractNum,
-				container: $("#" + id2),
-				value: row_cc.cc_end,
-				allowEmpty: false,
-				disabledDates: (cal, d) => {
-					var _contractNum = cal.controller.fakeGroup[0].substring(9);
-					var minDate = this.form.find("cc_start_" + _contractNum).getValue();
-					if (d.isBefore(minDate)) return true;
-					if (d.day() === 0 || d.day() == 6) return true;
-					return false;
-				}
-			},
-			{
-				type: M_.Form.Combobox,
-				name: "cc_type_" + this._contractNum,
-				allowEmpty: false,
-				placeholder: "",
-				label: "Type de contrat",
-				labelPosition: "top",
-				editable: false,
-				container: $("#" + id3),
-				fakeGroup: "cc_group_" + this._contractNum,
-				value: row_cc.cc_type,
-				store: new M_.Store({
-					controller: this,
-					model: M_.ModelKeyVal,
-					rows: Shared.getTypesContrat()
-				})
-			},
-			{
-				type: M_.Form.Combobox,
-				name: "cc_entity_" + this._contractNum,
-				allowEmpty: false,
-				placeholder: "",
-				label: "Entité payante",
-				labelPosition: "top",
-				editable: false,
-				container: $("#" + id4),
-				fakeGroup: "cc_group_" + this._contractNum,
-				value: row_cc.cc_entity,
-				store: new M_.Store({
-					controller: this,
-					model: M_.ModelKeyVal,
-					rows: Shared.getEntities()
-				})
-			}
-		]);
 	}
+
 	checkMine() {
 		if (this.currentModel.get("co_id") == M_.App.Session.co_id) {
 			M_.Dialog.alert(
@@ -1100,16 +939,55 @@ export class ContactsWinEdit extends M_.Window {
 	}
 	showHideLoginInfos() {
 		if (!this.form) return;
-		if ((this.form.find("co_type").getValue() != "contact" && this.form.find("co_type").getValue() != "customer") || this.modeSearch) {
-			$("#contactedit_panuser").fadeIn();
-			$("#contactedit_panuser2").fadeOut();
+		$("#contactedit_rightscontainer").hide();
+		if (this.form.find("co_type").getValue() == "society") {
+			$(".contactedit_pansociety").show();
+			$(".contactedit_pancontact").hide();
+			$("#contactedit_contactstitle").html("Contacts associés");
 		} else {
-			$("#contactedit_panuser").fadeOut();
-			$("#contactedit_panuser2").fadeIn();
+			$(".contactedit_pansociety").hide();
+			$(".contactedit_pancontact").show();
+			$("#contactedit_contactstitle").html("Sociétés associés");
 		}
+
+		if (Shared.isUser(this.form.find("co_type").getValue())) {
+			$(".contactedit_panuser").show();
+		} else {
+			$(".contactedit_panuser").hide();
+		}
+
+		if (Shared.canEditContactsRights(M_.App.Session)) {
+			this.form.find("co_type").enable();
+			this.form.find("co_login").enable();
+			this.form.find("co_password").enable();
+		} else {
+			if (this.currentModel.get("co_id") === "") this.form.find("co_type").enable();
+			else this.form.find("co_type").disable();
+			if (Shared.canEditContact(M_.App.Session, this.currentModel.getData())) {
+				this.form.find("co_login").enable();
+				this.form.find("co_password").enable();
+			} else {
+				this.form.find("co_login").disable();
+				this.form.find("co_password").disable();
+			}
+		}
+
+		if (Shared.canViewAndEditBirthday(M_.App.Session, this.currentModel.getData())) {
+			$("#contactedit_co_birthday").show();
+		} else {
+			$("#contactedit_co_birthday").hide();
+		}
+
+		// if ((this.form.find("co_type").getValue() != "contact" && this.form.find("co_type").getValue() != "customer") || this.modeSearch) {
+		// 	$("#contactedit_panuser").fadeIn();
+		// 	$("#contactedit_panuser2").fadeOut();
+		// } else {
+		// 	$("#contactedit_panuser").fadeOut();
+		// 	$("#contactedit_panuser2").fadeIn();
+		// }
 	}
 	showHideCoordinates(anim = false) {
-		var tabTemp = ["co_email", "co_emailperso", "co_tel", "co_mobile", "co_fax", "co_web", "co_address"]; //, 'co_address_liv'
+		var tabTemp = ["co_email", "co_emailperso", "co_tel", "co_mobile", "co_fax", "co_web"]; //, 'co_address_liv', "co_address"
 		for (let i = 0; i < tabTemp.length; i++) {
 			let previousFilled = true;
 			for (let j = 1; j <= 3; j++) {
@@ -1135,16 +1013,6 @@ export class ContactsWinEdit extends M_.Window {
 			this.editContact(this.currentModel);
 		});
 	}
-	// newContact() {
-	// 	this.openWinEditOpportunity(new MT_Opportunities({row: {
-	// 		op_name: "Nouvelle opportunité",
-	// 		op_step: 1,
-	// 		of_id: "",
-	// 		co_id_contact: "",
-	// 		co_id_user: M_.App.Session
-	// 	}})) ;
-
-	// }
 	deleteContact() {
 		if (this.currentModel.get("deleted")) {
 			M_.Dialog.confirm("Confirmation effacement", "Etes-vous certain de vouloir à nouveau activer ce contact ?", () => {
@@ -1161,24 +1029,16 @@ export class ContactsWinEdit extends M_.Window {
 			});
 		}
 	}
-	saveContact() {
+	saveContact(cb) {
+		this.thenAction = cb;
 		// console.log("savecon");
 		this.form.validAndSave();
 	}
-	// _beforeShowWin() {
-	// 	this.showHideCoordinates(false) ;
-	// 	if (this.currentModel.get('co_id')) {
-	// 		this.jEl.find('.M_ModalDelete').prop("disabled", false) ;
-	// 	} else {
-	// 		this.jEl.find('.M_ModalDelete').prop("disabled", true) ;
-	// 	}
-	// }
 	searchContacts() {
 		this.modeSearch = true;
 		// this._beforeShowWin() ;
 		this.form.reset();
 		this.currentModel.set("co_id", "");
-		this.currentModel.set("contracts", []);
 		this.currentModel.set("rights", null);
 		this.initWinNow();
 	}
@@ -1198,20 +1058,13 @@ export class ContactsWinEdit extends M_.Window {
 			this.jEl.find(".M_ModalDelete").html("Supprimer");
 		}
 
+		$("#contactedit_co_avatar").hide();
+		$("#contactedit_co_avatarauto").hide();
+
 		this.show(true);
 		this.showHideCoordinates(false);
 		this.showHideLoginInfos();
 		this.setTitleWin();
-
-		for (var i = 1; i <= this._contractNum; i++) {
-			this.form.deleteByFakeGroup("cc_group_" + i);
-		}
-		this._contractNum = 0;
-		$("#contactedit_contracts").empty();
-		var contracts = this.currentModel.get("contracts");
-		_.forEach(contracts, contract => {
-			this.addContract(contract);
-		});
 
 		var rights = this.currentModel.get("co_rights");
 		_.each(Shared.getRights(), right => {
@@ -1225,13 +1078,13 @@ export class ContactsWinEdit extends M_.Window {
 			this.jEl.find(".M_ModalDelete").hide();
 			this.jEl.find(".M_ModalSave").html("Rechercher");
 
-			$("#contactedit_co_avatar").hide();
+			// $("#contactedit_co_avatar").hide();
 			$("#contactedit_notforsearch").hide();
 		} else {
 			this.jEl.find(".M_ModalDelete").show();
 			this.jEl.find(".M_ModalSave").html("Enregistrer");
 
-			$("#contactedit_co_avatar").show();
+			// $("#contactedit_co_avatar").show();
 			$("#contactedit_notforsearch").show();
 		}
 
@@ -1253,43 +1106,61 @@ export class ContactsWinEdit extends M_.Window {
 			});
 		}
 
-		if (Shared.canEditContactsRights(M_.App.Session)) {
-			// || true
-			$("#contactedit_rightscontainer").show();
-			this.form.find("co_type").enable();
-			this.form.find("co_login").enable();
-			this.form.find("co_password").enable();
-		} else {
-			$("#contactedit_rightscontainer").hide();
-			if (this.currentModel.get("co_id") === "") this.form.find("co_type").enable();
-			else this.form.find("co_type").disable();
-			if (Shared.canEditContact(M_.App.Session, this.currentModel.getData())) {
-				this.form.find("co_login").enable();
-				this.form.find("co_password").enable();
-			} else {
-				this.form.find("co_login").disable();
-				this.form.find("co_password").disable();
-			}
-		}
+		this._contactstodelete = [];
+		this.drawAddresses();
+		this.drawContacts();
+	}
 
-		// if (Shared.canEditContactsRights(M_.App.Session, this.currentModel.getData())) {
-		// 	this.form.find('co_login').enable() ;
-		// 	this.form.find('co_password').enable() ;
-		// } else {
-		// 	if () {
-		// 		this.form.find('co_login').disable() ;
-		// 		this.form.find('co_password').disable() ;
-		// 	} else {
-		// 		this.form.find('co_login').disable() ;
-		// 		this.form.find('co_password').disable() ;
-		// 	}
-		// }
+	drawContacts() {
+		$("#contactedit_contacts").empty();
+		let html = "";
+		_.each(this.currentModel.get("contacts"), row_co => {
+			// let name = Shared.completeName(row_co, true);
+			let idtemp1 = M_.Utils.id();
+			// let dc = Services.drawContact(row_co);
+			html = `<div style='border-bottom:1px solid #ddd; padding:5px 0;' id="${idtemp1}"></div>`;
+			$("#contactedit_contacts").append(html);
 
-		if (Shared.canViewAndEditBirthday(M_.App.Session, this.currentModel.getData())) {
-			$("#contactedit_co_birthday").show();
-		} else {
-			$("#contactedit_co_birthday").hide();
-		}
+			M_.App.renderMustacheTo($("#" + idtemp1), JST["assets/templates/backend/ContactsInfos.html"], {
+				row_co: row_co,
+				canModify: true,
+				withName: true
+			});
+			$("#" + idtemp1 + " .contactsinfos-trash").show();
+			$("#" + idtemp1 + " .contactsinfos-trash span").on("click", { co_id: row_co.co_id }, evt => {
+				this._contactstodelete.push(evt.data.co_id);
+				_.remove(this.currentModel.get("contacts"), c => {
+					if (c.co_id == evt.data.co_id) return true;
+					return false;
+				});
+				this.drawContacts();
+			});
+		});
+	}
+	loadAddresses() {
+		M_.Utils.getJson("/1.0/addresses", { co_id: this.currentModel.get("co_id") }, data => {
+			this.currentModel.set("addresses", data.data);
+			this.drawAddresses();
+		});
+	}
+	drawAddresses() {
+		$("#contactedit_addresses").empty();
+		let html = "";
+		_.each(this.currentModel.get("addresses"), row_ad => {
+			let address = Shared.completeAddress(row_ad, false, true);
+			let idtemp1 = M_.Utils.id();
+			html = `
+			<div style='border-bottom:1px solid #ddd; padding:5px 0;'>
+				<div id='${idtemp1}' style='float:right; cursor:pointer;'><span class='fa fa-edit'></span></div>
+				<div><b>${row_ad.ad_label}</b></div>
+				<div>${address}</div>
+			</div>
+			`;
+			$("#contactedit_addresses").append(html);
+			$("#" + idtemp1).on("click", { ad_id: row_ad.ad_id }, evt => {
+				this.openWinAddress(evt.data.ad_id);
+			});
+		});
 	}
 	calculateRights() {
 		// console.log("calculateRights");
@@ -1330,7 +1201,6 @@ export class ContactsWinEdit extends M_.Window {
 		// $("#contacts_details_edit").show() ;
 		// $("#contacts_details").transition({opacity:1}, 100);
 		// this._beforeShowWin() ;
-		model.set("co_keywords", [1, 3]);
 		this.form.setValues(model);
 		this.initWinNow();
 
@@ -1341,7 +1211,7 @@ export class ContactsWinEdit extends M_.Window {
 			$("#contactedit_title").html("Recherche <b>sur les contacts</b>");
 		} else {
 			$("#contactedit_title").html(
-				"Contact <b>" +
+				"<b>" +
 					Shared.completeName(
 						{
 							co_name: this.form.find("co_name").getValue(),
@@ -1504,5 +1374,147 @@ export class ContactsWinEdit extends M_.Window {
 		this.winKeywords.setKeywords(vals);
 		this.winKeywords.drawKeywords();
 		this.winKeywords.show();
+	}
+	openWinAddress(ad_id, co_id) {
+		if (!this.winAddress) {
+			this.winAddress = new class extends M_.Window {
+				constructor(opts) {
+					var defaults = {
+						tpl: JST["assets/templates/backend/ContactsWinAddress.html"],
+						// tplData: {},
+						modal: true,
+						// controller: this,
+						width: 600
+					};
+					opts = opts ? opts : {};
+					var optsTemp = $.extend({}, defaults, opts);
+					super(optsTemp);
+					// log("this.jEl",this.jEl)
+				}
+				create() {
+					super.create();
+					this.form = new M_.Form.Form({
+						url: "/1.0/addresses",
+						model: MT_Addresses,
+						controller: this,
+						processData: function(data) {},
+						// autoUnedit: false,
+						listeners: [
+							[
+								"load",
+								(form, model) => {
+									this.currentModel = model;
+									this.show();
+								}
+							],
+							[
+								"beforeLoad",
+								(form, args) => {
+									args.args.co_id = this.co_id;
+								}
+							],
+							[
+								"save",
+								(form, data) => {
+									this.hide();
+									this.controller.loadAddresses();
+								}
+							],
+							[
+								"delete",
+								(form, model) => {
+									this.hide();
+								}
+							]
+						],
+						items: [
+							{
+								type: M_.Form.Hidden,
+								name: "ad_id",
+								container: $("#contactswinaddress_ad_label")
+							},
+							{
+								type: M_.Form.Hidden,
+								name: "co_id",
+								container: $("#contactswinaddress_ad_label")
+							},
+							{
+								type: M_.Form.Text,
+								name: "ad_label",
+								label: "Intitulé de l'adresse",
+								placeholder: "Siège, Facturation, Livraison, etc...",
+								container: $("#contactswinaddress_ad_label"),
+								allowEmpty: false
+							},
+							{
+								type: M_.Form.Text,
+								name: "ad_address1",
+								label: "Adresse",
+								placeholder: "Adresse 1",
+								container: $("#contactswinaddress_ad_address1"),
+								allowEmpty: false
+							},
+							{
+								type: M_.Form.Text,
+								name: "ad_address2",
+								placeholder: "Adresse 2",
+								container: $("#contactswinaddress_ad_address2")
+							},
+							{
+								type: M_.Form.Text,
+								name: "ad_address3",
+								placeholder: "Adresse 3",
+								container: $("#contactswinaddress_ad_address3")
+							},
+							{
+								type: M_.Form.Text,
+								name: "ad_zip",
+								placeholder: "Code postal",
+								container: $("#contactswinaddress_ad_zip"),
+								allowEmpty: false
+							},
+							{
+								type: M_.Form.Combobox,
+								name: "ad_country",
+								placeholder: "Pays",
+								container: $("#contactswinaddress_ad_country"),
+								useRawValue: true,
+								store: new M_.Store({
+									controller: this,
+									model: M_.ModelKeyVal,
+									url: "/1.0/combo/addresses/ad_country"
+								}),
+								allowEmpty: false
+							},
+							{
+								type: M_.Form.Text,
+								name: "ad_city",
+								placeholder: "Ville",
+								container: $("#contactswinaddress_ad_city"),
+								allowEmpty: false
+							}
+						]
+					});
+					this.jEl.find(".contactswinaddress_bt_save").click(() => {
+						this.form.validAndSave();
+					});
+					this.jEl.find(".contactswinaddress_bt_cancel").click(() => {
+						this.hide();
+					});
+					this.jEl.find(".contactswinaddress_bt_delete").click(() => {
+						M_.Dialog.confirm("Confirmation effacement", "Etes-vous certain de vouloir effacer cette adresse ?", () => {
+							this.form.delete(this.currentModel.get("ad_id"));
+						});
+					});
+				}
+				initWinNow(ad_id, co_id) {
+					this.co_id = co_id;
+					this.form.load(ad_id);
+				}
+			}({
+				controller: this
+			});
+		}
+		this.winAddress.initWinNow(ad_id, co_id);
 	}
 }

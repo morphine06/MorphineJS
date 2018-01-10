@@ -6,16 +6,54 @@
 		<h3>Les préférences</h3>
 		<h1 id="preferences_title">Toutes les préférences</h1>
 	</div>
-	<div class="M_Tabs M_Panel M_FlexGrow1" id="preferences_tabs">
-		<% if (M_.Shared.canEditPreferencesRights(M_.App.Session)) { %>
-		<div id="preferences_home" class="M_Tab active">
-			<a href="#/Preferences/rights">Les droits</a>
-		</div>
-		<% } %>
-		<div id="preferences_rights" class="M_Tab">
-			<div id="preferences_rightsall"></div>
-			<br/>
-			<div><button type="button" id="preferences_rights_save" class="M_Button primary">Enregistrer</button></div>
-		</div>
+	<div class="M_Tabs M_Panel M_FlexGrow1 M_Scroll" id="preferences_tabs">
+		<% if (true || M_.Shared.canEditPreferencesRights(M_.App.Session)) { %>
+			<div id="preferences_home" class="M_Tab active" style="text-align:center;">
+				<div class="preferences-ico">
+					<span class="fa fa-key"></span>
+					<a href="#/Preferences/rights">Les droits</a>
+				</div>
+				<div class="preferences-ico">
+					<span class="fa fa-code"></span>
+					<a href="#/Preferences/families">Les familles</a>
+				</div>
+				<div class="preferences-ico">
+					<span class="fa fa-list"></span>
+					<a href="#/Preferences/lists/list">Les listes</a>
+				</div>
+
+
+
+			</div>
+			<% } %>
+				<div id="preferences_rights" class="M_Tab M_Scroll">
+					<div id="preferences_rightsall"></div>
+					<br/>
+					<div>
+						<button type="button" id="preferences_rights_save" class="M_Button primary">Enregistrer</button>
+					</div>
+				</div>
+				<div id="preferences_lists" class="M_Tab M_Scroll">
+					<div class="M_FloatRight">
+						<button id="preferences_btnewlistelement" class="M_Button primary">Nouveau élement d'une liste</button>
+					</div>
+					<div class="M_Clear"></div>
+					<div id="preferences_listsall"></div>
+				</div>
+				<div id="preferences_families" class="M_Tab M_Scroll">
+					<div class="M_FloatLeft" style="margin-right:5px;">
+						<button type="button" id="preferences_btaddfamily" class="M_Button little">Ajouter une famille</button>
+					</div>
+					<div class="M_FloatLeft" style="margin-right:5px;">
+						<button type="button" id="preferences_btrenamefamily" class="M_Button little">Renommer une famille</button>
+					</div>
+					<div class="M_FloatLeft" style="margin-right:5px;">
+						<button type="button" id="preferences_btdeletefamily" class="M_Button little">Effacer une famille</button>
+					</div>
+					<div class="M_Clear"></div>
+					<div id="preferences_familiestree"></div>
+					<br/>
+					<!-- <div><button type="button" id="preferences_rights_save" class="M_Button primary">Enregistrer</button></div> -->
+				</div>
 	</div>
 </div>

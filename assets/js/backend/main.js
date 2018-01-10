@@ -4,6 +4,11 @@ import { M_ } from "./../../../libs-client/M_.js";
 
 import { Home } from "./Home.js";
 import { Contacts } from "./Contacts.js";
+import { Opportunities } from "./Opportunities.js";
+import { Invoices } from "./Invoices.js";
+import { Vacations } from "./Vacations.js";
+import { Campaigns } from "./Campaigns.js";
+import { Products } from "./Products.js";
 import { Preferences } from "./Preferences.js";
 
 import { Services } from "./Services.js";
@@ -11,26 +16,28 @@ import { Shared } from "./../../compiled/Shared.js";
 
 M_.registerModule("Home", Home);
 M_.registerModule("Contacts", Contacts);
+M_.registerModule("Products", Products);
+M_.registerModule("Opportunities", Opportunities);
+M_.registerModule("Invoices", Invoices);
+M_.registerModule("Vacations", Vacations);
+M_.registerModule("Campaigns", Campaigns);
 M_.registerModule("Preferences", Preferences);
 
 // for access of M_ and Services in templates, we set this objects in lowdash !!!
 window.M_ = M_;
 window.M_.Services = Services;
 window.M_.Shared = Shared;
-// window.i18n = {
-// 	trans: (txt)=> {
-// 		return 'trans'+txt ;
-// 	}
-// } ;
-// _.M_ = M_ ;
-// _.Services = M_.App.Services = Services ;
-// _.Shared = Shared ;
 
 moment.locale("fr");
 
 var modules = [
 	{ key: "Home", icon: "fa-bell faa-ring", label: "Accueil", right: "" },
-	{ key: "Contacts", icon: "fa-user", label: "Contacts", right: "contacts" },
+	{ key: "Contacts", icon: "fa-user", label: "Contacts", right: "" },
+	{ key: "Opportunities", icon: "fa-cc", label: "CRM", right: "" },
+	{ key: "Invoices", icon: "fa-book", label: "Factures", right: "" },
+	{ key: "Products", icon: "fa-battery-2", label: "Produits", right: "" },
+	{ key: "Campaigns", icon: "fa-mail-forward", label: "Campagnes", right: "" },
+	{ key: "Vacations", icon: "fa-gears", label: "Abscences", right: "" },
 	{ key: "Preferences", icon: "fa-gears", label: "Préférences", right: "" },
 	{ key: "Search", icon: "fa-gears", label: "Rechercher", right: "", hideInMenu: true }
 ];
@@ -66,7 +73,9 @@ M_.App.create({
 						module.key +
 						'"><li class="menumodule_' +
 						module.key +
-						'"><span class=""></span><p>' +
+						'"><span class="fa ' +
+						module.icon +
+						'"></span><p>' +
 						module.label +
 						'</p><div class="M_Clear"></div></li></a>';
 				}
@@ -76,6 +85,7 @@ M_.App.create({
 		let loadSessionInfos = () => {
 			M_.Utils.getJson("/1.0/infos", {}, data => {
 				M_.App.Session = data.user;
+				M_.App.Settings = { opportunitiesSteps: data.opportunitiesSteps };
 				$("#mainavatar").css(
 					"background-image",
 					"url(/1.0/contacts/avatar/100/100/" + M_.App.Session.co_id + "?d=" + new Date().getTime() + ")"

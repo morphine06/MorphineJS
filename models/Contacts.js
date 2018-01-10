@@ -37,6 +37,11 @@ module.exports = {
 			limit: 10,
 			defaultsTo: ""
 		},
+		co_code: {
+			type: "string",
+			limit: 30,
+			defaultsTo: ""
+		},
 		co_apikey: {
 			type: "varchar",
 			length: 36,
@@ -113,26 +118,26 @@ module.exports = {
 			type: "integer",
 			defaultsTo: 0
 		},
-		co_address1: {
-			type: "varchar",
-			defaultsTo: ""
-		},
-		co_address2: {
-			type: "varchar",
-			defaultsTo: ""
-		},
-		co_zip: {
-			type: "varchar",
-			defaultsTo: ""
-		},
-		co_city: {
-			type: "varchar",
-			defaultsTo: ""
-		},
-		co_country: {
-			type: "varchar",
-			defaultsTo: "France"
-		},
+		// co_address1: {
+		// 	type: "varchar",
+		// 	defaultsTo: ""
+		// },
+		// co_address2: {
+		// 	type: "varchar",
+		// 	defaultsTo: ""
+		// },
+		// co_zip: {
+		// 	type: "varchar",
+		// 	defaultsTo: ""
+		// },
+		// co_city: {
+		// 	type: "varchar",
+		// 	defaultsTo: ""
+		// },
+		// co_country: {
+		// 	type: "varchar",
+		// 	defaultsTo: "France"
+		// },
 		co_active: {
 			type: "boolean"
 		},
@@ -167,6 +172,35 @@ module.exports = {
 			type: "boolean",
 			defaultsTo: 1
 		},
+
+		// co_vacations_gain: {
+		// 	type: "float",
+		// 	defaultsTo: 0
+		// },
+		// co_vacations_gain2: {
+		// 	type: "float",
+		// 	defaultsTo: 0
+		// },
+		co_vacations_acquisn1: {
+			type: "float",
+			defaultsTo: 0
+		},
+		co_vacations_prisn1: {
+			type: "float",
+			defaultsTo: 0
+		},
+		co_vacations_acquis: {
+			type: "float",
+			defaultsTo: 0
+		},
+		co_vacations_pris: {
+			type: "float",
+			defaultsTo: 0
+		},
+		// co_vacations_import: {
+		// 	type: "datetime"
+		// },
+
 		co_admin: {
 			type: "boolean",
 			defaultsTo: 0
@@ -178,7 +212,7 @@ module.exports = {
 		createdCo: {
 			model: "Contacts"
 		},
-		modifiedCo: {
+		updatedCo: {
 			model: "Contacts"
 		}
 	}

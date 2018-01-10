@@ -13,7 +13,7 @@
 		<div class="" style="overflow:hidden;">
 			<div class="M_FlexRow">
 				<div class="M_FlexCol3" id="contactedit_co_type"></div>
-				<div class="M_FlexCol6"></div>
+				<div class="M_FlexCol6" id="contactedit_co_maintype" style="padding-top:20px;"></div>
 				<div class="M_FlexCol3">
 					<div id="contactedit_co_avatar"></div>
 					<div id="contactedit_co_avatarauto"></div>
@@ -26,25 +26,72 @@
 		<hr/>
 		<div class="" style="overflow:hidden;">
 			<div class="M_FlexRow">
-				<h2>Etat civil</h2>
+				<h2>Informations</h2>
 			</div>
-			<div id="contactedit_tree"></div>
-			<div class="M_FlexRow" id="contactedit_panuser2">
-				<div id="contactedit_co_society"></div>
+			<div class="M_FlexRow contactedit_pansociety">
+				<div id="contactedit_co_society" class="M_FlexCol6"></div>
 				<div id="contactedit_co_siret"></div>
+				<div id="contactedit_co_code"></div>
 			</div>
-			<div class="M_FlexRow">
-				<div class="M_FlexCol3" id="contactedit_co_civility"></div>
-				<div class="" id="contactedit_co_firstname"></div>
-				<div class="" id="contactedit_co_name"></div>
+			<div class="M_FlexRow contactedit_pansociety">
+				<div id="contactedit_co_manpower"></div>
+				<div id="contactedit_co_sales"></div>
+				<div id="contactedit_co_naf"></div>
+				<div id="contactedit_co_ape"></div>
 			</div>
-			<div class="M_FlexRow">
+			<div class="M_FlexRow contactedit_pansociety">
+				<div id="contactedit_co_tvaintra"></div>
+				<div id="contactedit_co_representant"></div>
+				<div id="contactedit_co_marche"></div>
+				<div id="contactedit_co_tarif"></div>
+				<div id="contactedit_co_activite"></div>
+			</div>
+			<div class="M_FlexRow contactedit_pansociety">
+				<div id="contactedit_co_bank"></div>
+				<div id="contactedit_co_bank_iban"></div>
+				<div id="contactedit_co_bank_bic"></div>
+				<div id="contactedit_co_rgtcompta"></div>
+				<div id="contactedit_co_rgtmfg"></div>
+			</div>
+			<div class="M_FlexRow contactedit_pancontact">
+				<div id="contactedit_co_civility" class="M_FlexCol3"></div>
+				<div id="contactedit_co_firstname"></div>
+				<div id="contactedit_co_name"></div>
+			</div>
+			<div class="M_FlexRow contactedit_pancontact">
 				<div class="M_FlexCol3" id="contactedit_co_function"></div>
 				<div class="M_FlexCol3">
 					<div id="contactedit_co_birthday"></div>
 				</div>
 				<div class="M_FlexCol6" id="contactedit_co_keywords" style="padding-top:10px;"></div>
 			</div>
+			<div class="contactedit_panuser" style="overflow:hidden;">
+				<hr>
+				<h2>Utilisateur</h2>
+				<div class="M_FlexRow">
+					<input style="display:none" class="fake-autofill-fields" type="text" name="fakeusernameremembered" />
+					<input style="display:none" class="fake-autofill-fields" type="password" name="fakepasswordremembered" />
+					<div id="contactedit_co_login"></div>
+					<div id="contactedit_co_password"></div>
+					<div id="contactedit_co_idpld"></div>
+				</div>
+				<div class="M_FlexRow contactedit_pancontact">
+					<div id="contactedit_co_codetiers"></div>
+					<div id="contactedit_co_comptecollectif"></div>
+					<div id="contactedit_co_comptecomptable"></div>
+					<div id="contactedit_co_matricule"></div>
+				</div>
+				<div class="M_FlexRow contactedit_pancontact">
+					<div id="contactedit_co_vacations_acquisn1"></div>
+					<div id="contactedit_co_vacations_prisn1"></div>
+					<div id="contactedit_co_vacations_acquis"></div>
+					<div id="contactedit_co_vacations_pris"></div>
+				</div>
+			</div>
+			<!-- <div class="M_FlexRow contactedit_panuser">
+				<div id="contactedit_co_date_start_society"></div>
+				<div id="contactedit_co_date_end_society"></div>
+			</div> -->
 		</div>
 		<hr/>
 		<div class="" style="overflow:hidden;">
@@ -71,15 +118,20 @@
 					<div id="contactedit_co_web3"></div>
 				</div>
 				<div class="" style="overflow:hidden;">
+					<div class="M_FloatRight">
+						<button type="button" class="M_Button little" id="contactedit_btaddaddress">
+							<span class="fa fa-plus"></span> Nouvelle</button>
+					</div>
 					<h2>Adresse</h2>
-					<div id="contactedit_co_address1"></div>
+					<div id="contactedit_addresses"></div>
+					<!-- <div id="contactedit_co_address1"></div>
 					<div id="contactedit_co_address2"></div>
 					<div id="contactedit_co_address3"></div>
 					<div class="M_FlexRow">
 						<div class="" id="contactedit_co_zip"></div>
 						<div class="M_FlexGrow2" id="contactedit_co_city"></div>
 					</div>
-					<div id="contactedit_co_country"></div>
+					<div id="contactedit_co_country"></div> -->
 				</div>
 				<div class="">
 					<h2>Infos</h2>
@@ -90,38 +142,35 @@
 				</div>
 			</div>
 		</div>
-		<div class="" id="contactedit_panuser" style="overflow:hidden;">
-			<hr>
-			<h2>Identifants</h2>
-			<div class="M_FlexRow">
-				<input style="display:none" class="fake-autofill-fields" type="text" name="fakeusernameremembered" />
-				<input style="display:none" class="fake-autofill-fields" type="password" name="fakepasswordremembered" />
-				<div id="contactedit_co_login"></div>
-				<div id="contactedit_co_password"></div>
-				<div id="contactedit_co_idpld"></div>
-			</div>
-			<div class="M_FlexRow">
-				<div id="contactedit_co_codetiers"></div>
-				<div id="contactedit_co_comptecollectif"></div>
-				<div id="contactedit_co_comptecomptable"></div>
-			</div>
-			<div class="M_FlexRow">
-				<div id="contactedit_co_matricule"></div>
-				<div id="contactedit_co_date_start_society"></div>
-				<div id="contactedit_co_date_end_society"></div>
-			</div>
-			<div id="contactedit_notforsearch" style="overflow:hidden;">
-				<div id="contactedit_rightscontainer">
-					<hr>
-					<h2 class="M_Float">Les droits spécifiques à ce contact</h2>
-					<div class="M_FloatRight" style="margin-left:15px;">
-						<button type="button" class="M_Button little" id="contactedit_rightsbtall">Tout hériter du groupe de droits</button>
-					</div>
-					<div class="M_Clear"></div>
-					<div id="contactedit_rights" style="padding:10px 0 0 50px;"></div>
+
+		<div id="contactedit_notforsearch" style="overflow:hidden;">
+			<div id="contactedit_rightscontainer">
+				<hr>
+				<h2 class="M_Float">Les droits spécifiques à ce contact</h2>
+				<div class="M_FloatRight" style="margin-left:15px;">
+					<button type="button" class="M_Button little" id="contactedit_rightsbtall">Tout hériter du groupe de droits</button>
 				</div>
+				<div class="M_Clear"></div>
+				<div id="contactedit_rights" style="padding:10px 0 0 50px;"></div>
 			</div>
 		</div>
+
+		<div>
+			<hr>
+			<div class="M_FloatRight">
+				<button type="button" class="M_Button little" id="contactedit_addnewcontacts">
+					<span class="fa fa-plus"></span> Nouveau</button>
+			</div>
+			<div class="M_FloatRight" style="margin-right:20px;">
+				<div id="contactedit_addcontacts"></div>
+			</div>
+			<h2 id="contactedit_contactstitle">Contacts associés</h2>
+			<div class="M_Clear"></div>
+			<div id="contactedit_contacts"></div>
+		</div>
+
+
+
 	</div>
 	<div class="M_WindowFooter">
 		<div class="M_FloatRight">

@@ -1,0 +1,132 @@
+<div class="M_WindowContent">
+	<div class="M_WindowHeader">
+		<!-- <div class="M_Relative">
+			<div class="" style="position:absolute; width:400px; margin-top:-15px; right:0;">
+				<div class="M_Row">
+					<div class="M_Col6 M_MarginRight" id="invoiceswinedit_co_id_user"></div>
+					<div class="M_Col6" id="invoiceswinedit_ag_id"></div>
+				</div>
+			</div>
+		</div> -->
+		<h1 id="invoiceswinedit_title">Edition d'une facture proforma</h1>
+	</div>
+	<div class="M_WindowBody M_PadTop">
+		<div class="M_WindowRealBody">
+
+
+			<div class="M_FlexRow">
+				<div class="M_FlexCol3" id="invoiceswinedit_in_date"></div>
+				<div class="" id="invoiceswinedit_in_object"></div>
+				<div class="M_FlexCol2" id="invoiceswinedit_in_type"></div>
+				<div class="M_FlexCol3" id="invoiceswinedit_in_devise"></div>
+			</div>
+
+
+			<div class="M_FlexRow">
+				<div class="M_FlexRow">
+					<div id="invoiceswinedit_co_id" style="min-width:66%;"></div>
+					<div style="padding:20px 0 0 0;">
+						<button type="button" class="M_Button little primary" id="invoiceswinedit_btcontactmodify">Modifier</button>
+						<button type="button" class="M_Button little primary" id="invoiceswinedit_btcontactcreate">Nouveau</button>
+					</div>
+				</div>
+				<div id="invoiceswinedit_co_id_user" style="max-width:25%;"></div>
+			</div>
+
+			<div class="M_FlexRow">
+				<div class="M_FlexCol3">
+					<div id="invoiceswinedit_ad_id_delivery"></div>
+					<div id="invoiceswinedit_ad_id_deliverytxt"></div>
+				</div>
+				<div class="M_FlexCol3">
+					<div id="invoiceswinedit_ad_id_invoice"></div>
+					<div id="invoiceswinedit_ad_id_invoicetxt"></div>
+				</div>
+				<div class="M_FlexCol3">
+					<div id="invoiceswinedit_co_id_contact2"></div>
+					<div id="invoiceswinedit_co_id_contact2txt"></div>
+				</div>
+				<div class="M_FlexCol3">
+					<div id="invoiceswinedit_op_id"></div>
+				</div>
+			</div>
+
+			<div id="invoiceswinedit_contactinfos"></div>
+
+			<hr />
+			<!-- <h2>Lignes de facturation</h2> -->
+
+			<!-- <div id="invoices_line_00000" class='invoices_line_'>
+				<div class="M_FlexRow">
+					<div class="el1" style="min-width:230px"><b>Produit</b></div>
+					<div class="el7"><b>Colisage</b></div>
+					<div class="el2"><b>Quantité</b></div>
+					<div class="el3"><b>PA Ht</b></div>
+					<div class="el3"><b>Prix/1000</b></div>
+					<div class="el8"><b>Remise</b></div>
+					<div class="el4"><b>Total HT</b></div>
+					<div class="el5" style="max-width:40px; padding-top:5px;"></div>
+				</div>
+			</div> -->
+
+
+			<div id="invoiceswinedit_tablines"></div>
+			<h2 style="text-align:right;" id="invoiceswinedit_total"></h2>
+			<div>
+				<button class="M_Button little primary" type="button" id="invoiceswinedit_addline">Ajouter une ligne</button>
+			</div>
+
+
+			<div id="invoiceswinedit_totaux">
+				<!-- <hr /> -->
+				<!-- <h2 class="M_FloatLeft">Totaux</h2> -->
+				<div id="invoiceswinedit_total1" style='font-size:13px;color:#14a7bd;' class="M_AlignRight"></div>
+				<div id="invoiceswinedit_total4" style='font-size:13px;color:#14a7bd;' class="M_AlignRight"></div>
+				<div id="invoiceswinedit_total5" style='font-size:13px;color:#14a7bd;' class="M_AlignRight"></div>
+				<div id="invoiceswinedit_in_usetva" style="float:right;"></div>
+				<div class="M_Clear"></div>
+				<div id="invoiceswinedit_total2" style='font-size:13px;color:#14a7bd;' class="M_AlignRight"></div>
+				<h2 id="invoiceswinedit_total3" class="M_AlignRight"></h2>
+			</div>
+
+			<hr />
+			<div id="invoiceswinedit_more2">
+				<div id="invoiceswinedit_in_minorder"></div>
+				<div id="invoiceswinedit_in_conditions"></div>
+			</div>
+
+			<!-- <div id="invoiceswinedit_tabproformadiv">
+				<hr />
+				<div id="invoiceswinedit_tabproforma1"></div>
+				<div id="invoiceswinedit_tabproforma2"></div>
+			</div> -->
+
+			<!-- <div id="invoiceswinedit_paiements">
+				<hr />
+				<h2>Paiements liés</h2>
+				<div id="invoiceswinedit_tabpaiements"></div>
+			</div> -->
+
+
+			<!-- <div id="invoiceswinedit_history_container">
+				<hr />
+				<h2>Historique</h2>
+				<div id="invoiceswinedit_history"></div>
+			</div> -->
+		</div>
+	</div>
+	<div class="M_WindowFooter">
+		<div class="M_FloatRight">
+			<button type="button" class="M_Button primary bold invoiceswinedit_bt_save">Enregistrer</button>
+		</div>
+		<div class="M_FloatRight" style="margin-right:15px;">
+			<button type="button" class="M_Button primary bold invoiceswinedit_bt_duplicate">Dupliquer...</button>
+		</div>
+		<div class="M_FloatRight">
+			<button type="button" class="M_Button M_MarginRight invoiceswinedit_bt_cancel">Annuler</button>
+		</div>
+		<div class="M_FloatLeft">
+			<button type="button" class="M_Button danger invoiceswinedit_bt_delete">Effacer</button>
+		</div>
+	</div>
+</div>

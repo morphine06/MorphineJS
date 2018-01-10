@@ -20,7 +20,8 @@ module.exports = class extends BaseController {
 				});
 			},
 			() => {
-				this.send(res, { data: "ok" });
+				// this.send(res, { data: "ok" });
+				Services.sendWebservices(res, { err: null, data: "ok" });
 			}
 		);
 	}
@@ -38,7 +39,8 @@ module.exports = class extends BaseController {
 				});
 			},
 			() => {
-				this.send(res, { data: data });
+				// this.send(res, { data: data });
+				Services.sendWebservices(res, { err: null, data: data });
 			}
 		);
 	}

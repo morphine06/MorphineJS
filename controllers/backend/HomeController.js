@@ -12,7 +12,10 @@ module.exports = class extends BaseController {
 		// console.log("req.user",req.user);
 		if (!req.user.co_rights) req.user.co_rights = {};
 		// Services.calculateOptionsRights(req.user, ()=> {
-		this.send(res, { user: req.user });
+		Lists.find("li_group=? order by li_position", ["system_opportunities_step"]).exec((errsql, rows_li) => {
+			// this.send(res, { user: req.user, opportunitiesSteps: rows_li });
+			Services.sendWebservices(res, { err: null, user: req.user, opportunitiesSteps: rows_li });
+		});
 		// }) ;
 	}
 };

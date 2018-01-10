@@ -96,7 +96,6 @@
 		"sails": false,
 		"Opportunities": false,
 		"Commandes": false,
-		"Sockets": false,
-		"ContactsWinImport": false
+		"Sockets": false
 	}
 }

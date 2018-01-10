@@ -4,18 +4,13 @@ import { M_ } from "./../../../libs-client/M_.js";
 import { Services } from "./Services.js";
 import { Shared } from "./../../compiled/Shared.js";
 import { MT_Contacts } from "./../../compiled/models/MT_Contacts.js";
-// import {MT_Agencies} from 'js6/models/Agencies.js' ;
-// import {MT_Contactsgroups} from 'js6/models/Contactsgroups.js' ;
 import { MT_Groups } from "./../../compiled/models/MT_Groups.js";
 import { ContactsWinEdit } from "./ContactsWinEdit.js";
-// import {ContactsWinImport} from 'js6/controllers/ContactsWinImport.js' ;
 import { ContactsDetails } from "./ContactsDetails.js";
-// import {AgencyDetails} from 'js6/controllers/AgencyDetails.js' ;
 
 export class Contacts extends M_.Controller {
 	// initialize object
 	constructor(opts) {
-		// console.log("MT_Jobs",MT_Jobs);
 		opts.tpl = JST["assets/templates/backend/Contacts.html"];
 		super(opts);
 	}
@@ -52,7 +47,7 @@ export class Contacts extends M_.Controller {
 			store: new M_.Store({
 				controller: this,
 				model: MT_Groups,
-				url: "/1.0/groups/find",
+				url: "/1.0/groups",
 				limit: 1000,
 				unshiftRows: this.getUnshiftGroups(),
 				listeners: [
@@ -95,7 +90,8 @@ export class Contacts extends M_.Controller {
 		this.contacts = new M_.SimpleList({
 			// controller: this,
 			container: $("#contacts_list_contacts"),
-			// dynamic: true,
+			dynamic: true,
+			loadLimit: 50,
 			// classItems: 'listItem',
 			itemValue: function(model) {
 				var dr = "";
@@ -103,13 +99,16 @@ export class Contacts extends M_.Controller {
 				if (model.get("ag_name")) {
 					return model.get("ag_name");
 				}
+				let now = moment(model.get("updatedAt")).valueOf();
+				let avatar = model.get("co_id") + "?d=" + now;
+				if (model.get("co_type") == "society") avatar = "society";
+				else if (model.get("co_type") == "contact") avatar = "contact";
+				else avatar = "user";
 				return (
 					dr +
 					"<input type='checkbox' class='contacts_list_contactcb' style='float:left;'>" +
 					'<div class="M_ImgRound" style="float:left; background-image:url(/1.0/contacts/avatar/20/20/' +
-					model.get("co_id") +
-					"?d=" +
-					moment(model.get("updatedAt")).valueOf() +
+					avatar +
 					');width:20px;height:20px; margin-right:5px;"></div>' +
 					Shared.completeName(model.getData(), true)
 				);
@@ -121,8 +120,8 @@ export class Contacts extends M_.Controller {
 			store: new M_.Store({
 				controller: this,
 				model: MT_Contacts,
-				url: "/1.0/contacts/find",
-				limit: 200,
+				url: "/1.0/contacts",
+				limit: 50,
 				listeners: [
 					// ['beforeLoad', (store, args)=> {
 					// 	if (this.deletedCB) args.args.showdeleted = this.deletedCB.getValue() ;
@@ -330,13 +329,13 @@ export class Contacts extends M_.Controller {
 
 		$("#contacts_btsettings").click(evt => {
 			var items = [
-				{
-					text: "Importer des contacts",
-					disabled: !Shared.canImportContact(M_.App.Session),
-					click: () => {
-						ContactsWinImport.getInstance(this).go();
-					}
-				},
+				// {
+				// 	text: "Importer des contacts",
+				// 	disabled: !Shared.canImportContact(M_.App.Session),
+				// 	click: () => {
+				// 		ContactsWinImport.getInstance(this).go();
+				// 	}
+				// },
 				{
 					text: "Exporter des contacts",
 					disabled: !Shared.canExportContact(M_.App.Session),
@@ -345,26 +344,26 @@ export class Contacts extends M_.Controller {
 					}
 				},
 				{},
-				{
-					text: "Inverser le nom et prénom",
-					click: () => {
-						Services.setUserOptionsPerso("persoinvertname", !Services.getUserOptionsPerso("persoinvertname"), () => {
-							this.contacts.getStore().reload();
-							if (this.currentContactId) this.loadContact(this.currentContactId, null, false);
-						});
-					}
-				},
-				{
-					text: "Rechercher les doublons",
-					click: () => {
-						this.contacts.getStore().load({
-							skip: 0,
-							gr_id: "-1",
-							doublon: true
-							// agencies: this.getSelectedAgencies()
-						});
-					}
-				},
+				// {
+				// 	text: "Inverser le nom et prénom",
+				// 	click: () => {
+				// 		Services.setUserOptionsPerso("persoinvertname", !Services.getUserOptionsPerso("persoinvertname"), () => {
+				// 			this.contacts.getStore().reload();
+				// 			if (this.currentContactId) this.loadContact(this.currentContactId, null, false);
+				// 		});
+				// 	}
+				// },
+				// {
+				// 	text: "Rechercher les doublons",
+				// 	click: () => {
+				// 		this.contacts.getStore().load({
+				// 			skip: 0,
+				// 			gr_id: "-1",
+				// 			doublon: true
+				// 			// agencies: this.getSelectedAgencies()
+				// 		});
+				// 	}
+				// },
 				{
 					text: "Vérifier les emails",
 					click: () => {}
@@ -500,7 +499,7 @@ export class Contacts extends M_.Controller {
 	}
 	createGroupNow() {
 		$(document).off("keypress", $.proxy(this.listenGroupKeyDown, this));
-		M_.Utils.postJson("/1.0/groups/create", { gr_name: this.jElGroup.html() }, data => {
+		M_.Utils.postJson("/1.0/groups", { gr_name: this.jElGroup.html() }, data => {
 			this.groups.store.reload();
 		});
 	}
@@ -558,16 +557,16 @@ export class Contacts extends M_.Controller {
 		// console.log("this.currentModelContact", this.currentModelContact);
 		ContactsDetails.display($("#contacts_details_content"), this.currentModelContact);
 	}
-	drawAgency() {
-		// this.agencies.setSelection(this.currentModelAgency.get('ag_id')) ;
-		// log("this.currentModelContact.get('co_id')",this.currentModelContact.get('co_id'))
+	// drawAgency() {
+	// 	// this.agencies.setSelection(this.currentModelAgency.get('ag_id')) ;
+	// 	// log("this.currentModelContact.get('co_id')",this.currentModelContact.get('co_id'))
 
-		// $("#contacts_details_content").show() ;
-		// $("#contacts_details_edit").hide() ;
-		// this.drawerSave.hide() ;
-		// if (this.modalForm) this.modalForm.hide() ;
-		AgencyDetails.display($("#contacts_details_content"), this.currentModelAgency);
-	}
+	// 	// $("#contacts_details_content").show() ;
+	// 	// $("#contacts_details_edit").hide() ;
+	// 	// this.drawerSave.hide() ;
+	// 	// if (this.modalForm) this.modalForm.hide() ;
+	// 	AgencyDetails.display($("#contacts_details_content"), this.currentModelAgency);
+	// }
 	getContactsSelection() {
 		var tabSelection = [];
 		$(".contacts_list_contactcb:checked").each((index, jel) => {
@@ -686,7 +685,7 @@ export class Contacts extends M_.Controller {
 						store: new M_.Store({
 							controller: this,
 							model: MT_Groups,
-							url: "/1.0/groups/find",
+							url: "/1.0/groups",
 							limit: 200
 						})
 					});
@@ -743,7 +742,7 @@ export class Contacts extends M_.Controller {
 							unshiftRows: this.controller.getUnshiftGroups(),
 							controller: this,
 							model: MT_Groups,
-							url: "/1.0/groups/find",
+							url: "/1.0/groups",
 							limit: 200
 						})
 					});
@@ -765,12 +764,13 @@ export class Contacts extends M_.Controller {
 			{ gr_id: -6, gr_name: "<span class='fa fa-user-times'></span>&nbsp;<i>Contacts supprimées</i>", special: true },
 			// {gr_id:'lastimport', gr_name:"<span class='fa fa-clock-o'></span>&nbsp;<i>Dernier import</i>", special:true},
 			{ gr_id: "caddy", gr_name: "<span class='fa fa-shopping-cart'></span>&nbsp;<i>Mon panier</i>", special: true },
-			{ gr_id: -4, gr_name: "<span class='fa fa-user'></span>&nbsp;<i>Tous les contacts</i>", special: true },
-			{ gr_id: -5, gr_name: "<span class='fa fa-user-plus'></span>&nbsp;<i>Tous les clients</i>", special: true },
 			{ gr_id: -2, gr_name: "<span class='fa fa-user-secret'></span>&nbsp;<i>Tous les utilisateurs</i>", special: true },
+			// { gr_id: -5, gr_name: "<span class='fa fa-user-plus'></span>&nbsp;<i>Tous les clients</i>", special: true },
+			{ gr_id: -4, gr_name: "<span class='fa fa-user'></span>&nbsp;<i>Tous les contacts</i>", special: true },
+			{ gr_id: -7, gr_name: "<span class='fa fa-user'></span>&nbsp;<i>Toutes les sociétés</i>", special: true },
 			{ gr_id: -1, gr_name: "<span class='fa fa-group'></span>&nbsp;<i>Tous</i>", special: true }
 		];
-		// if (!Services.getUserRight('contacts_rightsusers')) tab.shift() ;
+		if (!Services.getUserRight("contacts_rightsusers")) tab.shift();
 
 		// if (Shared.canAccessCandidate(M_.App.Session)) tab.unshift({gr_id:-3, gr_name:"<span class='fa fa-user-plus'></span>&nbsp;<i>Tous les candidats</i>", special:true}) ;
 
@@ -835,6 +835,15 @@ export class Contacts extends M_.Controller {
 	}
 
 	editAction(co_id, ag_id) {
+		// if (co_id == "agency") {
+		// 	this.loadAgency(
+		// 		ag_id,
+		// 		() => {
+		// 			AgencyWinEdit.getInstance(this).editAgency(this.currentModelAgency);
+		// 		},
+		// 		false
+		// 	);
+		// } else {
 		this.loadContact(
 			co_id,
 			() => {
@@ -842,8 +851,13 @@ export class Contacts extends M_.Controller {
 			},
 			false
 		);
+		// }
 	}
 	showAction(co_id, ag_id) {
+		if (co_id == "agency") this.loadAgency(ag_id);
+		else this.loadContact(co_id);
+	}
+	codeAction(co_id, ag_id) {
 		if (co_id == "agency") this.loadAgency(ag_id);
 		else this.loadContact(co_id);
 	}

@@ -3,27 +3,15 @@
 var BaseController = require("../BaseController");
 
 function filterContacts(req, cb) {
-	var whereQ1 = "";
-	var whereQ2 = [];
+	var where = "";
+	var whereData = [];
 	var tabFieldsOr = [
 		"co_name",
 		"co_firstname",
 		"co_function",
 		"co_society",
-		"co_siret",
-		"co_codetiers",
-		"co_comptecollectif",
-		"co_comptecomptable",
-		"co_matricule",
-		"co_keywords",
+		"co_code",
 		"co_login",
-		"co_address1",
-		"co_address2",
-		"co_address3",
-		"co_zip",
-		"co_city",
-		"co_country",
-		"co_comment",
 		"co_email1",
 		"co_email2",
 		"co_email3",
@@ -41,93 +29,96 @@ function filterContacts(req, cb) {
 		"co_web3"
 	];
 	if (req.query.query && req.query.query !== "") {
-		whereQ1 += " && (";
+		where += " && (";
 		_.each(tabFieldsOr, field => {
-			whereQ1 += field + " like ? || ";
-			whereQ2.push("%" + req.query.query + "%");
+			where += field + " like ? || ";
+			whereData.push("%" + req.query.query + "%");
 		});
-		whereQ1 += " 0)";
+		where += " 0)";
 	}
 	_.each(tabFieldsOr, field => {
 		if (req.query[field] && req.query[field] !== "") {
-			if (
-				field == "co_address1" ||
-				field == "co_email1" ||
-				field == "co_tel1" ||
-				field == "co_fax1" ||
-				field == "co_mobile1" ||
-				field == "co_web1"
-			) {
-				if (field == "co_address1") whereQ1 += " && (co_address1 like ? || co_address2 like ? || co_address3 like ?)";
-				if (field == "co_email1") whereQ1 += " && (co_email1 like ? || co_email2 like ? || co_email3 like ?)";
-				if (field == "co_tel1") whereQ1 += " && (co_tel1 like ? || co_tel2 like ? || co_tel3 like ?)";
-				if (field == "co_fax1") whereQ1 += " && (co_fax1 like ? || co_fax2 like ? || co_fax3 like ?)";
-				if (field == "co_mobile1") whereQ1 += " && (co_mobile1 like ? || co_mobile2 like ? || co_mobile3 like ?)";
-				if (field == "co_web1") whereQ1 += " && (co_web1 like ? || co_web2 like ? || co_web3 like ?)";
-				whereQ2.push("%" + req.query[field] + "%", "%" + req.query[field] + "%", "%" + req.query[field] + "%");
+			if (field == "co_email1" || field == "co_tel1" || field == "co_fax1" || field == "co_mobile1" || field == "co_web1") {
+				if (field == "co_email1") where += " && (co_email1 like ? || co_email2 like ? || co_email3 like ?)";
+				if (field == "co_tel1") where += " && (co_tel1 like ? || co_tel2 like ? || co_tel3 like ?)";
+				if (field == "co_fax1") where += " && (co_fax1 like ? || co_fax2 like ? || co_fax3 like ?)";
+				if (field == "co_mobile1") where += " && (co_mobile1 like ? || co_mobile2 like ? || co_mobile3 like ?)";
+				if (field == "co_web1") where += " && (co_web1 like ? || co_web2 like ? || co_web3 like ?)";
+				whereData.push("%" + req.query[field] + "%", "%" + req.query[field] + "%", "%" + req.query[field] + "%");
 			} else {
-				whereQ1 += " && " + field + " like ?";
-				whereQ2.push("%" + req.query[field] + "%");
+				where += " && " + field + " like ?";
+				whereData.push("%" + req.query[field] + "%");
 			}
 		}
 	});
 
-	if (req.query.onlyusers && req.query.onlyusers == "true") {
-		whereQ1 += " && co_type!='contact' && co_type!='customer'";
+	if (req.query.types && _.isArray(req.query.types)) {
+		where += " && (0";
+		_.each(req.query.types, mytype => {
+			where += " || co_type=?";
+			whereData.push(mytype);
+		});
+		where += ")";
 	}
-	if (req.query.onlycustomers && req.query.onlycustomers == "true") {
-		whereQ1 += " && co_type='customer'";
-	}
+
 	if (req.query.gr_id == "-2") {
-		whereQ1 += " && co_type!='contact' && co_type!='customer'";
+		where += " && co_type!='contact' && co_type!='society'";
 	}
 	if (req.query.gr_id == "-4") {
-		whereQ1 += " && co_type='contact'";
+		where += " && co_type='contact'";
 	}
-	if (req.query.gr_id == "-5") {
-		whereQ1 += " && co_type='customer'";
+	if (req.query.gr_id == "-7") {
+		where += " && co_type='society'";
 	}
 	if (req.query.co_type && req.query.co_type !== "") {
-		whereQ1 += " && co_type=?";
-		whereQ2.push(req.query.co_type);
+		where += " && co_type=?";
+		whereData.push(req.query.co_type);
 	}
 	if (req.query.onlymine && req.query.onlymine == "true") {
-		whereQ1 += " && t1.co_id=?";
-		whereQ2.push(req.user.co_id);
+		where += " && t1.co_id=?";
+		whereData.push(req.user.co_id);
 	}
 	if (req.query.gr_id == "lastimport") {
-		whereQ1 += " && co_import=?";
-		whereQ2.push(1);
+		where += " && co_import=?";
+		whereData.push(1);
 	}
 	if (req.query.ag_id) {
-		whereQ1 += " && t2.ag_id=?";
-		whereQ2.push(req.query.ag_id);
+		where += " && t2.ag_id=?";
+		whereData.push(req.query.ag_id);
 	}
 	if (req.query.gr_id == "-6") {
-		whereQ1 += " && deleted=1";
+		where += " && deleted=1";
 	} else {
-		whereQ1 += " && deleted=0";
+		where += " && deleted=0";
 	}
 
 	var rows = [];
 	// var whereMore = "";
 	// var whereMore2 = "";
-	var okDRH = false;
+	// var okDRH = false;
+	var total = 0;
 	if (!req.user.co_rights) req.user.co_rights = {};
 	async.series(
 		[
 			next => {
-				if (!req.user.co_rights.contacts_seecontacts) {
-					// whereMore2 += " && co_type!='contact'";
-				}
-				next();
-			},
-			next => {
-				if (!req.user.co_rights.contacts_seeallusers) {
-					// whereMore +=
-					// 	"(co_type!='user' && co_type!='secretary' && co_type!='commercial' && co_type!='accountant' && co_type!='director' && co_type!='customer' && co_type!='admin') && ";
-				}
-				next();
+				if (req.query.contactfromcontact) {
+					ContactsContacts.find("co_id1=? || co_id2=?", [req.query.contactfromcontact, req.query.contactfromcontact]).exec(
+						(errsql, rows_cc) => {
+							where += " && (0";
+							_.each(rows_cc, row_cc => {
+								if (row_cc.co_id1 == req.query.contactfromcontact) {
+									where += " || co_id=?";
+									whereData.push(row_cc.co_id2);
+								} else {
+									where += " || co_id=?";
+									whereData.push(row_cc.co_id1);
+								}
+							});
+							where += ")";
+							next();
+						}
+					);
+				} else next();
 			},
 			next => {
 				var query = "";
@@ -139,31 +130,63 @@ function filterContacts(req, cb) {
 					req.query.gr_id != "-4" &&
 					req.query.gr_id != "-5" &&
 					req.query.gr_id != "-6" &&
+					req.query.gr_id != "-7" &&
 					req.query.gr_id != "lastimport" &&
 					req.query.gr_id != "allagencies"
 				) {
-					whereQ1 += " && t1.gr_id=?";
-					whereQ2.push(req.query.gr_id);
+					where += " && t1.gr_id=?";
+					whereData.push(req.query.gr_id);
 					query =
 						"select * from cogr_contactsgroups t1 left join co_contacts t2 on t1.co_id=t2.co_id left join gr_groups t3 on t1.gr_id=t3.gr_id where 1 " +
-						whereQ1 +
+						where +
 						" && NULLIF(t2.deleted, 0) IS NULL order by co_name";
-				} else if (req.query.doublon && okDRH) {
-					query =
-						"SELECT c1.co_id, c1.co_name, c1.co_firstname, CONCAT(c1.co_name,c1.co_firstname) as c1concat FROM co_contacts c1 INNER JOIN (SELECT co_id, co_name, co_firstname, CONCAT(c2.co_name,c2.co_firstname) as c2concat FROM co_contacts c2 GROUP BY c2concat HAVING count(c2.co_id) > 1) dup on c1.co_name = dup.co_name where c1.deleted=0";
+					// } else if (req.query.doublon && okDRH) {
+					// 	query =
+					// 		"SELECT c1.co_id, c1.co_name, c1.co_firstname, CONCAT(c1.co_name,c1.co_firstname) as c1concat FROM co_contacts c1 INNER JOIN (SELECT co_id, co_name, co_firstname, CONCAT(c2.co_name,c2.co_firstname) as c2concat FROM co_contacts c2 GROUP BY c2concat HAVING count(c2.co_id) > 1) dup on c1.co_name = dup.co_name where c1.deleted=0";
 				} else {
-					query = "select t1.* from co_contacts t1 where 1 " + whereQ1 + " group by t1.co_id order by co_name, co_firstname, co_society";
+					let what = [
+						"t1.co_id",
+						"t1.co_type",
+						"t1.co_name",
+						"t1.co_firstname",
+						"t1.co_society",
+						"t1.co_avatar",
+						"t1.co_city",
+						"t1.co_code",
+						"t1.updatedAt"
+					];
+					query =
+						"select " +
+						what.join(", ") +
+						" from co_contacts t1 where 1 " +
+						where +
+						" group by t1.co_id order by co_name, co_firstname, co_society";
+					// if (req.query.limit) {
+					// 	query += " limit 0," + req.query.limit;
+					// }
 				}
-				Contacts.query(query, whereQ2).exec((errsql, _rows) => {
+				// console.log("query, whereData", query, whereData);
+				Contacts.query(query, whereData).exec((errsql, _rows) => {
 					if (errsql) console.warn(errsql);
-					rows = _rows;
-					// console.log("query,whereQ2",query,whereQ2,rows);
+					let rowsOk = [];
+					let skip = 0;
+					if (req.query.skip) skip = req.query.skip * 1;
+					let limit = 0;
+					if (req.query.limit) limit = req.query.limit * 1;
+					total = _rows.length;
+					_.each(_rows, (row, index) => {
+						if (index < skip) return;
+						if (limit > 0 && index >= limit + skip) return;
+						rowsOk.push(row);
+					});
+					rows = rowsOk;
+					// console.log("query,whereData",query,whereData,rows);
 					next();
 				});
 			}
 		],
 		() => {
-			cb(rows);
+			cb(rows, total);
 		}
 	);
 }
@@ -237,39 +260,87 @@ function savePhoto(req, co_id, next) {
 
 module.exports = class extends BaseController {
 	combo(req, res) {
-		if (req.params.field != "co_function") return this.send(res, { err: "Deny" });
-		var where = "1";
-		var queryArgs = [];
+		if (
+			req.params.field != "co_function" &&
+			req.params.field != "co_marche" &&
+			req.params.field != "co_country" &&
+			req.params.field != "ad_country" &&
+			req.params.field != "co_activite"
+		)
+			// return this.send(res, { err: "Deny" });
+			Services.sendWebservices(res, { err: "Deny", data: null });
+
+		let where = "1";
+		let whereData = [];
 		if (req.query.query) {
 			where = req.params.field + " like ?";
-			queryArgs = ["%" + req.query.query + "%"];
+			whereData = ["%" + req.query.query + "%"];
 		}
-		var query =
-			"select " + req.params.field + " from co_contacts where " + where + " group by " + req.params.field + " order by " + req.params.field; //where "+req.params.field+" like ?
+
+		let query = "";
 		var data = [];
-		Contacts.query(query, queryArgs).exec((errsql, rows_co) => {
-			if (errsql) console.warn("err", errsql);
-			// console.log("rows_co", rows_co, query, queryArgs);
-			_.each(rows_co, row_co => {
-				if (row_co[req.params.field])
-					data.push({
-						key: row_co[req.params.field],
-						val: row_co[req.params.field]
+		async.series(
+			[
+				next => {
+					if (req.params.what == "contacts") {
+						query =
+							"select " +
+							req.params.field +
+							" from co_contacts where " +
+							where +
+							" group by " +
+							req.params.field +
+							" order by " +
+							req.params.field;
+					} else next();
+				},
+				next => {
+					if (req.params.what == "addresses") {
+						query =
+							"select " +
+							req.params.field +
+							" from ad_addresses where " +
+							where +
+							" group by " +
+							req.params.field +
+							" order by " +
+							req.params.field;
+					} else next();
+				},
+				next => {
+					Contacts.query(query, whereData).exec((errsql, rows) => {
+						if (errsql) console.warn("err", errsql);
+						// console.log("rows", rows, query, queryArgs);
+						_.each(rows, row => {
+							if (row[req.params.field])
+								data.push({
+									key: row[req.params.field],
+									val: row[req.params.field]
+								});
+						});
 					});
-			});
-			this.send(res, { data: data });
-		});
+				}
+			],
+			err => {
+				Services.sendWebservices(res, { err: null, data: data });
+			}
+		);
 	}
 	findOne(req, res) {
 		if (req.params.co_id == -1 || req.params.co_id == -2) {
 			var row_co = Contacts.createEmpty();
 			row_co.co_id = "";
-			row_co.co_type = "contact";
-			if (req.params.id == -2) row_co.co_type = "customer";
+			// row_co.co_type = "contact";
+			// if (req.params.id == -2)
+			row_co.co_type = "society";
 			row_co.co_rights = {};
 			row_co.contracts = [];
+			row_co.addresses = [];
+			row_co.contacts = [];
 			row_co.co_birthday = "";
-			this.send(res, { data: row_co });
+			row_co.history = [];
+			// this.send(res, { data: row_co });
+			Services.sendWebservices(res, { err: null, data: row_co });
 		} else {
 			Contacts.findOne({
 				"t1.co_id": req.params.co_id
@@ -284,9 +355,91 @@ module.exports = class extends BaseController {
 							co_id: ""
 						};
 					row_co.co_password = "";
-					row_co.contracts = [];
-					async.parallel(
+					row_co.history = [];
+					async.series(
 						[
+							next => {
+								Invoices.find("co_id_contact=?", [row_co.co_id])
+									.populate("co_id_user")
+									.exec((errsql, rows_in) => {
+										_.each(rows_in, row_in => {
+											row_co.history.push({
+												ac_date: row_in.in_date,
+												ac_text: "<span class='fa fa-align-justify'></span> Devis",
+												ac_text2: row_in.in_object,
+												ac_price: row_in.in_sumttc,
+												ac_id_model: row_in.in_id,
+												co_id_user: row_in.co_id_user
+											});
+										});
+										next();
+									});
+							},
+							next => {
+								Opportunities.find("co_id_contact=?", [row_co.co_id])
+									.populate("co_id_user")
+									.exec((errsql, rows_op) => {
+										_.each(rows_op, row_op => {
+											row_co.history.push({
+												ac_date: row_op.op_date,
+												ac_text: "<span class='fa fa-cc'></span> Opportunité",
+												ac_text2: row_op.op_name,
+												ac_price: row_op.op_price,
+												ac_id_model: row_op.op_id,
+												co_id_user: row_op.co_id_user
+											});
+										});
+										next();
+									});
+							},
+							next => {
+								if (!row_co.co_code) return next();
+
+								Commandes.query("select * from cd_commandes where co_code=?", [row_co.co_code]).exec((errsql, rows_cd) => {
+									_.each(rows_cd, row_cd => {
+										row_co.history.push({
+											ac_date: row_cd.cd_echeancepaie,
+											ac_text: "Commande",
+											ac_text2: "N°" + row_cd.cd_num + " - Produit : " + row_cd.pr_id + " (" + row_cd.cd_typeproduit + ")",
+											ac_price: row_cd.cd_price * row_cd.cd_qtefacturee,
+											ac_id_model: row_cd.cd_id,
+											co_id_user: ""
+										});
+									});
+									next();
+								});
+							},
+							next => {
+								Actions.find("co_id_contact=?", [row_co.co_id])
+									.populate("co_id_user")
+									.exec((errsql, rows_ac) => {
+										_.each(rows_ac, row_ac => {
+											let more = _.result(Shared.getActionsTypes(row_ac.ac_type), "val");
+											if (row_ac.ac_type == "call") {
+												let t = " - " + _.result(Shared.getCallResults(row_ac.ac_call_result), "val");
+												if (row_ac.ac_call_result == 2) {
+													more += t + " le<br>" + moment(row_ac.ac_call_recalldate).format("DD/MM/YYYY [à] HH[H]mm");
+												}
+											}
+											// console.log("row_ac.ac_call_date", row_ac.ac_call_date);
+											row_co.history.push({
+												ac_date: row_ac.ac_call_date,
+												ac_text: "<span class='fa fa-anchor'></span> Action",
+												ac_text2: more,
+												ac_price: 0,
+												ac_id_model: row_ac.ac_id,
+												co_id_user: row_ac.co_id_user
+											});
+										});
+										next();
+									});
+							},
+							next => {
+								Documents.find("co_id=? && do_deleted=0", [row_co.co_id]).exec((errsql, rows_do) => {
+									row_co.documents = rows_do;
+									next();
+								});
+							},
 							next => {
 								OptionsServices.get("", "allrights_" + row_co.co_type, defaultRights => {
 									row_co.defaultRights = defaultRights;
@@ -294,30 +447,60 @@ module.exports = class extends BaseController {
 								});
 							},
 							next => {
-								next();
-								// row_co.todos = [] ;
-								// if (row_co.co_type!='contact' && row_co.co_type!='candidate') {
-								// 	Services.getTodos(row_co, (rows_td)=> {
-								// 		row_co.todos = rows_td ;
-								// 		next() ;
-								// 	}) ;
-								// } else {
-								// 	next() ;
-								// }
+								row_co.addresses = [];
+								Addresses.find("co_id=? && ad_deleted=0 order by ad_label", [row_co.co_id]).exec((errsql, rows_ad) => {
+									row_co.addresses = rows_ad;
+									next();
+								});
+							},
+							next => {
+								row_co.contacts = [];
+								ContactsContacts.find("co_id1=? || co_id2=?", [row_co.co_id, row_co.co_id])
+									.populate("co_id1")
+									.populate("co_id2")
+									.exec((errsql, rows_cc) => {
+										// console.log("rows_cc", rows_cc);
+										// _.each(rows_cc, (row_cc) => {
+										// 	if (row_cc.co_id1.co_id)row_co.contacts.push()
+										// })
+										// row_co.contacts = rows_co;
+										async.eachSeries(
+											rows_cc,
+											(row_cc, nextCC) => {
+												if (!row_cc.co_id1) return nextCC();
+												let row = row_cc.co_id1;
+												if (row_cc.co_id1.co_id == row_co.co_id) row = row_cc.co_id2;
+												row.addresses = [];
+												Addresses.find("co_id=? && ad_deleted=0 order by ad_label", [row.co_id]).exec((errsql, rows_ad) => {
+													row.addresses = rows_ad;
+													row_co.contacts.push(row);
+													nextCC();
+												});
+											},
+											() => {
+												next();
+											}
+										);
+									});
 							}
 						],
 						(err, results) => {
-							this.send(res, {
-								data: row_co
+							row_co.history.sort((a, b) => {
+								return new Date(b.ac_date) - new Date(a.ac_date);
 							});
+							// this.send(res, {
+							// 	data: row_co
+							// });
+							Services.sendWebservices(res, { err: null, data: row_co });
 						}
 					);
 				});
 		}
 	}
 	find(req, res) {
-		filterContacts(req, rows_co => {
-			this.send(res, { data: rows_co });
+		filterContacts(req, (rows_co, total) => {
+			// this.send(res, { data: rows_co, total: total });
+			Services.sendWebservices(res, { err: null, data: rows_co, total: total });
 		});
 	}
 	export(req, res) {
@@ -346,9 +529,10 @@ module.exports = class extends BaseController {
 				co_status: req.body.co_status
 			},
 			(err, row_co) => {
-				this.send(res, {
-					data: row_co
-				});
+				// this.send(res, {
+				// 	data: row_co
+				// });
+				Services.sendWebservices(res, { err: null, data: row_co });
 			}
 		);
 	}
@@ -393,6 +577,51 @@ module.exports = class extends BaseController {
 						if (errsql) console.warn("errsql", errsql);
 						nextSerie();
 					});
+				},
+
+				nextSerie => {
+					if (req.body.shortSave) return nextSerie();
+					// console.log("req.body.contacts", req.body.contacts);
+					async.eachSeries(
+						req.body.contacts,
+						(co_id_temp, nextCC) => {
+							ContactsContacts.findOne("(co_id1=? && co_id2=?) || (co_id1=? && co_id2=?)", [
+								row_co.co_id,
+								co_id_temp,
+								co_id_temp,
+								row_co.co_id
+							]).exec((errsql, row_cc) => {
+								if (row_cc) return nextCC();
+								ContactsContacts.create({ co_id1: row_co.co_id, co_id2: co_id_temp }).exec((errsql, ok) => {
+									nextCC();
+								});
+							});
+						},
+						() => {
+							nextSerie();
+						}
+					);
+				},
+
+				nextSerie => {
+					if (req.body.shortSave) return nextSerie();
+					// console.log("req.body.contacts", req.body.contacts);
+					async.eachSeries(
+						req.body.contactstodelete,
+						(co_id_temp, nextCC) => {
+							ContactsContacts.destroy("(co_id1=? && co_id2=?) || (co_id1=? && co_id2=?)", [
+								row_co.co_id,
+								co_id_temp,
+								co_id_temp,
+								row_co.co_id
+							]).exec((errsql, row_cc) => {
+								nextCC();
+							});
+						},
+						() => {
+							nextSerie();
+						}
+					);
 				}
 			],
 			err => {
@@ -405,35 +634,40 @@ module.exports = class extends BaseController {
 		req.body.createdCo = req.user.co_id;
 		req.body.updatedCo = req.user.co_id;
 		this._updateOrCreate(req, (err, row_co) => {
-			if (err) return this.send(res, err);
-			this.send(res, { data: row_co });
+			if (err) return Services.sendWebservices(res, { err: err, data: null });
+			// this.send(res, { data: row_co });
+			Services.sendWebservices(res, { err: null, data: row_co });
 		});
 	}
 	update(req, res) {
 		req.body.updatedCo = req.user.co_id;
 		this._updateOrCreate(req, (err, row_co) => {
-			if (err) return this.send(res, err);
-			this.send(res, { data: row_co });
+			if (err) return Services.sendWebservices(res, { err: err, data: null });
+			// this.send(res, { data: row_co });
+			Services.sendWebservices(res, { err: null, data: row_co });
 		});
 	}
 	updateavatar(req, res) {
 		savePhoto(req, req.body.co_id, () => {
 			Contacts.findOne(req.body.co_id).exec((errsql, row_co) => {
 				if (errsql) console.warn("errsql", errsql);
-				this.send(res, { data: row_co });
+				// this.send(res, { data: row_co });
+				Services.sendWebservices(res, { err: null, data: row_co });
 			});
 		});
 	}
 	undestroy(req, res) {
 		Contacts.update({ co_id: req.params.co_id }, { deleted: false }).exec(errsql => {
 			if (errsql) console.warn("errsql", errsql);
-			this.send(res, { success: true });
+			// this.send(res, { success: true });
+			Services.sendWebservices(res, { err: null, success: true });
 		});
 	}
 	destroy(req, res) {
 		Contacts.update({ co_id: req.params.co_id }, { deleted: true }).exec(errsql => {
 			if (errsql) console.warn("errsql", errsql);
-			this.send(res, { success: true });
+			// this.send(res, { success: true });
+			Services.sendWebservices(res, { err: null, success: true });
 		});
 	}
 	import1(req, res) {
@@ -443,10 +677,11 @@ module.exports = class extends BaseController {
 			},
 			(err, uploadedFiles) => {
 				if (err || req.file("fileimport").isNoop || uploadedFiles.length === 0) {
-					console.warn("errimport", err);
-					return res.ok({
-						success: false
-					});
+					// console.log("errimport", err);
+					// return res.ok({
+					// 	success: false
+					// });
+					Services.sendWebservices(res, { err: null, success: false });
 				}
 				var fs = require("fs-extra"),
 					path = require("path"),
@@ -456,19 +691,21 @@ module.exports = class extends BaseController {
 				if (!fs.existsSync(uploadPathDir)) fs.mkdirSync(uploadPathDir);
 				fs.renameSync(uploadedFiles[0].fd, uploadPathDir + "import_" + fn);
 				var all = analyseImport(fn, null);
-				res.ok({
-					data: all,
-					filename: fn
-				});
+				// res.ok({
+				// 	data: all,
+				// 	filename: fn
+				// });
+				Services.sendWebservices(res, { err: null, data: all, filename: fn });
 			}
 		);
 	}
 	import2(req, res) {
 		var all = analyseImport(req.body.filename, req.body.tabfields);
-		res.ok({
-			data: all,
-			filename: req.body.filename
-		});
+		// res.ok({
+		// 	data: all,
+		// 	filename: req.body.filename
+		// });
+		Services.sendWebservices(res, { err: null, data: all, filename: req.body.filename });
 	}
 	import3(req, res) {
 		var all = analyseImport(req.body.filename, req.body.tabfields);
@@ -482,9 +719,10 @@ module.exports = class extends BaseController {
 			},
 			err => {
 				if (err) console.warn("errgeneral", err);
-				res.ok({
-					data: all
-				});
+				// res.ok({
+				// 	data: all
+				// });
+				Services.sendWebservices(res, { err: null, data: all });
 			}
 		);
 	}
@@ -494,11 +732,15 @@ module.exports = class extends BaseController {
 		// res.header('Cache-Control', 'public, max-age='+sails.config.http.cache);
 
 		var fs = require("fs-extra"),
+			// path = require("path"),
+			// root = morphineserver.rootDir,
+			// uploadPathDir = root+path.sep+"uploads",
 			gm = require("gm");
 
 		Contacts.findOne({ co_id: req.params.co_id }).exec((err, row_co) => {
 			if (err) row_co.co_avatar = null;
-			if (!row_co) row_co = { co_avatar: null };
+			if (!row_co || row_co.co_id == 0) row_co = { co_avatar: null };
+			// console.log("row_co", row_co);
 			// console.log("row_co.co_avatar", row_co.co_avatar);
 
 			req.params.w = req.params.w * 1;
@@ -520,6 +762,16 @@ module.exports = class extends BaseController {
 					src = morphineserver.rootDir + "/assets/images/" + row_co.co_avatar;
 				}
 			}
+			if (row_co.co_type == "society" || req.params.co_id == "society") {
+				src = morphineserver.rootDir + "/assets/images/entreprise-1.png";
+				dest = morphineserver.rootDir + "/uploads/" + req.params.w + "-" + req.params.h + "_" + row_co.co_id;
+			} else if (row_co.co_type == "contact" || req.params.co_id == "contact") {
+				src = morphineserver.rootDir + "/assets/images/contact-1.png";
+				dest = morphineserver.rootDir + "/uploads/" + req.params.w + "-" + req.params.h + "_" + row_co.co_id;
+			} else if (req.params.co_id == "user") {
+				src = morphineserver.rootDir + "/assets/images/avatar02.png";
+				dest = morphineserver.rootDir + "/uploads/" + req.params.w + "-" + req.params.h + "_" + row_co.co_id;
+			}
 			// if (!hasAvatarImg) {
 			//     pictureOk = root+"/assets/images/"+req.params.w+"-"+req.params.h+"_default.png" ;
 			//     fn = "ill_monster1.png" ;
@@ -530,6 +782,7 @@ module.exports = class extends BaseController {
 			//     fn = user.co_avatarauto ;
 			//     fnprefix = "" ;
 			// }
+			// console.log("src", src, dest, row_co.co_type, req.params.co_id);
 			async.series([
 				next => {
 					// if (!fs.existsSync(dest)) {
@@ -542,8 +795,7 @@ module.exports = class extends BaseController {
 							if (err) console.warn("err", err);
 							next();
 						});
-
-					// } else next() ;
+					// } else next();
 				},
 				next => {
 					var stat = fs.statSync(dest);
@@ -557,13 +809,6 @@ module.exports = class extends BaseController {
 					var readStream = fs.createReadStream(dest);
 					readStream.pipe(res);
 
-					// var SkipperDisk = require('skipper-disk');
-					// var fileAdapter = SkipperDisk();
-					// fileAdapter.read(pictureOk)
-					// .on('error', function (err){
-					//     return res.serverError(err);
-					// })
-					// .pipe(res);
 					next();
 				}
 			]);

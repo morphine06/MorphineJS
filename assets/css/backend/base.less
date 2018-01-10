@@ -257,7 +257,7 @@ strong {
 	animation-timing-function: linear;
 	animation-iteration-count: infinite;
 }
-.vacation_wait {
+.vacations_wait {
 	background-image: url(/images/fond-hachure-ok.png);
 	animation-duration: 2s;
 	animation-name: bganim;
@@ -265,32 +265,32 @@ strong {
 	animation-iteration-count: infinite;
 }
 
-#vacation_gain {
+#vacations_gain {
 	padding: 8px 30px 0 0;
 }
-#vacation_cal1title,
-#vacation_cal2title {
+#vacations_cal1title,
+#vacations_cal2title {
 	text-align: right;
 }
-#vacationwinedit_va_start2 .M_LabelRight,
-#vacationwinedit_va_end2 .M_LabelRight {
+#vacationswinedit_va_start2 .M_LabelRight,
+#vacationswinedit_va_end2 .M_LabelRight {
 	margin-top: -5px;
 	line-height: 14px;
 }
 
-#vacation_previousmonth,
-#vacation_nextmonth {
+#vacations_previousmonth,
+#vacations_nextmonth {
 	color: @grey;
 	cursor: pointer;
 	font-size: 40px;
 }
-#vacation_previousmonth:hover,
-#vacation_nextmonth:hover {
+#vacations_previousmonth:hover,
+#vacations_nextmonth:hover {
 	color: @grey;
 }
 
-#vacationwinedit_va_start2 label,
-#vacationwinedit_va_end2 label {
+#vacationswinedit_va_start2 label,
+#vacationswinedit_va_end2 label {
 	padding-left: 3px;
 }
 
@@ -302,7 +302,7 @@ strong {
 	color: white;
 	font-size: 14px;
 }
-.vacation_status {
+.vacations_status {
 	padding: 3px 0;
 	border-radius: 3px;
 	text-align: center;
@@ -1089,4 +1089,68 @@ a.agency_selector.checked {
 }
 .m_gantt-task.purple {
 	background-color: @purple;
+}
+.home-framenumber {
+	background-color: #fec32d;
+	margin: 8px;
+	color: white;
+	padding: 15px 0;
+	text-align: center;
+	div:nth-child(1) {
+		font-size: 24px;
+		font-weight: bold;
+		padding-bottom: 5px;
+	}
+}
+.opportunities-state {
+	padding: 15px 10px 0 10px;
+	float: left;
+	background-color: @grey-300;
+	border-radius: 10px;
+	margin-right: 10px;
+	text-align: center;
+	width: 90px;
+	height: 100px;
+	cursor: pointer;
+	&.passed {
+		background-color: @cyan-500;
+	}
+	&.current {
+		background-color: @orange-500;
+		color: white;
+		h2 {
+			color: white;
+		}
+	}
+	h2 {
+		font-weight: bold;
+		color: @font-default-color;
+		margin: 0;
+	}
+}
+.opportunities_col {
+	border-right: 1px solid #d5d5d5;
+	h2 {
+		color: @font-default-color;
+		margin: 0;
+		text-align: center;
+	}
+	h3 {
+		text-align: center;
+		margin-bottom: 2px;
+	}
+	.opportunities_total {
+		color: @blue;
+		text-align: center;
+		margin-bottom: 15px;
+	}
+}
+.opportunities_dditem {
+	background-color: @grey-300;
+	padding: 5px 10px;
+	margin: 0 0 10px 0;
+	cursor: pointer;
+	border-radius: 5px;
+	font-size: 12px;
+	line-height: 15px;
 }

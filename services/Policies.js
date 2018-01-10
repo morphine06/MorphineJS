@@ -58,5 +58,8 @@ module.exports = {
 			if (!row_co) return cb({ code: 1001, message: "Bad user token" }, null);
 			return cb(null, row_co);
 		});
+	},
+	allowAlreadyTrue: () => {
+		return true;
 	}
 };
