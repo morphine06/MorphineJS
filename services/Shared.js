@@ -123,31 +123,31 @@ module.exports = {
 			{ key: "avatar16.png", val: "16" }
 		];
 	},
-	completeAddress: function(row_co, withLink, useBR) {
+	completeAddress: function(row_ad, withLink, useBR) {
 		let lineend = "\n";
 		if (useBR) lineend = "<br/>";
 		// if (row_co instanceof M_.Model) row_co = row_co.getData() ;
 		var html = "";
 		if (withLink) {
 			var link =
-				row_co.co_address1 +
+				row_ad.ad_address1 +
 				" " +
-				row_co.co_address2 +
+				row_ad.ad_address2 +
 				" " +
-				row_co.co_address2 +
+				row_ad.ad_address2 +
 				" " +
-				row_co.co_zip +
+				row_ad.ad_zip +
 				" " +
-				row_co.co_city +
+				row_ad.ad_city +
 				" " +
-				row_co.co_country;
+				row_ad.ad_country;
 			html += '<a href="http://maps.google.com/?q=' + link + "\" target='_blank'>";
 		}
-		if (row_co.co_address1) html += "" + row_co.co_address1 + lineend;
-		if (row_co.co_address2) html += "" + row_co.co_address2 + lineend;
-		if (row_co.co_address3) html += "" + row_co.co_address3 + lineend;
-		if (row_co.co_zip || row_co.co_city || row_co.co_country)
-			html += "" + row_co.co_zip + " " + row_co.co_city + " " + row_co.co_country + lineend;
+		if (row_ad.ad_address1) html += "" + row_ad.ad_address1 + lineend;
+		if (row_ad.ad_address2) html += "" + row_ad.ad_address2 + lineend;
+		if (row_ad.ad_address3) html += "" + row_ad.ad_address3 + lineend;
+		if (row_ad.ad_zip || row_ad.ad_city || row_ad.ad_country)
+			html += "" + row_ad.ad_zip + " " + row_ad.ad_city + " " + row_ad.ad_country + lineend;
 		if (withLink) html += "</a>";
 		return html;
 	},

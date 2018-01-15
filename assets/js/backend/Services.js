@@ -135,34 +135,34 @@ export var Services = {
 		if (data.co_fax2) data.co_fax2_normalized = M_.Utils.formatPhone(data.co_fax2);
 		if (data.co_fax3) data.co_fax3_normalized = M_.Utils.formatPhone(data.co_fax3);
 	},
-	completeAddress: function(row_co, withLink = false, useBR = true) {
-		let lineend = "\n";
-		if (useBR) lineend = "<br/>";
-		if (row_co instanceof M_.Model) row_co = row_co.getData();
-		var html = "";
-		if (withLink) {
-			var link =
-				row_co.co_address1 +
-				" " +
-				row_co.co_address2 +
-				" " +
-				row_co.co_address2 +
-				" " +
-				row_co.co_zip +
-				" " +
-				row_co.co_city +
-				" " +
-				row_co.co_country;
-			html += '<a href="http://maps.google.com/?q=' + link + "\" target='_blank'>";
-		}
-		if (row_co.co_address1) html += "" + row_co.co_address1 + lineend;
-		if (row_co.co_address2) html += "" + row_co.co_address2 + lineend;
-		if (row_co.co_address3) html += "" + row_co.co_address3 + lineend;
-		if (row_co.co_zip || row_co.co_city || row_co.co_country)
-			html += "" + row_co.co_zip + " " + row_co.co_city + " " + row_co.co_country + lineend;
-		if (withLink) html += "</a>";
-		return html;
-	},
+	// completeAddress: function(row_ad, withLink = false, useBR = true) {
+	// 	let lineend = "\n";
+	// 	if (useBR) lineend = "<br/>";
+	// 	if (row_ad instanceof M_.Model) row_ad = row_ad.getData();
+	// 	var html = "";
+	// 	if (withLink) {
+	// 		var link =
+	// 			row_ad.co_address1 +
+	// 			" " +
+	// 			row_ad.co_address2 +
+	// 			" " +
+	// 			row_ad.co_address2 +
+	// 			" " +
+	// 			row_ad.co_zip +
+	// 			" " +
+	// 			row_ad.co_city +
+	// 			" " +
+	// 			row_ad.co_country;
+	// 		html += '<a href="http://maps.google.com/?q=' + link + "\" target='_blank'>";
+	// 	}
+	// 	if (row_ad.co_address1) html += "" + row_ad.co_address1 + lineend;
+	// 	if (row_ad.co_address2) html += "" + row_ad.co_address2 + lineend;
+	// 	if (row_ad.co_address3) html += "" + row_ad.co_address3 + lineend;
+	// 	if (row_ad.co_zip || row_ad.co_city || row_ad.co_country)
+	// 		html += "" + row_ad.co_zip + " " + row_ad.co_city + " " + row_ad.co_country + lineend;
+	// 	if (withLink) html += "</a>";
+	// 	return html;
+	// },
 	drawContact: function() {
 		let html = "";
 		html += '<div class="M_FlexRow">';

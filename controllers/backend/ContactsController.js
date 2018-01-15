@@ -151,7 +151,7 @@ function filterContacts(req, cb) {
 						"t1.co_firstname",
 						"t1.co_society",
 						"t1.co_avatar",
-						"t1.co_city",
+						// "t1.co_city",
 						"t1.co_code",
 						"t1.updatedAt"
 					];

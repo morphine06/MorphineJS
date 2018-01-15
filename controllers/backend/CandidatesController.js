@@ -254,7 +254,7 @@ module.exports = class extends BaseController {
 	}
 	findone_1_0(req, res) {
 		// console.log("req.params.id", req.params.id);
-		if (req.params.id == -1) {
+		if (req.params.ca_id == -1) {
 			// console.log("create");
 			var row_ca = Candidates.createEmpty();
 			// console.log("create2");
