@@ -25,6 +25,8 @@ module.exports = {
 			"compiled/lodash.js|node_modules/lodash/lodash.js",
 			"compiled/moment.js|node_modules/moment/min/moment-with-locales.js",
 			"compiled/jquery.transit.js|node_modules/jquery.transit/jquery.transit.js",
+			"compiled/fullcalendar.js|node_modules/fullcalendar/dist/fullcalendar.js",
+			"compiled/fullcalendar_fr.js|node_modules/fullcalendar/dist/locale/fr.js",
 			// 'compiled/jstree.js|node_modules/jstree/dist/jstree.js',
 			// 'compiled/d3.js|node_modules/d3/build/d3.js',
 			// 'compiled/c3.js|node_modules/c3/c3.js',
@@ -36,6 +38,8 @@ module.exports = {
 		jst: ["assets/templates/backend/**/*.html"],
 		styles: [
 			"compiled/font-awesome.css|node_modules/font-awesome/css/font-awesome.css",
+			"compiled/m_gantt.css|assets/css/vendor/m_gantt.css",
+			"compiled/fullcalendar.css|node_modules/fullcalendar/dist/fullcalendar.css",
 			// 'compiled/jstree.css|node_modules/jstree/dist/themes/default/style.css',
 			// 'compiled/c3.css|node_modules/c3/c3.css',
 			"less"

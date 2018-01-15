@@ -169,6 +169,108 @@ export var Services = {
 		html += "</div>";
 		return html;
 	},
+	getTabNbHours: function() {
+		return [
+			{ key: 0, val: " " },
+			{ key: 24, val: "24H" },
+			{ key: 35, val: "35H" },
+			{ key: 375, val: "37,5H" },
+			{ key: 38, val: "38H" },
+			{ key: 39, val: "39H" }
+		];
+	},
+	getTabSalaryVariable: function() {
+		return [{ key: 0, val: " " }, { key: 1, val: "Marge brute" }, { key: 2, val: "Marge semi nette/brute" }, { key: 3, val: "Marge nette" }];
+	},
+	getTab13Month: function() {
+		return [{ key: 0, val: "12 mois" }, { key: 1, val: "13 mois" }, { key: 2, val: "14 mois" }];
+	},
+	getTabDFS: function() {
+		return [{ key: 0, val: " " }, { key: 1, val: "Oui" }, { key: 2, val: "Non" }];
+	},
+	getTabMeal: function() {
+		return [{ key: 0, val: " " }, { key: 1, val: "Oui" }, { key: 2, val: "Non" }];
+	},
+	getTabInsurance: function() {
+		return [{ key: 0, val: " " }, { key: 1, val: "Oui" }, { key: 2, val: "Non" }];
+	},
+	getTabParticipation: function() {
+		return [{ key: 0, val: " " }, { key: 1, val: "Oui" }, { key: 2, val: "Non" }];
+	},
+	getTabClause: function() {
+		return [{ key: 0, val: " " }, { key: 1, val: "Oui" }, { key: 2, val: "Non" }];
+	},
+	// autres avantages
+	// commentaire
+	getTabCar: function() {
+		return [
+			{ key: 0, val: " " },
+			{ key: 4, val: "Aucun" },
+			{ key: 1, val: "Voiture de fonction" },
+			{ key: 2, val: "Voiture de société" },
+			{ key: 3, val: "IK" }
+		];
+	},
+	getTabCivility: function() {
+		return [
+			{ key: "M", val: "M" },
+			{ key: "Mme", val: "Mme" },
+			{ key: "Mlle", val: "Mlle" },
+			{ key: "Dr", val: "Dr" },
+			{ key: "Me", val: "Me" },
+			{ key: "Pr", val: "Pr" }
+		];
+	},
+	getTabBdd: function() {
+		return [{ key: 0, val: " " }, { key: 1, val: "Oui" }, { key: 2, val: "Non" }];
+	},
+	getTabTypology: function() {
+		return [
+			{ key: 0, val: " " },
+			{ key: 1, val: "Généraliste" },
+			{ key: 2, val: "Transport/logistique" },
+			{ key: 3, val: "Electricité/logistique" },
+			{ key: 4, val: "Industrie" },
+			{ key: 5, val: "Informatique" },
+			{ key: 6, val: "Menuiserie/mécanique" },
+			{ key: 7, val: "BTP" },
+			{ key: 8, val: "Plomberie" },
+			{ key: 9, val: "Terrasse" }
+		];
+	},
+	getTabPost: function() {
+		return [
+			// { key: 0, val: ' '},
+			{ key: 14, val: "Agent de maintenance" },
+			{ key: 1, val: "Assistant(e) administratif" },
+			{ key: 3, val: "Assistant(e) d’agence et recrutement" },
+			{ key: 2, val: "Assistant(e) RH" },
+			{ key: 15, val: "Assistant(e) de gestion" },
+			{ key: 4, val: "Chargé(e) d’affaire sédentaire" },
+			{ key: 5, val: "Chargé(e) d’affaire junior" },
+			{ key: 6, val: "Chargé(e) d’affaire sénior" },
+			{ key: 13, val: "Chargé(e) de développement commercial" },
+			{ key: 10, val: "Directeur commercial" },
+			{ key: 9, val: "Directeur régional" },
+			{ key: 11, val: "Informaticien" },
+			{ key: 7, val: "Responsable agence" },
+			{ key: 12, val: "Responsable commercial et communication" },
+			{ key: 8, val: "Responsable de secteur" }
+		];
+	},
+	calculateAugmentationSalary: function(row_ca, formated = true) {
+		// console.log("row_ca.ca_salaryproposed, row_ca.ca_salary", row_ca.ca_salaryproposed, row_ca.ca_salary);
+		if (row_ca.ca_salary * 1 === 0) return "";
+		var p = Math.round((row_ca.ca_salaryproposed * 1 / row_ca.ca_salary * 1 - 1) * 100);
+		if (formated) {
+			var ret = "";
+			if (p >= 0) ret += "+";
+			ret += p;
+			ret += "%";
+			return ret;
+		}
+		return p;
+	},
 	renderContactsInfo: function(where, data) {
 		_.each(data.row_co.contacts, c => {
 			Services.processContactsData(c);

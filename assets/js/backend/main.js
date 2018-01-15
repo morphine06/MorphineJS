@@ -9,6 +9,8 @@ import { Invoices } from "./Invoices.js";
 import { Vacations } from "./Vacations.js";
 import { Campaigns } from "./Campaigns.js";
 import { Products } from "./Products.js";
+import { Calendar } from "./Calendar.js";
+import { Candidates } from "./Candidates.js";
 import { Preferences } from "./Preferences.js";
 
 import { Services } from "./Services.js";
@@ -17,10 +19,12 @@ import { Shared } from "./../../compiled/Shared.js";
 M_.registerModule("Home", Home);
 M_.registerModule("Contacts", Contacts);
 M_.registerModule("Products", Products);
+M_.registerModule("Calendar", Calendar);
 M_.registerModule("Opportunities", Opportunities);
 M_.registerModule("Invoices", Invoices);
 M_.registerModule("Vacations", Vacations);
 M_.registerModule("Campaigns", Campaigns);
+M_.registerModule("Candidates", Candidates);
 M_.registerModule("Preferences", Preferences);
 
 // for access of M_ and Services in templates, we set this objects in lowdash !!!
@@ -32,11 +36,13 @@ moment.locale("fr");
 
 var modules = [
 	{ key: "Home", icon: "fa-bell faa-ring", label: "Accueil", right: "" },
+	{ key: "Calendar", icon: "fa-calendar", label: "Calendrier", right: "" },
 	{ key: "Contacts", icon: "fa-user", label: "Contacts", right: "" },
 	{ key: "Opportunities", icon: "fa-cc", label: "CRM", right: "" },
 	{ key: "Invoices", icon: "fa-book", label: "Factures", right: "" },
 	{ key: "Products", icon: "fa-battery-2", label: "Produits", right: "" },
 	{ key: "Campaigns", icon: "fa-mail-forward", label: "Campagnes", right: "" },
+	{ key: "Candidates", icon: "fa-mail-forward", label: "Candidats", right: "" },
 	{ key: "Vacations", icon: "fa-gears", label: "Abscences", right: "" },
 	{ key: "Preferences", icon: "fa-gears", label: "Préférences", right: "" },
 	{ key: "Search", icon: "fa-gears", label: "Rechercher", right: "", hideInMenu: true }

@@ -1,0 +1,45 @@
+<p><%= Services.completeName(row_co) %>,</p>
+<br/>
+<p>Votre demande de congé a été <%= acceptedrefused %></p>
+<% if (row_va.va_comment2) { %>
+<br/>
+<div><b>Commentaire de l'administrateur :</b> <%= row_va.va_comment2 %></div>
+<% } %>
+<br/>
+<br/>
+<table>
+    <tr>
+        <td>Type&nbsp;d'absence&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td><%= row_vt.vt_name %></td>
+    </tr>
+    <tr>
+        <td>Du</td>
+        <td><%= Services.dateFr(row_va.va_start) %> <% if (row_va.va_start2) { %>Matin travaillé<% } %></td>
+    </tr>
+    <tr>
+        <td>Au</td>
+        <td><%= Services.dateFr(row_va.va_end) %> <% if (row_va.va_end2) { %>Après-midi travaillé<% } %></td>
+    </tr>
+    <tr>
+        <td>Nb jours</td>
+        <td><%= Shared.getNbOpenDays(row_va.va_start, row_va.va_end, row_va.va_start2, row_va.va_end2) %></td>
+    </tr>
+    <% if (row_va.va_comment) { %>
+    <tr>
+        <td>Commentaire</td>
+        <td><%= row_va.va_comment %></td>
+    </tr>
+    <% } %>
+    <% if (row_va.va_comment2) { %>
+    <tr>
+        <td>Commentaire administrateur</td>
+        <td><%= row_va.va_comment2 %></td>
+    </tr>
+    <% } %>
+</table>
+<p><a href="http://erp.welljob.fr/#/Vacation/edit/<%= row_va.va_id %>">Voir l'absence</a></p>
+
+<br/><br/>
+<p>---------------------------</p>
+<p>Ce mail est envoyé automatiquement à partir de l'application MyWellJob</p>
+<p>Ne pas utiliser le "répondre"</p>

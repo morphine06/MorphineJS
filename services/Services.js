@@ -85,6 +85,11 @@ module.exports = {
 		});
 		cb(row_co);
 	},
+	findVacationsManagers: cb => {
+		Contacts.find({ co_id: 1 }).exec((errsql, rows_co) => {
+			cb(rows_co);
+		});
+	},
 	smoothContacts: (rows_co, field, user, cb, long, exceptions) => {
 		if (field) {
 			async.eachSeries(

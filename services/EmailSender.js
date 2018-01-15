@@ -6,7 +6,7 @@
 // var path = require("path");
 
 module.exports = {
-	send: function(res, to, subject, template, data, options, cb) {
+	send: (res, to, subject, template, data, options, cb) => {
 		const nodemailer = require("nodemailer");
 		const htmlToText = require("nodemailer-html-to-text").htmlToText;
 
@@ -22,7 +22,7 @@ module.exports = {
 		transporter.use("compile", htmlToText());
 
 		data.layout = "mails/layout";
-		res.render(template, data, function(err, final_html) {
+		res.render(template, data, (err, final_html) => {
 			if (err) throw err; // TODO: handle errors better
 			let mailOptions = {
 				from: morphineserver.config.app.mail_from, // sender address

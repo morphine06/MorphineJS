@@ -26,8 +26,8 @@ export class Vacations extends M_.Controller {
 			cls: model => {
 				var cls = "";
 				// console.log("model.get('co_id').co_type", model);
-				if (model.get("va_status") == "vacations_waiting") cls += " vacations_wait";
-				if (model.get("va_status") == "vacations_refused") cls += " m_gantt_hachure2";
+				if (model.get("va_status") == "vacation_waiting") cls += " vacations_wait";
+				if (model.get("va_status") == "vacation_refused") cls += " m_gantt_hachure2";
 				if (model.get("co_id_user")) cls += " " + Services.getColorForCoType(model.get("co_id_user").co_type);
 				return cls;
 			},

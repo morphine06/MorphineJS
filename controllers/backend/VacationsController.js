@@ -8,8 +8,8 @@ function generateExport(req, test, cb) {
 
 	// console.log("req.body", req.body);
 	let where = { va_start: { "<=": end.toDate() }, va_end: { ">=": start.toDate() } };
-	if (req.body.alreadyexport === true || req.body.alreadyexport == "true") where.or = [{ va_status: 1 }, { va_status: 3 }];
-	else where.va_status = 1;
+	// if (req.body.alreadyexport === true || req.body.alreadyexport == "true") where.or = [{ va_status: 'vacation_waiting' }, { va_status: 3 }];
+	// else where.va_status = 1;
 
 	Vacations.find(where)
 		.populate("co_id_user")
@@ -86,7 +86,7 @@ function generateExport(req, test, cb) {
 
 							if (test || !ok) return nextSerie();
 							else {
-								Vacations.update({ va_id: row_va.va_id }, { va_status: 3 }, _row_va => {
+								Vacations.update({ va_id: row_va.va_id }, { va_status: "vacation_exported" }, _row_va => {
 									Actions.create({
 										ac_date: new Date(),
 										va_id: row_va.va_id,
@@ -368,7 +368,7 @@ module.exports = class extends BaseController {
 				row_va.va_end = moment();
 			}
 			row_va.co_id_user = req.user;
-			row_va.va_status = 0;
+			row_va.va_status = "vacation_waiting";
 			row_va.va_id = "";
 			Services.sendWebservices(res, { err: null, data: row_va });
 		} else {
@@ -402,7 +402,7 @@ module.exports = class extends BaseController {
 		//
 		// console.log("where",where, req.query);
 
-		let where = "1";
+		let where = "1=1";
 		let whereData = [];
 		if (req.query.start) {
 			where += " && va_end>?";
@@ -428,15 +428,18 @@ module.exports = class extends BaseController {
 		// 	});
 		// 	where += ")";
 		// }
-		if (req.query.notHideThisProject && req.query.va_status * 1 === 0) {
-			where += " && (va_status=0 || t1.ag_id=?)";
-			whereData.push(req.query.notHideThisProject);
-		} else if ((req.query.va_status || req.query.va_status * 1 === 0) && req.query.va_status != "-1") {
-			// where.va_status = req.query.va_status ;
-			if (req.query.va_status * 1 === 0) where += " && (va_status=0 || va_status=4)";
-			else where += " && va_status=?";
+		// if (req.query.notHideThisProject && req.query.va_status == 'vacation_waiting') {
+		// 	where += " && (va_status=0)";// || t1.ag_id=?
+		// 	whereData.push(req.query.notHideThisProject);
+		// } else if ((req.query.va_status || req.query.va_status * 1 === 0) && req.query.va_status != "-1") {
+		// where.va_status = req.query.va_status ;
+		// if (req.query.va_status * 1 === 0) where += " && (va_status=0 || va_status=4)";
+		// else
+		if (req.query.va_status) {
+			where += " && va_status=?";
 			whereData.push(req.query.va_status);
 		}
+		// }
 
 		// let query =
 		// 	"select t1.*, " +
@@ -445,13 +448,16 @@ module.exports = class extends BaseController {
 		// 	Services.prePopulatePerso("t3", "ag_id", ["ag_id", "ag_name", "ag_ville"]) +
 		// 	" from vacations t1 left join contacts t2 on t1.co_id_user=t2.co_id left join agencies t3 on t1.ag_id=t3.ag_id where " +
 		// 	where;
-		// console.log("query,whereData", query,whereData);
-		Vacations.find(where, whereData).exec((errsql, rows_va) => {
-			// Services.populatePerso(rows_va, ["ag_id", "co_id_user"]);
-			// console.log("rows_va", rows_va);
-			// res.send({ data: rows_va });
-			Services.sendWebservices(res, { err: null, data: rows_va });
-		});
+		// console.log("where,whereData", where, whereData);
+		Vacations.find(where, whereData)
+			.populate("co_id_user")
+			.exec((errsql, rows_va) => {
+				// console.log("rows_va", rows_va);
+				// Services.populatePerso(rows_va, ["ag_id", "co_id_user"]);
+				// console.log("rows_va", rows_va);
+				// res.send({ data: rows_va });
+				Services.sendWebservices(res, { err: null, data: rows_va });
+			});
 		// Vacations
 		// .populate('co_id_user')
 		// .populate('ag_id')
@@ -521,7 +527,7 @@ module.exports = class extends BaseController {
 						});
 					},
 					nextS => {
-						let myemail = Services.getContactEmail(row_co);
+						let myemail = Shared.getContactEmail(row_co);
 						if (myemail && acceptedorrefused) {
 							EmailSender.send(
 								res,
@@ -613,7 +619,7 @@ module.exports = class extends BaseController {
 					// 	});
 					// }
 					next => {
-						Services.findVacationsManagers(row_va.ag_id, _rows_co_manager => {
+						Services.findVacationsManagers(_rows_co_manager => {
 							rows_co_manager = _rows_co_manager;
 							async.eachSeries(
 								rows_co_manager,
@@ -622,7 +628,7 @@ module.exports = class extends BaseController {
 										nextManager();
 										return;
 									}
-									let myemail = Services.getContactEmail(row_co_manager);
+									let myemail = Shared.getContactEmail(row_co_manager);
 									if (myemail) {
 										EmailSender.send(
 											res,
@@ -673,7 +679,7 @@ module.exports = class extends BaseController {
 					// 		async.eachSeries(
 					// 			rows_co_vacationsupervisor,
 					// 			(row_co_manager, nextManager) => {
-					// 				let myemail = Services.getContactEmail(row_co_manager);
+					// 				let myemail = Shared.getContactEmail(row_co_manager);
 					// 				if (myemail) {
 					// 					sails.hooks.email.send(
 					// 						"vacationvalidationsupervisor",
@@ -685,7 +691,7 @@ module.exports = class extends BaseController {
 					// 							row_ag: row_ag
 					// 						},
 					// 						{
-					// 							to: Shared.completeName(row_co_manager) + " <" + Services.getContactEmail(row_co_manager) + ">",
+					// 							to: Shared.completeName(row_co_manager) + " <" + Shared.getContactEmail(row_co_manager) + ">",
 					// 							subject: "MyWellJob > Absence à valider " + row_ag.ag_name
 					// 						},
 					// 						err => {

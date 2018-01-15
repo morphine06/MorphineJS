@@ -1,0 +1,212 @@
+.m_gantt {
+	position: relative;
+	background-color: white;
+}
+.m_gantt-clear {
+	clear: both;
+}
+.m_gantt-scrollspace {
+	height: 30px;
+	width: 30px;
+}
+.m_gantt-ressources-header {
+	font-weight: bold;
+	font-size: 14px;
+}
+.m_gantt table {
+	border-collapse: collapse;
+}
+.m_gantt-relative {
+	position: relative;
+	width: 100%;
+	height: 0;
+}
+.m_gantt-col-labels {
+	/*	float: left;*/
+	width: 200px;
+	height: 100%;
+}
+.m_gantt_hachure {
+	background-image: url(/images/fond-hachure-ok.png);
+	animation-duration: 2s;
+	animation-name: bganim;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+}
+.m_gantt_hachure2 {
+	background-image: url(/images/fond-hachure-refuse2.png);
+	background-position: 50%;
+}
+.m_gantt_hachure3 {
+	background-image: url(/images/ico_exporte.png);
+	animation-duration: 2s;
+	animation-name: bganim2;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+}
+.m_gantt-col-center {
+	/*	float: left;*/
+	height: 100%;
+	/*	width: 100px;*/
+	overflow-x: visible;
+	overflow-y: hidden;
+	/*	-webkit-appearance: scrollbartrack-vertical;*/
+}
+
+.m_gantt-col-sums {
+	float: left;
+	width: 0;
+	height: 100%;
+}
+.m_gantt-grid-container {
+	/*background-image: url(/images/m_gantt-bg.gif);*/
+	overflow: scroll;
+	position: relative;
+}
+.m_gantt-grid {
+	background-image: url(/images/m_gantt-bg.gif);
+	position: relative;
+	overflow: hidden;
+}
+.m_gantt-ressources {
+	background-image: url(/images/m_gantt-bg.gif);
+	position: relative;
+}
+.m_gantt-grid-header table {
+	table-layout: fixed;
+	width: 100%;
+}
+.m_gantt-grid-header td {
+	font-size: 11px;
+	text-align: center;
+	padding: 2px 0;
+}
+.m_gantt-grid-header-dayofweek {
+	background-color: #eee;
+}
+.m_gantt-grid-header-day {
+	background-color: #ccc;
+}
+.m_gantt-grid-header-month {
+	background-color: #aaa;
+}
+.m_gantt-grid-header .m_gantt-grid-header-month td {
+	border-right: 1px solid #ccc;
+}
+.m_gantt-task {
+	height: 20px;
+	position: absolute;
+	/*text-align: center;*/
+	background-color: #5bc0de;
+	cursor: move;
+	z-index: 2;
+	border-right: 1px solid white;
+	/*overflow: hidden;*/
+	white-space: nowrap;
+}
+.m_gantt-text {
+	position: absolute;
+	left: calc(100% + 4px);
+	white-space: nowrap;
+}
+.m_gantt-bar {
+	height: 20px;
+	position: absolute;
+	text-align: center;
+	background-color: #5bc0de;
+	cursor: move;
+	z-index: 2;
+}
+.m_gantt-link {
+	height: 50px;
+	position: absolute;
+	z-index: 1;
+}
+.m_gantt-resize {
+	position: absolute;
+	width: 6px;
+	height: 100%;
+	background-color: #469eb8;
+	right: 0;
+	top: 0;
+	cursor: e-resize;
+}
+.m_gantt-advance {
+	position: absolute;
+	width: 100%;
+	height: 5px;
+	background-color: #5cb85c;
+	left: 0;
+	top: 15px;
+	cursor: e-resize;
+}
+.m_gantt-advance.warning {
+	background-color: orange;
+}
+.m_gantt-advance.danger {
+	background-color: #d9534f;
+}
+.m_gantt-project {
+	height: 10px;
+	position: absolute;
+	/*text-align: center;*/
+	background-color: rgba(85, 85, 85, 0.6);
+	/*color: white;*/
+	z-index: 2;
+	cursor: pointer;
+	/*overflow: hidden;*/
+}
+.m_gantt-group {
+	height: 10px;
+	position: absolute;
+	/*text-align: center;*/
+	background-color: rgba(66, 139, 202, 0.6);
+	/*color: white;*/
+	z-index: 2;
+	/*overflow: hidden;*/
+}
+.m_gantt-group-arrow-left {
+	position: absolute;
+	top: 10px;
+	left: 0px;
+	width: 0;
+	height: 0;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-top: 10px solid rgba(66, 139, 202, 0.6);
+}
+.m_gantt-group-arrow-right {
+	position: absolute;
+	top: 10px;
+	right: 0px;
+	width: 0;
+	height: 0;
+	border-left: 10px solid transparent;
+	border-right: 10px solid transparent;
+	border-top: 10px solid rgba(66, 139, 202, 0.6);
+}
+.m_gantt-project .m_gantt-group-arrow-left {
+	border-top-color: rgba(85, 85, 85, 0.6);
+}
+.m_gantt-project .m_gantt-group-arrow-right {
+	border-top-color: rgba(85, 85, 85, 0.6);
+}
+
+.m_gantt-ressource-name {
+	position: absolute;
+	z-index: 4;
+	background-color: rgba(255, 255, 255, 0.7);
+	right: 10px;
+	padding: 3px 10px;
+	cursor: pointer;
+}
+
+.m_gantt-work {
+	position: absolute;
+	background-color: #5cb85c;
+	width: 32px;
+	height: 32px;
+}
+.m_gantt-work.danger {
+	background-color: #d9534f;
+}

@@ -96,6 +96,7 @@
 		"sails": false,
 		"Opportunities": false,
 		"Commandes": false,
+		"Events": false,
 		"Sockets": false
 	}
 }

@@ -167,6 +167,58 @@ module.exports = {
 			policies: ["accessBackend"]
 		},
 
+		"GET /1.0/events": {
+			controller: "backend/EventsController",
+			action: "find_1_0",
+			policies: ["accessBackend"]
+		},
+		"GET /1.0/events/:ev_id": {
+			controller: "backend/EventsController",
+			action: "findone_1_0",
+			policies: ["accessBackend"]
+		},
+		"POST /1.0/events": {
+			controller: "backend/EventsController",
+			action: "create_1_0",
+			policies: ["accessBackend"]
+		},
+		"PUT /1.0/events/:ev_id": {
+			controller: "backend/EventsController",
+			action: "update_1_0",
+			policies: ["accessBackend"]
+		},
+		"DELETE /1.0/events/:ev_id": {
+			controller: "backend/EventsController",
+			action: "destroy_1_0",
+			policies: ["accessBackend"]
+		},
+
+		"GET /1.0/candidates": {
+			controller: "backend/CandidatesController",
+			action: "find_1_0",
+			policies: ["accessBackend"]
+		},
+		"GET /1.0/candidates/:ca_id": {
+			controller: "backend/CandidatesController",
+			action: "findone_1_0",
+			policies: ["accessBackend"]
+		},
+		"POST /1.0/candidates": {
+			controller: "backend/CandidatesController",
+			action: "create_1_0",
+			policies: ["accessBackend"]
+		},
+		"PUT /1.0/candidates/:ca_id": {
+			controller: "backend/CandidatesController",
+			action: "update_1_0",
+			policies: ["accessBackend"]
+		},
+		"DELETE /1.0/candidates/:ca_id": {
+			controller: "backend/CandidatesController",
+			action: "destroy_1_0",
+			policies: ["accessBackend"]
+		},
+
 		"GET /1.0/actions": {
 			controller: "backend/ActionsController",
 			action: "find_1_0",

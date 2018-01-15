@@ -198,10 +198,10 @@ module.exports = {
 	},
 	getVaStatus: function() {
 		return [
-			{ key: "vacations_waiting", val: "Attente de validation", short: "Attente", color: "bg_col5" },
-			{ key: "vacations_accepted", val: "Accepté par le responsable", short: "Accepté", color: "bg_col2" },
+			{ key: "vacation_waiting", val: "Attente de validation", short: "Attente", color: "bg_col5" },
+			{ key: "vacation_accepted", val: "Accepté par le responsable", short: "Accepté", color: "bg_col2" },
 			// { key: 1, val: "Validé par le siège", short: "Validé", color: "bg_col2" },
-			{ key: "vacations_refused", val: "Refusé par le responsable", short: "Refusé", color: "bg_col3" }
+			{ key: "vacation_refused", val: "Refusé par le responsable", short: "Refusé", color: "bg_col3" }
 			// { key: 2, val: "Refusé par le siège", short: "Refusé", color: "bg_col3" },
 			// { key: 3, val: "Exporté", short: "Exporté", color: "bg_col4" }
 		];
@@ -329,6 +329,62 @@ module.exports = {
 	// 	}
 	// 	return res;
 	// },
+	getCandidateSubTasks: function() {
+		return [
+			{ key: 1, val: "Promesse d'embauche envoyée" },
+			{ key: 2, val: "Promesse d'embauche retournée" },
+			{ key: 3, val: "CNI" },
+			{ key: 4, val: "Carte vitale" },
+			{ key: 5, val: "Permis de conduire" },
+			{ key: 6, val: "Justificatif de domicile" },
+			{ key: 7, val: "RIB création sur site bancaire" },
+			{ key: 8, val: "Contrat de travail envoyé" },
+			{ key: 9, val: "Avenant DFS envoyé" },
+			{ key: 10, val: "Documents prévoyance envoyé" },
+			{ key: 11, val: "Contrat de travail reçus" },
+			{ key: 12, val: "Avenant DFS reçu" },
+			{ key: 13, val: "Documents prévoyance reçus" },
+			{ key: 14, val: "Documents mutuelle reçus" },
+			{ key: 15, val: "Livret d'intégration" },
+			{ key: 16, val: "Livret PLD" },
+			{ key: 17, val: "Confirmation date d'embauche" },
+			{ key: 18, val: "Agence prévenue de l'arrivée du salarié" },
+			{ key: 19, val: "Commande du téléphone" },
+			{ key: 20, val: "Expédition du téléphone" },
+			{ key: 21, val: "Commande des cartes de visites" },
+			{ key: 22, val: "Expédition des cartes de visites" },
+			{ key: 23, val: "Commande du véhicule" },
+			{ key: 24, val: "Clause véhicule fonction" },
+			{ key: 25, val: "Contrat + papiers envoyés à Françoise" },
+			{ key: 26, val: "DPAE" },
+			{ key: 27, val: "Adresse mail créée ASI" },
+			{ key: 28, val: "Enregistrée dans le tableau pour création groupe" },
+			{ key: 29, val: "Paramétrage ordinateur" },
+			{ key: 30, val: "Matrice note de frais" },
+			{ key: 31, val: "Prime à l'embauche" },
+			{ key: 32, val: "Augmentation de salaire" },
+			{ key: 33, val: "ERP" },
+			{ key: 34, val: "Autre fichier" },
+
+			{ key: 100, val: "Désactivation ERP" },
+			{ key: 101, val: "Désactivation PIXID" },
+			{ key: 102, val: "Désactivation Site" },
+			{ key: 103, val: "Désactivation PLD" },
+			{ key: 104, val: "Annonces (pôle emploi, boncoin, regionjob)" },
+			{ key: 105, val: "Boite mail sur téléphone" },
+			{ key: 106, val: "Regionjob" },
+			{ key: 134, val: "Autre fichier" }
+		];
+	},
+
+	getCommercialsType: function() {
+		return [
+			{ key: "1", val: "Rémunération du fixe sur ses résulats personnels", short: "Fixe" },
+			{ key: "4", val: "Rémunération du fixe sur les résultats de l'agence", short: "Fixe agence" },
+			{ key: "2", val: "Rémunération du variable sur ses résulats personnels", short: "Variable" },
+			{ key: "3", val: "Rémunération du variable sur les résultats de l'agence", short: "Variable agence" }
+		];
+	},
 
 	number_format: function(number, decimals, decPoint, thousandsSep) {
 		// eslint-disable-line camelcase

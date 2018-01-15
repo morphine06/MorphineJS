@@ -8666,14 +8666,12 @@ M_.Form.DateHour = class extends M_.Form.Input {
 		if (d1 !== "") {
 			var d = moment(d1);
 			var d2 = this.formHour.getValue();
-			// console.log("d2",d2,d2.hours(),d2.minutes(),d2.seconds(),d2.format('HH:mm'),d2.utcOffset());
 			if (d2) {
-				// d2.local() ;
-				// log(".utcOffset()",d2.utcOffset())
 				d.hours(d2.hours());
 				d.minutes(d2.minutes()); //+d2.utcOffset()
 				d.seconds(d2.seconds());
 			}
+			d.add(d.utcOffset(), 'minutes').utcOffset(0)
 			return d;
 		}
 		return d1;

@@ -1,0 +1,156 @@
+<div>
+   <div class="M_FloatRight">
+      <button class="M_Button primary candidatesdetails-editcontact">Modifier</button>
+   </div>
+   <div class="M_FloatRight bg_col6" style="width:230px; padding:15px; text-align:center; margin-left:20px;">
+      <h3>Augmentation salaire</h3>
+      <div style="font-size:30px;">
+         <%= _.Services.calculateAugmentationSalary(row_ca) %>
+      </div>
+   </div>
+
+   <!-- <div class="M_FloatRight"></div> -->
+   <h1>
+      <%= _.Services.completeNameCandidate(row_ca) %>
+   </h1>
+   <h2>
+      <%= _.result(_.find(_.Shared.getCandidateSteps(), {key: row_ca.ca_status}), 'val') %>
+   </h2>
+   <% if (row_ca.co_id) { %><a class="M_Important candidatesdetails-showcontact" style="color:white;" href="javascript:void(0);">Voir la fiche contact</a><% } %>
+    <div class="M_Clear"></div>
+    <hr>
+    <% if(_.Services.hasCoordinateCandidate(row_ca) || row_ca.ca_address1 || row_ca.ca_comment) { %>
+    <div class="M_Row bg_col6 M_Pad M_MarginBottom">
+        <% if(_.Services.hasCoordinateCandidate(row_ca)) { %>
+        <div class="M_Col4 M_MarginRight M_BorderRight">
+            <h3>Coordonnées</h3>
+            <% if(row_ca.ca_email1) { %><div>eMail : <a href="mailto:<%= row_ca.ca_email1 %>"><%= row_ca.ca_email1 %></a></div><% } %>
+            <% if(row_ca.ca_email2) { %><div>eMail : <a href="mailto:<%= row_ca.ca_email2 %>"><%= row_ca.ca_email2 %></a></div><% } %>
+            <% if(row_ca.ca_email3) { %><div>eMail : <a href="mailto:<%= row_ca.ca_email3 %>"><%= row_ca.ca_email3 %></a></div><% } %>
+            <% if(row_ca.ca_tel1) { %><div>Tél : <a href="tel:<%= row_ca.ca_tel1_formated %>"><%= row_ca.ca_tel1_normalized %></a></div><% } %>
+            <% if(row_ca.ca_tel2) { %><div>Tél : <a href="tel:<%= row_ca.ca_tel2_formated %>"><%= row_ca.ca_tel2_normalized %></a></div><% } %>
+            <% if(row_ca.ca_tel3) { %><div>Tél : <a href="tel:<%= row_ca.ca_tel3_formated %>"><%= row_ca.ca_tel3_normalized %></a></div><% } %>
+            <% if(row_ca.ca_mobile1) { %><div>Mobile : <a href="tel:<%= row_ca.ca_mobile1_formated %>"><%= row_ca.ca_mobile1_normalized %></a></div><% } %>
+            <% if(row_ca.ca_mobile2) { %><div>Mobile : <a href="tel:<%= row_ca.ca_mobile2_formated %>"><%= row_ca.ca_mobile2_normalized %></a></div><% } %>
+            <% if(row_ca.ca_mobile3) { %><div>Mobile : <a href="tel:<%= row_ca.ca_mobile3_formated %>"><%= row_ca.ca_mobile3_normalized %></a></div><% } %>
+            <% if(row_ca.ca_fax1) { %><div>Fax : <a href="fax:<%= row_ca.ca_fax1_formated %>"><%= row_ca.ca_fax1_normalized %></a></div><% } %>
+            <% if(row_ca.ca_fax2) { %><div>Fax : <a href="fax:<%= row_ca.ca_fax2_formated %>"><%= row_ca.ca_fax2_normalized %></a></div><% } %>
+            <% if(row_ca.ca_fax3) { %><div>Fax : <a href="fax:<%= row_ca.ca_fax2_formated %>"><%= row_ca.ca_fax3_normalized %></a></div><% } %>
+            <% if(row_ca.ca_web1) { %><div>Web : <a href="<%= row_ca.ca_web1 %>" target="_blank"><%= row_ca.ca_web1 %></a></div><% } %>
+            <% if(row_ca.ca_web2) { %><div>Web : <a href="<%= row_ca.ca_web2 %>" target="_blank"><%= row_ca.ca_web2 %></a></div><% } %>
+            <% if(row_ca.ca_web3) { %><div>Web : <a href="<%= row_ca.ca_web3 %>" target="_blank"><%= row_ca.ca_web3 %></a></div><% } %>
+        </div>
+        <% } %>
+        <% if(row_ca.ca_address1) { %>
+        <div class="M_Col4 M_MarginRight M_BorderRight">
+            <h3>Adresse</h3>
+            <% if(row_ca.ca_address1) { %><div><%= row_ca.ca_address1 %></div><% } %>
+            <% if(row_ca.ca_address2) { %><div><%= row_ca.ca_address2 %></div><% } %>
+            <% if(row_ca.ca_address3) { %><div><%= row_ca.ca_address3 %></div><% } %>
+            <div><%= row_ca.ca_zip %> <%= row_ca.ca_city %> <%= row_ca.ca_country %></div>
+        </div>
+        <% } %>
+        <% if(row_ca.ca_comment || row_ca.ca_viadeo || row_ca.ca_linkedin) { %>
+        <div class="M_Col4">
+            <h3>Commentaire</h3>
+            <div><%= row_ca.ca_comment %></div>
+            <% if (row_ca.ca_viadeo) { %><div><a target="_blank" href="<%= _.M_.Utils.urlIze(row_ca.ca_viadeo) %>"><%= _.M_.Utils.urlIze(row_ca.ca_viadeo) %></a></div><% } %>
+            <% if (row_ca.ca_linkedin) { %><div><a target="_blank" href="<%= _.M_.Utils.urlIze(row_ca.ca_linkedin) %>"><%= _.M_.Utils.urlIze(row_ca.ca_linkedin) %></a></div><% } %>
+        </div>
+        <% } %>
+    </div>
+    <% } %>
+    <% if(row_ca.ca_positivepoints || row_ca.ca_negativepoints) { %>
+    <div class="M_Row M_MarginBottom">
+        <% if(row_ca.ca_positivepoints) { %>
+        <div class="M_Col6 M_MarginRight M_BorderRight">
+            <h3>Points positifs</h3>
+            <ul class="M_BulletStandard">
+                <%
+                var points = row_ca.ca_positivepoints.split('\n') ;
+                _.each(points, function(point) {
+                %><li><%= point %></li><% }) %>
+            </ul>
+        </div>
+        <% } %>
+        <% if(row_ca.ca_negativepoints) { %>
+        <div class="M_Col6">
+            <h3>Points négatifs</h3>
+            <ul class="M_BulletStandard">
+                <%
+                var points = row_ca.ca_negativepoints.split('\n') ;
+                _.each(points, function(point) {
+                %><li><%= point %></li><% }) %>
+            </ul>
+        </div>
+        <% } %>
+    </div>
+    <hr>
+    <% } %>
+    <div class="M_Row M_MarginBottom">
+        <div class="M_Col6 M_MarginRight M_BorderRight">
+            <h3>Etat actuel</h3>
+            <table>
+                <% if (row_ca.ca_company) { %><tr><td>Entreprise</td><td><%= row_ca.ca_company %></td></tr><% } %>
+                <% if (row_ca.ca_group) { %><tr><td>Groupe</td><td><%= row_ca.ca_group %></td></tr><% } %>
+                <% if (row_ca.ca_post) { %><tr><td>Poste</td><td><%= _.result(_.find(_.Services.getTabPost(), {key:row_ca.ca_post}), 'val') %></td></tr><% } %>
+                <% if (row_ca.ca_city2) { %>
+                    <tr><td>Ville/agence</td><td><%= row_ca.ca_city2 %></td></tr>
+                <% } else if(row_ca.ca_city) { %>
+                    <tr><td>Ville</td><td><%= row_ca.ca_city %></td></tr>
+                <% } %>
+                <% if (row_ca.ca_type) { %><tr><td>Typologie</td><td><%= row_ca.ca_type %></td></tr><% } %>
+                <% if (row_ca.ca_experienceyears) { %><tr><td>Nb année expérience</td><td><%= row_ca.ca_experienceyears %></td></tr><% } %>
+                <% if (row_ca.ca_dfs) { %><tr><td>DFS</td><td><%= _.result(_.find(_.Services.getTabDFS(), {key:row_ca.ca_dfs}), 'val') %></td></tr><% } %>
+                <% if (row_ca.ca_participation) { %><tr><td>Participation</td><td><%= _.result(_.find(_.Services.getTabParticipation(), {key:row_ca.ca_participation}), 'val') %></td></tr><% } %>
+                <% if (row_ca.ca_software) { %><tr><td>Logiciel</td><td><%= row_ca.ca_software %></td></tr><% } %>
+                <% if (row_ca.ca_clause) { %><tr><td>Clause non conc.</td><td><%= row_ca.ca_clause %></td></tr><% } %>
+                <% if (row_ca.ca_planning) { %><tr><td>Planning</td><td><%= row_ca.ca_planning %></td></tr><% } %>
+                <% if (row_ca.ca_comments) { %><tr><td>Commentaires</td><td><%= row_ca.ca_comments %></td></tr><% } %>
+                <% if (row_ca.ca_otheravantages) { %><tr><td>Autres avantages</td><td><%= row_ca.ca_otheravantages %></td></tr><% } %>
+            </table>
+        </div>
+        <div class="M_Col6">
+            <h3>Proposition</h3>
+            <table>
+                <% if (row_ca.ca_agency) { %><tr><td>Agence en création</td><td><%= row_ca.ca_agency %></td></tr><% } %>
+                <% if (row_ca.ag_id) { %><tr><td>Agence</td><td><%= row_ca.ag_id.ag_name %></td></tr><% } %>
+                <% if (row_ca.ca_posttotake) { %><tr><td>Poste à pourvoir</td><td><%= _.result(_.find(_.Services.getTabPost(), {key:row_ca.ca_posttotake}), 'val') %></td></tr><% } %>
+                <% if (row_ca.ca_secretary) { %><tr><td>Profil secrétaire</td><td><%= row_ca.ca_secretary %></td></tr><% } %>
+                <% if (row_ca.ca_contractprorh) { %><tr><td>Contrat pro RH</td><td><%= row_ca.ca_contractprorh %></td></tr><% } %>
+                <% if (row_ca.ca_cv) { %><tr><td>Récupération CV</td><td><%= _.result(_.find(_.Services.getTabBdd(), {key:row_ca.ca_cv}), 'val')  %></td></tr><% } %>
+                <% if (row_ca.ca_customercopy) { %><tr><td>Copie client</td><td><%= _.result(_.find(_.Services.getTabBdd(), {key:row_ca.ca_customercopy}), 'val') %></td></tr><% } %>
+                <% if (row_ca.ca_bdd) { %><tr><td>Récupération BDD</td><td><%= _.result(_.find(_.Services.getTabBdd(), {key:row_ca.ca_bdd}), 'val') %></td></tr><% } %>
+            </table>
+        </div>
+    </div>
+    <hr>
+    <div class="M_Row M_MarginBottom">
+        <div class="M_Col6 M_MarginRight M_BorderRight">
+            <h3>Etat actuel chiffré</h3>
+            <table>
+                <% if (row_ca.ca_salary) { %><tr><td>Salaire brut</td><td><%= row_ca.ca_salary %></td></tr><% } %>
+                <% if (row_ca.ca_prims) { %><tr><td>Primes</td><td><%= row_ca.ca_prims %></td></tr><% } %>
+                <% if (row_ca.ca_nbhours) { %><tr><td>Base horaire</td><td><%= row_ca.ca_nbhours %></td></tr><% } %>
+                <% if (row_ca.ca_salaryvariable) { %><tr><td>Salaire variable sur</td><td><%= _.result(_.find(_.Services.getTabSalaryVariable(), {key:row_ca.ca_salaryvariable}), 'val') %></td></tr><% } %>
+                <% if (row_ca.ca_purcent) { %><tr><td>Taux de %</td><td><%= row_ca.ca_purcent %></td></tr><% } %>
+                <% if (row_ca.ca_13months) { %><tr><td>13ème mois</td><td><%= _.result(_.find(_.Services.getTab13Month(), {key:row_ca.ca_13months}), 'val') %></td></tr><% } %>
+                <% if (row_ca.ca_insurance) { %><tr><td>Mutuelle</td><td><%= _.result(_.find(_.Services.getTabInsurance(), {key:row_ca.ca_insurance}), 'val') %></td></tr><% } %>
+                <% if (row_ca.ca_car) { %><tr><td>Déplacement</td><td><%= _.result(_.find(_.Services.getTabCar(), {key:row_ca.ca_car}), 'val') %></td></tr><% } %>
+                <% if (row_ca.ca_meal) { %><tr><td>Repas / TR</td><td><%= _.result(_.find(_.Services.getTabMeal(), {key:row_ca.ca_meal}), 'val') %></td></tr><% } %>
+
+            </table>
+        </div>
+        <div class="M_Col6">
+            <h3>Proposition chiffrée</h3>
+            <table>
+                <% if (row_ca.ca_salaryproposed) { %><tr><td>Salaire proposé</td><td><%= row_ca.ca_salaryproposed %></td></tr><% } %>
+                <% if (row_ca.ca_variableproposed) { %><tr><td>Variable proposé</td><td><%= row_ca.ca_variableproposed %></td></tr><% } %>
+                <% if (row_ca.ca_salarymaintains) { %><tr><td>Maintien salaire</td><td><%= row_ca.ca_salarymaintains %> mois</td></tr><% } %>
+                <% if (row_ca.ca_salarymaintainstime) { %><tr><td>Durée</td><td><%= row_ca.ca_salarymaintainstime %> mois</td></tr><% } %>
+                <% if (row_ca.ca_13monthsproposed) { %><tr><td>13ème mois proposé</td><td><%= _.result(_.find(_.Services.getTab13Month(), {key:row_ca.ca_13monthsproposed}), 'val') %></td></tr><% } %>
+            </table>
+        </div>
+    </div>
+
+</div>

@@ -98,21 +98,18 @@ export class VacationsWinEdit extends M_.Window {
 					"save",
 					(store, data) => {
 						if (data.emailsSended) {
-							var managers = "",
-								supervisors = "";
+							var managers = "";
 							_.each(data.managers, function(manager, ind) {
 								if (ind > 0) managers += " et ";
 								managers += Shared.completeName(manager);
 							});
-							_.each(data.supervisors, function(supervisor, ind) {
-								if (ind > 0) supervisors += " et ";
-								supervisors += Shared.completeName(supervisor);
-							});
+							// _.each(data.supervisors, function(supervisor, ind) {
+							// 	if (ind > 0) supervisors += " et ";
+							// 	supervisors += Shared.completeName(supervisor);
+							// });
 							M_.Dialog.notify(
-								"<b>Information</b><br/>L'absence a été enregistrée. Un email a été envoyé au responsable de votre agence <span class='M_Important'>" +
+								"<b>Information</b><br/>L'absence a été enregistrée. Un email a été envoyé au(x) responsable(s) <span class='M_Important'>" +
 									managers +
-									"</span> et au siège à <span class='M_Important'>" +
-									supervisors +
 									"</span> pour validation",
 								10000
 							);
@@ -417,7 +414,7 @@ export class VacationsWinEdit extends M_.Window {
 					label: "Date",
 					width: 150,
 					val: function(model) {
-						return moment(model.get("createdAt")).format("DD/MM/YYYY | HH:mm");
+						return moment(model.get("createdAt")).format("DD/MM/YYYY | HH[H]mm");
 					}
 				}
 				// {
@@ -437,7 +434,7 @@ export class VacationsWinEdit extends M_.Window {
 			this.saveVacation();
 		});
 		$("#vacationswinedit_save2").click(() => {
-			if (Shared.canValidVacationLikeDirector(M_.App.Session)) this.form.find("va_status").setValue("vacations_accepted");
+			if (Shared.canValidVacationLikeDirector(M_.App.Session)) this.form.find("va_status").setValue("vacation_accepted");
 			this.saveVacation();
 		});
 		$("#vacationswinedit_save3").click(() => {
@@ -446,7 +443,7 @@ export class VacationsWinEdit extends M_.Window {
 				return M_.Dialog.alert("Information", "Merci d'indiquer un commentaire pour un refus", () => {});
 			}
 			this.form.find("va_status").setValue(2);
-			if (Shared.canValidVacationLikeDirector(M_.App.Session)) this.form.find("va_status").setValue("vacations_refused");
+			if (Shared.canValidVacationLikeDirector(M_.App.Session)) this.form.find("va_status").setValue("vacation_refused");
 			this.saveVacation();
 		});
 		$("#vacationswinedit_delete").click(() => {
@@ -512,10 +509,10 @@ export class VacationsWinEdit extends M_.Window {
 		this.setTitleWin();
 		this.setNbDaysInfos();
 		if (this.currentModel.get("va_id") !== "") {
-			this.actions.getStore().load({ va_id: this.currentModel.get("va_id") });
+			this.logs.getStore().load({ va_id: this.currentModel.get("va_id") });
 		} else {
 			this.show();
-			this.actions.getStore().load({ va_id: -1 });
+			this.logs.getStore().load({ va_id: -1 });
 		}
 
 		Services.getPhraseVacationAcquis(this.currentModel.get("co_id_user").co_id, $("#vacationswinedit_infos"));
@@ -533,7 +530,7 @@ export class VacationsWinEdit extends M_.Window {
 		if (Shared.canValidVacationLikeDirector(M_.App.Session)) {
 			$("#vacationswinedit_va_status").hide();
 			$("#vacationswinedit_va_comment2").show();
-			if (this.currentModel.get("va_status") == 0 || this.currentModel.get("va_status") == 4) {
+			if (this.currentModel.get("va_status") == "vacation_waiting") {
 				$("#vacationswinedit_save2div").show();
 				$("#vacationswinedit_save3div").show();
 				$("#vacationswinedit_save2").html("Accepté");

@@ -1,0 +1,41 @@
+<p><%= Services.completeName(row_co_manager) %>,</p>
+<br/>
+<p><%= Services.completeName(row_co) %> a déposé une demande d'absence.</p>
+<p>Vous êtes invité à accepter ou refuser une absence pour <%= Services.completeName(row_co) %></p>
+<br/>
+<br/>
+<table>
+    <tr>
+        <td>Salarié</td>
+        <td><%= Services.completeName(row_co) %></td>
+    </tr>
+    <tr>
+        <td>Type&nbsp;d'absence&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td><%= row_vt.vt_name %></td>
+    </tr>
+    <tr>
+        <td>Du</td>
+        <td><%= Services.dateFr(row_va.va_start) %> <% if (row_va.va_start2) { %>Matin travaillé<% } %></td>
+    </tr>
+    <tr>
+        <td>Au</td>
+        <td><%= Services.dateFr(row_va.va_end) %> <% if (row_va.va_end2) { %>Après-midi travaillé<% } %></td>
+    </tr>
+    <tr>
+        <td>Nb jours</td>
+        <td><%= Shared.getNbOpenDays(row_va.va_start, row_va.va_end, row_va.va_start2, row_va.va_end2) %></td>
+    </tr>
+    <% if (row_va.va_comment) { %>
+    <tr>
+        <td>Commentaire</td>
+        <td><%= row_va.va_comment %></td>
+    </tr>
+    <% } %>
+</table>
+<p>Si vous voyez un empéchement à cette demande, <a href="mailto:<%= row_co.co_email1 %>">contactez-le</a>.</p>
+<p><a href="http://erp.welljob.fr/#/Vacation/edit/<%= row_va.va_id %>">Voir l'absence</a></p>
+
+<br/><br/>
+<p>---------------------------</p>
+<p>Ce mail est envoyé automatiquement à partir de l'application MyWellJob</p>
+<p>Ne pas utiliser le "répondre"</p>
