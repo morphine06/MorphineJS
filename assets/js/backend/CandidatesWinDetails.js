@@ -4,7 +4,7 @@ import { M_ } from "./../../../libs-client/M_.js";
 import { Services } from "./Services.js";
 import { Shared } from "./../../compiled/Shared.js";
 import { CandidatesWinEdit } from "./CandidatesWinEdit.js";
-import { MT_Actions } from "./../../compiled/models/MT_Actions.js";
+// import { MT_Actions } from "./../../compiled/models/MT_Actions.js";
 import { MT_Contacts } from "./../../compiled/models/MT_Contacts.js";
 
 export class CandidatesWinDetails extends M_.Window {
@@ -41,11 +41,11 @@ export class CandidatesWinDetails extends M_.Window {
 			firstTab: "candidateswindetails_details",
 			onChange: (idTab, next) => {
 				// this.center() ;
-				if (idTab == "candidateswindetails_history") {
-					this.actions.getStore().reload(false, {}, () => {
-						this.center();
-					});
-				}
+				// if (idTab == "candidateswindetails_history") {
+				// 	this.actions.getStore().reload(false, {}, () => {
+				// 		this.center();
+				// 	});
+				// }
 				if (idTab == "candidateswindetails_details") {
 					this.center();
 				}
@@ -60,62 +60,62 @@ export class CandidatesWinDetails extends M_.Window {
 			}
 		});
 
-		this.formAction = new M_.Form.Form({
-			url: "/1.0/actions",
-			model: MT_Actions,
-			controller: this,
-			listeners: [
-				[
-					"beforeSave",
-					(form, data) => {
-						// console.log("data.args", data);
-						data.args.ca_id = this.currentData.ca_id;
-					}
-				],
-				[
-					"save",
-					(form, model) => {
-						form.reset();
-						this.actions.getStore().reload();
-					}
-				]
-			],
-			itemsDefaults: {
-				type: M_.Form.Text,
-				labelPosition: "top"
-				// labelWidth: 100
-			},
-			items: [
-				// {
-				// 	type: M_.Form.Combobox,
-				// 	name: "ac_type",
-				// 	label: "Type",
-				// 	labelPosition: "top",
-				// 	container: $("#candidateswindetails_ac_type"),
-				// 	store: new M_.Store({
-				// 		controller: this,
-				// 		model: M_.ModelKeyVal,
-				// 		rows: Shared.getActionTypes()
-				// 	}),
-				// 	listeners: [
-				// 		[
-				// 			"itemclick",
-				// 			(tf, val) => {
-				// 				// this.setTitleWin() ;
-				// 			}
-				// 		]
-				// 	]
-				// },
-				{
-					container: $("#candidateswindetails_ac_text"),
-					name: "ac_text",
-					label: "Texte"
-				}
-			]
-		});
-		$("#candidateswindetails_btsaveaction").click(evt => {
-			this.formAction.save();
-		});
+		// this.formAction = new M_.Form.Form({
+		// 	url: "/1.0/actions",
+		// 	model: MT_Actions,
+		// 	controller: this,
+		// 	listeners: [
+		// 		[
+		// 			"beforeSave",
+		// 			(form, data) => {
+		// 				// console.log("data.args", data);
+		// 				data.args.ca_id = this.currentData.ca_id;
+		// 			}
+		// 		],
+		// 		[
+		// 			"save",
+		// 			(form, model) => {
+		// 				form.reset();
+		// 				this.actions.getStore().reload();
+		// 			}
+		// 		]
+		// 	],
+		// 	itemsDefaults: {
+		// 		type: M_.Form.Text,
+		// 		labelPosition: "top"
+		// 		// labelWidth: 100
+		// 	},
+		// 	items: [
+		// 		// {
+		// 		// 	type: M_.Form.Combobox,
+		// 		// 	name: "ac_type",
+		// 		// 	label: "Type",
+		// 		// 	labelPosition: "top",
+		// 		// 	container: $("#candidateswindetails_ac_type"),
+		// 		// 	store: new M_.Store({
+		// 		// 		controller: this,
+		// 		// 		model: M_.ModelKeyVal,
+		// 		// 		rows: Shared.getActionTypes()
+		// 		// 	}),
+		// 		// 	listeners: [
+		// 		// 		[
+		// 		// 			"itemclick",
+		// 		// 			(tf, val) => {
+		// 		// 				// this.setTitleWin() ;
+		// 		// 			}
+		// 		// 		]
+		// 		// 	]
+		// 		// },
+		// 		{
+		// 			container: $("#candidateswindetails_ac_text"),
+		// 			name: "ac_text",
+		// 			label: "Texte"
+		// 		}
+		// 	]
+		// });
+		// $("#candidateswindetails_btsaveaction").click(evt => {
+		// 	this.formAction.save();
+		// });
 		$("#candidateswindetails_btcreatecontact").click(evt => {
 			this.openWinNewUser();
 		});
@@ -358,69 +358,69 @@ export class CandidatesWinDetails extends M_.Window {
 			});
 		}
 
-		this.actions = new M_.TableList({
-			// controller: this,
-			container: $("#candidateswindetails_historylist"),
-			// limitRows: 3,
-			store: new M_.Store({
-				controller: this,
-				model: MT_Actions,
-				url: "/1.0/actions",
-				limit: 20000,
-				args: () => {
-					var args = { ca_id: this.currentData.ca_id };
-					return args;
-				},
-				listeners: [
-					[
-						"update",
-						(store, models) => {
-							// $("#home_actions_title").html(M_.Utils.plural(store.countTotal(), "action")+" à traiter dans les prochains jours") ;
-						}
-					]
-				]
-			}),
-			listeners: [
-				[
-					"clickItem",
-					(outlet, m_id, model) => {
-						// ActionWinEdit.getInstance(this).load(m_id) ;
-					}
-				],
-				["render", (store, models) => {}]
-			],
-			colsDef: [
-				{
-					label: "Action",
-					// val: 'ac_type',
-					// width: 130,
-					val: function(model) {
-						return "";
-						// return _.result(_.find(Shared.getActionTypes(), { key: model.get("ac_type") }), "val");
-					}
-				},
-				{
-					label: "Utilisateur",
-					// width: 150,
-					val: function(model) {
-						if (model.get("co_id_user")) return Shared.completeName(model.get("co_id_user"));
-						return "";
-					}
-				},
-				{
-					label: "Date",
-					width: 150,
-					val: function(model) {
-						return moment(model.get("ac_date")).format("DD/MM/YYYY | HH:mm");
-					}
-				},
-				{
-					label: "Etat",
-					width: 150,
-					val: "ac_state"
-				}
-			]
-		});
+		// this.actions = new M_.TableList({
+		// 	// controller: this,
+		// 	container: $("#candidateswindetails_historylist"),
+		// 	// limitRows: 3,
+		// 	store: new M_.Store({
+		// 		controller: this,
+		// 		model: MT_Actions,
+		// 		url: "/1.0/actions",
+		// 		limit: 20000,
+		// 		args: () => {
+		// 			var args = { ca_id: this.currentData.ca_id };
+		// 			return args;
+		// 		},
+		// 		listeners: [
+		// 			[
+		// 				"update",
+		// 				(store, models) => {
+		// 					// $("#home_actions_title").html(M_.Utils.plural(store.countTotal(), "action")+" à traiter dans les prochains jours") ;
+		// 				}
+		// 			]
+		// 		]
+		// 	}),
+		// 	listeners: [
+		// 		[
+		// 			"clickItem",
+		// 			(outlet, m_id, model) => {
+		// 				// ActionWinEdit.getInstance(this).load(m_id) ;
+		// 			}
+		// 		],
+		// 		["render", (store, models) => {}]
+		// 	],
+		// 	colsDef: [
+		// 		{
+		// 			label: "Action",
+		// 			// val: 'ac_type',
+		// 			// width: 130,
+		// 			val: function(model) {
+		// 				return "";
+		// 				// return _.result(_.find(Shared.getActionTypes(), { key: model.get("ac_type") }), "val");
+		// 			}
+		// 		},
+		// 		{
+		// 			label: "Utilisateur",
+		// 			// width: 150,
+		// 			val: function(model) {
+		// 				if (model.get("co_id_user")) return Shared.completeName(model.get("co_id_user"));
+		// 				return "";
+		// 			}
+		// 		},
+		// 		{
+		// 			label: "Date",
+		// 			width: 150,
+		// 			val: function(model) {
+		// 				return moment(model.get("ac_date")).format("DD/MM/YYYY | HH:mm");
+		// 			}
+		// 		},
+		// 		{
+		// 			label: "Etat",
+		// 			width: 150,
+		// 			val: "ac_state"
+		// 		}
+		// 	]
+		// });
 
 		$("#candidateswindetails_bt_cancel").click(() => {
 			if (this.controller.onCancelCandidatesWinDetails) this.controller.onCancelCandidatesWinDetails();
