@@ -41,9 +41,9 @@ var modules = [
 	{ key: "Opportunities", icon: "fa-cc", label: "CRM", right: "" },
 	{ key: "Invoices", icon: "fa-book", label: "Factures", right: "" },
 	{ key: "Products", icon: "fa-battery-2", label: "Produits", right: "" },
-	{ key: "Campaigns", icon: "fa-mail-forward", label: "Campagnes", right: "" },
-	{ key: "Candidates", icon: "fa-mail-forward", label: "Candidats", right: "" },
-	{ key: "Vacations", icon: "fa-gears", label: "Abscences", right: "" },
+	{ key: "Campaigns", icon: "fa-envelope-o", label: "Campagnes", right: "" },
+	{ key: "Candidates", icon: "fa-users", label: "Candidats", right: "" },
+	{ key: "Vacations", icon: "fa-plane", label: "Abscences", right: "" },
 	{ key: "Preferences", icon: "fa-gears", label: "Préférences", right: "" },
 	{ key: "Search", icon: "fa-gears", label: "Rechercher", right: "", hideInMenu: true }
 ];
