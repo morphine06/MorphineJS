@@ -208,6 +208,21 @@ module.exports = {
 			action: "create_1_0",
 			policies: ["accessBackend"]
 		},
+		"POST /1.0/candidates/subtasks": {
+			controller: "backend/CandidatesController",
+			action: "savesubtasks_1_0",
+			policies: ["accessBackend"]
+		},
+		"POST /1.0/candidates/savesubtasksfile": {
+			controller: "backend/CandidatesController",
+			action: "savesubtasksfile_1_0",
+			policies: ["accessBackend"]
+		},
+		"GET /1.0/candidates/downloadsubtasks/:ca_id/:num": {
+			controller: "backend/CandidatesController",
+			action: "downloadsubtasks_1_0",
+			policies: ["accessBackend"]
+		},
 		"PUT /1.0/candidates/:ca_id": {
 			controller: "backend/CandidatesController",
 			action: "update_1_0",

@@ -209,6 +209,9 @@ module.exports = {
 			type: "boolean",
 			defaultsTo: 0
 		},
+		ca_id: {
+			model: "Candidates"
+		},
 		createdCo: {
 			model: "Contacts"
 		},

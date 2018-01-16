@@ -7486,6 +7486,10 @@ M_.Form.File = class extends M_.Form.Input {
 	setLabelButton(txt) {
 		this._labelButton.html(txt);
 	}
+	recreate() {
+		this.jEl.wrap('<form>').closest('form').get(0).reset();
+  		this.jEl.unwrap();
+	}
 	reset() {
 		this._labelButton.html(this.txtChooseFile);
 	}

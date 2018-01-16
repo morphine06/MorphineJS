@@ -26,6 +26,7 @@ class M_TableExec {
 		this.having = "";
 		this.groupby = "";
 		this.tabAlreadyIncluded = {};
+		this.logQuery = false;
 		this.iscount = false;
 		this.joinModels = [{ modelname: this.modelname, fieldJoin: null, modelnameto: null, modelalias: "t1" }];
 		_.each(this.def.attributes, (field, fieldName) => {
@@ -104,6 +105,10 @@ class M_TableExec {
 			if (fieldName == fieldJoin && field.model) f = field.model;
 		});
 		return f;
+	}
+	log() {
+		this.logQuery = true;
+		return this;
 	}
 	populate(fieldJoin, fieldJoinName) {
 		let tabFieldsJoins = fieldJoin.split(".");
@@ -216,7 +221,6 @@ class M_TableExec {
 	}
 	_createSelectQuery() {
 		let query = "SELECT " + this._createSelect() + " FROM " + this._createJoin() + " WHERE " + this._createWhere() + this._createOrder();
-		// console.log("query",query);
 		return query;
 	}
 	_createInsertQuery() {
@@ -429,7 +433,7 @@ class M_TableExec {
 					}
 				);
 			} else {
-				if (this.def.debug) console.warn("query", query, this.whereData);
+				if (this.def.debug || this.logQuery) console.warn("query", query, this.whereData);
 				// {
 				//     sql: query,
 				//     values: this.whereData,

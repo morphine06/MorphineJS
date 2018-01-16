@@ -63,10 +63,6 @@ export class CandidatesWinEdit extends M_.Window {
 				[
 					"valid",
 					(form, ok, err) => {
-						if (form.find("ag_id").getValue() === "" && form.find("ca_agency").getValue() === "") {
-							err.push({ key: "ca_agency", label: "Saisir le nom d'une nouvelle agence ou choisir une agence déjà existante" });
-							return false;
-						}
 						return true;
 					}
 				],

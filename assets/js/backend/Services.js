@@ -4,6 +4,22 @@ import { M_ } from "./../../../libs-client/M_.js";
 import { Shared } from "./../../compiled/Shared.js";
 
 export var Services = {
+	completeNameCandidate: function(row_ca, withSociety = false, forceFirstnameFirst = false) {
+		// console.log("row_co", row_co);
+		if (!row_ca) return "";
+		if (row_ca instanceof M_.Model) {
+			row_ca = row_ca.getData();
+		}
+		var res = "";
+		// console.log("row_ca", row_ca);
+		// console.log("this.getUserRight('persoinvertname')", this.getUserRight('persoinvertname'));
+		if (row_ca.ca_name) res += row_ca.ca_name.toUpperCase();
+		if (row_ca.ca_firstname && row_ca.ca_name) res += " ";
+		if (row_ca.ca_firstname) res += _.capitalize(row_ca.ca_firstname);
+		// }
+		if (withSociety && !_.isEmpty(row_ca.ca_society)) res += " | " + _.capitalize(row_ca.ca_society);
+		return res;
+	},
 	drawCreatedModified: function(row_co) {
 		var html = "";
 		if (row_co.createdAt) {
@@ -135,6 +151,46 @@ export var Services = {
 		if (data.co_fax2) data.co_fax2_normalized = M_.Utils.formatPhone(data.co_fax2);
 		if (data.co_fax3) data.co_fax3_normalized = M_.Utils.formatPhone(data.co_fax3);
 	},
+	processCandidatesData: function(data) {
+		// log("data",data)
+		if (!data) return;
+		var reg1 = /[^\+0-9]/g;
+		data.ca_tel1_formated = data.ca_tel2_formated = data.ca_tel3_formated = data.ca_mobile1_formated = data.ca_mobile2_formated = data.ca_mobile3_formated = data.ca_fax1_formated = data.ca_fax2_formated = data.ca_fax3_formated = data.ca_tel1_normalized = data.ca_tel2_normalized = data.ca_fax3_formated = data.ca_tel1_normalized = data.ca_tel2_normalized = data.ca_tel3_normalized = data.ca_mobile1_normalized = data.ca_mobile2_normalized = data.ca_mobile3_normalized = data.ca_fax1_normalized = data.ca_fax2_normalized = data.ca_fax3_normalized =
+			"";
+		if (data.ca_tel1) data.ca_tel1_formated = data.ca_tel1.replace(reg1, "");
+		if (data.ca_tel2) data.ca_tel2_formated = data.ca_tel2.replace(reg1, "");
+		if (data.ca_tel3) data.ca_tel3_formated = data.ca_tel3.replace(reg1, "");
+		if (data.ca_mobile1) data.ca_mobile1_formated = data.ca_mobile1.replace(reg1, "");
+		if (data.ca_mobile2) data.ca_mobile2_formated = data.ca_mobile2.replace(reg1, "");
+		if (data.ca_mobile3) data.ca_mobile3_formated = data.ca_mobile3.replace(reg1, "");
+		if (data.ca_fax1) data.ca_fax1_formated = data.ca_fax1.replace(reg1, "");
+		if (data.ca_fax2) data.ca_fax2_formated = data.ca_fax2.replace(reg1, "");
+		if (data.ca_fax3) data.ca_fax3_formated = data.ca_fax3.replace(reg1, "");
+
+		if (data.ca_tel1) data.ca_tel1_normalized = M_.Utils.formatPhone(data.ca_tel1);
+		if (data.ca_tel2) data.ca_tel2_normalized = M_.Utils.formatPhone(data.ca_tel2);
+		if (data.ca_tel3) data.ca_tel3_normalized = M_.Utils.formatPhone(data.ca_tel3);
+		if (data.ca_mobile1) data.ca_mobile1_normalized = M_.Utils.formatPhone(data.ca_mobile1);
+		if (data.ca_mobile2) data.ca_mobile2_normalized = M_.Utils.formatPhone(data.ca_mobile2);
+		if (data.ca_mobile3) data.ca_mobile3_normalized = M_.Utils.formatPhone(data.ca_mobile3);
+		if (data.ca_fax1) data.ca_fax1_normalized = M_.Utils.formatPhone(data.ca_fax1);
+		if (data.ca_fax2) data.ca_fax2_normalized = M_.Utils.formatPhone(data.ca_fax2);
+		if (data.ca_fax3) data.ca_fax3_normalized = M_.Utils.formatPhone(data.ca_fax3);
+	},
+	calculateAugmentationSalary: function(row_ca, formated = true) {
+		// console.log("row_ca.ca_salaryproposed, row_ca.ca_salary", row_ca.ca_salaryproposed, row_ca.ca_salary);
+		if (row_ca.ca_salary * 1 === 0) return "";
+		var p = Math.round((row_ca.ca_salaryproposed * 1 / row_ca.ca_salary * 1 - 1) * 100);
+		if (formated) {
+			var ret = "";
+			if (p >= 0) ret += "+";
+			ret += p;
+			ret += "%";
+			return ret;
+		}
+		return p;
+	},
+
 	// completeAddress: function(row_ad, withLink = false, useBR = true) {
 	// 	let lineend = "\n";
 	// 	if (useBR) lineend = "<br/>";
@@ -257,19 +313,6 @@ export var Services = {
 			{ key: 12, val: "Responsable commercial et communication" },
 			{ key: 8, val: "Responsable de secteur" }
 		];
-	},
-	calculateAugmentationSalary: function(row_ca, formated = true) {
-		// console.log("row_ca.ca_salaryproposed, row_ca.ca_salary", row_ca.ca_salaryproposed, row_ca.ca_salary);
-		if (row_ca.ca_salary * 1 === 0) return "";
-		var p = Math.round((row_ca.ca_salaryproposed * 1 / row_ca.ca_salary * 1 - 1) * 100);
-		if (formated) {
-			var ret = "";
-			if (p >= 0) ret += "+";
-			ret += p;
-			ret += "%";
-			return ret;
-		}
-		return p;
 	},
 	renderContactsInfo: function(where, data) {
 		_.each(data.row_co.contacts, c => {

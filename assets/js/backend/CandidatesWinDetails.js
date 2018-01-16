@@ -10,7 +10,7 @@ import { MT_Contacts } from "./../../compiled/models/MT_Contacts.js";
 export class CandidatesWinDetails extends M_.Window {
 	constructor(opts) {
 		var defaults = {
-			tpl: JST.CandidatesWinDetails,
+			tpl: JST["assets/templates/backend/CandidatesWinDetails.html"],
 			// tplData: {},
 			// html: ``,
 			modal: true,
@@ -86,26 +86,26 @@ export class CandidatesWinDetails extends M_.Window {
 				// labelWidth: 100
 			},
 			items: [
-				{
-					type: M_.Form.Combobox,
-					name: "ac_type",
-					label: "Type",
-					labelPosition: "top",
-					container: $("#candidateswindetails_ac_type"),
-					store: new M_.Store({
-						controller: this,
-						model: M_.ModelKeyVal,
-						rows: Shared.getActionTypes()
-					}),
-					listeners: [
-						[
-							"itemclick",
-							(tf, val) => {
-								// this.setTitleWin() ;
-							}
-						]
-					]
-				},
+				// {
+				// 	type: M_.Form.Combobox,
+				// 	name: "ac_type",
+				// 	label: "Type",
+				// 	labelPosition: "top",
+				// 	container: $("#candidateswindetails_ac_type"),
+				// 	store: new M_.Store({
+				// 		controller: this,
+				// 		model: M_.ModelKeyVal,
+				// 		rows: Shared.getActionTypes()
+				// 	}),
+				// 	listeners: [
+				// 		[
+				// 			"itemclick",
+				// 			(tf, val) => {
+				// 				// this.setTitleWin() ;
+				// 			}
+				// 		]
+				// 	]
+				// },
 				{
 					container: $("#candidateswindetails_ac_text"),
 					name: "ac_text",
@@ -238,9 +238,11 @@ export class CandidatesWinDetails extends M_.Window {
 				subtask.idTemp = idTemp; //<span class='fa fa-edit'></span><span class='forinputfile'></span>
 			});
 			html += "</table>";
-			if (numPart == 0) $("#candidateswindetails_cbs").html(html);
+			if (numPart == 0) $("#candidateswindetails_cbs1").html(html);
 			if (numPart == 1) $("#candidateswindetails_cbs2").html(html);
+			// console.log("aaaaaaaaaaaaahtml", html);
 			_.each(subtasks, (subtask, ind) => {
+				// console.log("subtask.idTemp", subtask.idTemp, $("#" + subtask.idTemp + " td:nth-child(1)"));
 				if (numPart == 0 && subtask.key >= 100) return;
 				if (numPart == 1 && subtask.key < 100) return;
 				if (subtask.key == 34 || subtask.key == 134) {
@@ -265,8 +267,8 @@ export class CandidatesWinDetails extends M_.Window {
 										outlet.jEl
 											.closest("td")
 											.find("div.candidateswindetails_by")
-											.html("Fait par " + Services.completeName(M_.App.Session));
-										this.formSubtasks.find("subtask_by_" + indTemp).setValue(Services.completeName(M_.App.Session));
+											.html("Fait par " + Shared.completeName(M_.App.Session));
+										this.formSubtasks.find("subtask_by_" + indTemp).setValue(Shared.completeName(M_.App.Session));
 									} else {
 										outlet.jEl
 											.closest("td")
@@ -286,6 +288,7 @@ export class CandidatesWinDetails extends M_.Window {
 							]
 						]
 					});
+				// console.log('$("#" + subtask.idTemp + " td:nth-child(1)").length', $("#" + subtask.idTemp + " td:nth-child(1)").length);
 				$("#" + subtask.idTemp + " td:nth-child(1)").append(
 					'<div style="margin:-8px 0 0 30px;" class="little candidateswindetails_by"></div>'
 				);
@@ -317,9 +320,9 @@ export class CandidatesWinDetails extends M_.Window {
 										outlet.jEl
 											.closest("tr")
 											.find("div.candidateswindetails_by")
-											.html("Fait par " + Services.completeName(M_.App.Session));
+											.html("Fait par " + Shared.completeName(M_.App.Session));
 										// console.log(outlet.jEl.closest("td").find("div.candidateswindetails_by"));
-										this.formSubtasks.find("subtask_by_" + indTemp).setValue(Services.completeName(M_.App.Session));
+										this.formSubtasks.find("subtask_by_" + indTemp).setValue(Shared.completeName(M_.App.Session));
 										$("#" + outlet.myidtemp + " td:nth-child(2)").html(this.getSubtaskIco(true));
 									}
 								}
@@ -331,6 +334,7 @@ export class CandidatesWinDetails extends M_.Window {
 					container: $("#" + subtask.idTemp + " td:nth-child(4) .herecommdescription"),
 					name: "subtask_com_" + subtask.key
 				});
+				// console.log('$("#" + subtask.idTemp + " td:nth-child(5) .forinputfile")', $("#" + subtask.idTemp).length);
 				this.formSubtasks.addItem({
 					type: M_.Form.File,
 					container: $("#" + subtask.idTemp + " td:nth-child(5) .forinputfile"),
@@ -391,14 +395,15 @@ export class CandidatesWinDetails extends M_.Window {
 					// val: 'ac_type',
 					// width: 130,
 					val: function(model) {
-						return _.result(_.find(Shared.getActionTypes(), { key: model.get("ac_type") }), "val");
+						return "";
+						// return _.result(_.find(Shared.getActionTypes(), { key: model.get("ac_type") }), "val");
 					}
 				},
 				{
 					label: "Utilisateur",
 					// width: 150,
 					val: function(model) {
-						if (model.get("co_id_user")) return Services.completeName(model.get("co_id_user"));
+						if (model.get("co_id_user")) return Shared.completeName(model.get("co_id_user"));
 						return "";
 					}
 				},
@@ -464,7 +469,7 @@ export class CandidatesWinDetails extends M_.Window {
 			this.winNewUser = new class extends M_.Window {
 				constructor(opts) {
 					var defaults = {
-						tpl: JST.CandidatesWinNewUser,
+						tpl: JST["assets/templates/backend/CandidatesWinNewUser.html"],
 						// tplData: {},
 						modal: true,
 						// controller: this,
@@ -626,9 +631,12 @@ export class CandidatesWinDetails extends M_.Window {
 		M_.Utils.getJson("/1.0/candidates/" + ca_id, {}, data => {
 			// console.log("data", data);
 			this.currentData = data.data;
+			// console.log("loadCandidate", data.data);
 			Services.processCandidatesData(this.currentData);
 			$("#candidateswindetails_details").empty();
-			M_.App.renderMustacheTo($("#candidateswindetails_details"), JST.CandidatesDetails, { row_ca: this.currentData });
+			M_.App.renderMustacheTo($("#candidateswindetails_details"), JST["assets/templates/backend/CandidatesDetails.html"], {
+				row_ca: this.currentData
+			});
 			$(".candidatesdetails-showcontact").click(event => {
 				this.hide();
 				// console.log("this.opencoid",this.opencoid);
@@ -647,6 +655,7 @@ export class CandidatesWinDetails extends M_.Window {
 			this.opencoid = this.currentData.co_id ? this.currentData.co_id.co_id : "";
 
 			// console.log("this.currentData.ca_subtasks", this.currentData);
+			// console.log("this.currentData.ca_subtasks", this.currentData.ca_subtasks);
 			this.formSubtasks.setValues(this.currentData.ca_subtasks);
 			var subtasks = Shared.getCandidateSubTasks();
 			_.each(subtasks, (subtask, ind) => {

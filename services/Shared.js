@@ -152,6 +152,15 @@ module.exports = {
 		return html;
 	},
 
+	getCandidateSteps: function() {
+		return [
+			{ key: 1, val: "Prise de contact" },
+			{ key: 2, val: "Proposition effectuée" },
+			{ key: 3, val: "Refusé" },
+			{ key: 4, val: "Proposition acceptée" },
+			{ key: 5, val: "En agence" }
+		];
+	},
 	getCallResults: function(mytype) {
 		var tab = [
 			{ key: 0, val: "A répondu", icon: "fa-telephon" },
