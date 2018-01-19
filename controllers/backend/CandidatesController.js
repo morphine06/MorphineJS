@@ -220,9 +220,7 @@ module.exports = class extends BaseController {
 			},
 			(err, uploadedFiles) => {
 				// console.log("err", err, uploadedFiles);
-				if (err) {
-					return Services.sendWebservices(res, { err: Services.err(404) });
-				}
+				if (err) return Services.sendWebservices(res, { err: Services.err(404) });
 				var fs = require("fs-extra"),
 					path = require("path"),
 					fn = "00_" + req.body.ca_id + "_" + req.body.num,
