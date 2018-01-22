@@ -8028,7 +8028,7 @@ M_.Form.Number = class extends M_.Form.Text {
 		if (this.decimalForced) {
 			let dec = v % 1,
 				nbDec = Math.pow(10, this.decimalLength),
-				dec2 = Math.floor(dec * nbDec);
+				dec2 = Math.round(dec * nbDec);
 			dec2 = M_.Utils.str_pad(dec2, this.decimalLength, "0", -1);
 			// log("dec",dec, nbDec, dec2)
 			v2 = Math.floor(v) + this.decimalSeparator + dec2;
