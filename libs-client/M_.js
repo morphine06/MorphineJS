@@ -7991,6 +7991,7 @@ M_.Form.Number = class extends M_.Form.Text {
 			decimalSeparator: ",",
 			decimalForced: false,
 			allowNegative: true,
+			allowPoint: false,
 			valueMax: null,
 			valueMin: null,
 			startEmpty: false,
@@ -8008,6 +8009,7 @@ M_.Form.Number = class extends M_.Form.Text {
 	validChar(txt) {
 		var re = "\\d";
 		if (this.allowNegative) re += "|\\-";
+		if (this.allowPoint) re += "|\\.";
 		if (this.decimalLength > 0) re += "|\\" + this.decimalSeparator;
 		if (this.allowComparison) re += "|>|<|=";
 		this.regxValidChar = re;
