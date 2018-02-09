@@ -47,11 +47,12 @@ module.exports = class MorphineServer {
 			// _.each(configTemp, (obj)=> {
 			//     Object.assign(config, obj) ;
 			// }) ;
-			Object.assign(config, configTemp);
+			// Object.assign(config, configTemp);
+			_.merge(config, configTemp);
 		} catch (err) {
 			// console.log("err",err);
 		}
-		// console.log("config",config);
+		console.log("config", config);
 		this.config = config;
 	}
 
