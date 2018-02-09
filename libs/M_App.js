@@ -52,7 +52,7 @@ module.exports = class MorphineServer {
 		} catch (err) {
 			// console.log("err",err);
 		}
-		console.log("config", config);
+		// console.log("config", config);
 		this.config = config;
 	}
 
