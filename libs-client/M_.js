@@ -5342,7 +5342,7 @@ M_.Dialog = new class {
 	 * @param  {type}
 	 * @return {type}
 	 */
-	alert(title, text, callbackOk) {
+	alert(title, text, callbackOk, optswin={}) {
 		// this.callbackOk = callbackOk ;
 		var html = this._createTemplate(title, text);
 		html += `<div class="M_margintop">
@@ -5351,9 +5351,8 @@ M_.Dialog = new class {
 						</div>
 						<div class='M_Clear'></div>
 					</div>`;
-		var win = new M_.Window({
-			html: html
-		});
+		optswin.html = html;
+		var win = new M_.Window(optswin);
 		win.show();
 		win.jEl.find(".M_DialogOK").click(() => {
 			if (callbackOk) callbackOk();
@@ -5367,7 +5366,7 @@ M_.Dialog = new class {
 	 * @param  {type}
 	 * @return {type}
 	 */
-	confirm(title, text, callbackOk, callbackCancel) {
+	confirm(title, text, callbackOk, callbackCancel, optswin = {}) {
 		// this.callbackOk = callbackOk ;
 		// this.callbackCancel = callbackCancel ;
 		var html = this._createTemplate(title, text);
@@ -5380,9 +5379,8 @@ M_.Dialog = new class {
 						</div>
 						<div class='M_Clear'></div>
 					</div>`;
-		var winConfirm = new M_.Window({
-			html: html
-		});
+		optswin.html = html;
+		var winConfirm = new M_.Window(optswin);
 		winConfirm.show();
 		winConfirm.jEl.find(".M_DialogOK").click(() => {
 			winConfirm.hide();
@@ -5403,16 +5401,15 @@ M_.Dialog = new class {
 	 * @param  {Number} time      number of milliseconds
 	 * @param  {Function} callbackClose
 	 */
-	notify(text, time = 2000, position = "top", callbackClose = null) {
+	notify(text, time = 2000, position = "top", callbackClose = null, optswin = {}) {
 		var html = "";
 		html += `<div class="">
 							${text}
 						</div>`;
-		var win = new M_.Window({
-			html: html,
-			modal: false,
-			position: "top"
-		});
+		optswin.html = html;
+		optswin.modal = false;
+		optswin.position = "top";
+		var win = new M_.Window(optswin);
 		win.jEl.click(() => {
 			win.hide();
 		});
@@ -6934,9 +6931,9 @@ M_.Form.Input = class extends M_.Outlet {
 			var multiple = "";
 			if (this.multiple) multiple = "multiple";
 			if (this.inputType == "file") {
-				html += `<input ${tabindex} ${readOnly} id="${this.id}" type="${this.inputType}" style="${this.styleInput}" ${
-					multiple
-				} class="M_Input M_InputFile ${this.clsInput}" name="${this.name}" value="${v}" placeholder="${
+				html += `<input ${tabindex} ${readOnly} id="${this.id}" type="${this.inputType}" style="${
+					this.styleInput
+				}" ${multiple} class="M_Input M_InputFile ${this.clsInput}" name="${this.name}" value="${v}" placeholder="${
 					this.placeholder
 				}"><label class='M_InputFileLabel' for="${this.id}">${this.txtChooseFile}</label>`;
 			} else if (this.inputType == "textarea") {
@@ -7018,7 +7015,7 @@ M_.Form.Input = class extends M_.Outlet {
 	 */
 	valid() {
 		var ok = true,
-			val = this.getValue();//,err = ""
+			val = this.getValue(); //,err = ""
 		if (!this.allowEmpty && M_.Utils.isEmpty(val)) {
 			ok = false;
 			// err = "Ce champs ne peut pas être vide\n";
@@ -7244,9 +7241,9 @@ M_.Form.Multi = class extends M_.Form.Input {
 			let idTemp = M_.Utils.id();
 			let checked = "";
 			if (_.indexOf(this.value, c.key) >= 0) checked = "checked";
-			html += `<div class="M_FormMultiItem"><label for="${idTemp}"><input type='checkbox' id='${idTemp}' name='${idTemp}' data-id="${c.key}" ${
-				checked
-			}>${c.val}</label></div>`;
+			html += `<div class="M_FormMultiItem"><label for="${idTemp}"><input type='checkbox' id='${idTemp}' name='${idTemp}' data-id="${
+				c.key
+			}" ${checked}>${c.val}</label></div>`;
 		});
 		this.dd = new M_.Dropdown({
 			autoShow: true,
@@ -7285,9 +7282,7 @@ M_.Form.Multi = class extends M_.Form.Input {
 			} else {
 				valid = valtxt = val;
 			}
-			let html = `<div class="M_ComboboxMultiItem selected" data-kw-id="${valid}">${
-				valtxt
-			} <span class="fa fa-trash faa-pulse animated-hover"></span></div>`;
+			let html = `<div class="M_ComboboxMultiItem selected" data-kw-id="${valid}">${valtxt} <span class="fa fa-trash faa-pulse animated-hover"></span></div>`;
 			let jEl = $(html);
 			this.jEl.append(jEl);
 			jEl.find(".fa-trash").click(evt => {
@@ -7487,8 +7482,12 @@ M_.Form.File = class extends M_.Form.Input {
 		this._labelButton.html(txt);
 	}
 	recreate() {
-		this.jEl.wrap('<form>').closest('form').get(0).reset();
-  		this.jEl.unwrap();
+		this.jEl
+			.wrap("<form>")
+			.closest("form")
+			.get(0)
+			.reset();
+		this.jEl.unwrap();
 	}
 	reset() {
 		this._labelButton.html(this.txtChooseFile);
@@ -8639,9 +8638,9 @@ M_.Form.DateHour = class extends M_.Form.Input {
 		html += `<div style="${this.styleGroup}" class="M_FormGroup ${this.clsGroup}">`;
 		if (this.label !== "" && (this.labelPosition == "left" || this.labelPosition == "top"))
 			html += `<label style="${this.styleLabel}" class="${this.clsLabel}" ${forattr}>${this.label}</label>`;
-		html += `<div id="${this.id}" type="${this.inputType}" style="${this.styleInput}" class="M_Input ${this.clsInput}"><div id='${
-			id1
-		}' class='M_FloatLeft'></div><div id='${id2}' class='M_FloatLeft'></div>`;
+		html += `<div id="${this.id}" type="${this.inputType}" style="${this.styleInput}" class="M_Input ${
+			this.clsInput
+		}"><div id='${id1}' class='M_FloatLeft'></div><div id='${id2}' class='M_FloatLeft'></div>`;
 		html += `</div>`;
 
 		this.container.append(html);
@@ -8677,7 +8676,7 @@ M_.Form.DateHour = class extends M_.Form.Input {
 				d.minutes(d2.minutes()); //+d2.utcOffset()
 				d.seconds(d2.seconds());
 			}
-			d.add(d.utcOffset(), 'minutes').utcOffset(0)
+			d.add(d.utcOffset(), "minutes").utcOffset(0);
 			return d;
 		}
 		return d1;
@@ -9954,7 +9953,7 @@ M_.Editor = class {
 		);
 		this.container.on(
 			"drop",
-			$.proxy((e)=> {
+			$.proxy(e => {
 				var files = e.originalEvent.dataTransfer.files;
 				if (files.length === 0) return;
 
