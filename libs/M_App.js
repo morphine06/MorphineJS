@@ -364,19 +364,21 @@ module.exports = class MorphineServer {
 			() => {
 				var server;
 				if (this.config.use_https) {
-					server = https
-						.createServer(
-							{
-								key: fs.readFileSync(process.cwd() + this.config.use_https.key),
-								cert: fs.readFileSync(process.cwd() + this.config.use_https.cert)
-							},
-							app
-						)
-						.listen(this.config.port, () => {
-							this._justStarted();
-						});
+					server = https.createServer(
+						{
+							key: fs.readFileSync(process.cwd() + this.config.use_https.key),
+							cert: fs.readFileSync(process.cwd() + this.config.use_https.cert)
+						},
+						app
+					);
+					if (morphineserver.config.setServer) morphineserver.config.setServer(server);
+					server.listen(this.config.port, () => {
+						this._justStarted();
+					});
 				} else {
-					server = http.createServer(app).listen(this.config.port, () => {
+					server = http.createServer(app);
+					if (morphineserver.config.setServer) morphineserver.config.setServer(server);
+					server.listen(this.config.port, () => {
 						this._justStarted();
 					});
 				}

@@ -1,3 +1,9 @@
+/*
+fly publish:dev
+npm version 1.0.54
+npm publish
+*/
+
 var plan = require("flightplan");
 plan.target("dev", {
 	host: "www.wywiwyg.net",

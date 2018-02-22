@@ -1714,8 +1714,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	 * @param  {Function} cb   callback function with "data" argument
 	 * @return {jqXHR}
 	 */
-	static postJson(url, args, cb) {
-		return this.ajaxJson(url, args, "POST", cb);
+	static postJson(url, args, cb, optsAjax) {
+		return this.ajaxJson(url, args, "POST", cb, optsAjax);
 	}
 	/**
 	 * Do a PUT of json data
@@ -1724,8 +1724,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	 * @param  {Function} cb   callback function with "data" argument
 	 * @return {jqXHR}
 	 */
-	static putJson(url, args, cb) {
-		return this.ajaxJson(url, args, "PUT", cb);
+	static putJson(url, args, cb, optsAjax) {
+		return this.ajaxJson(url, args, "PUT", cb, optsAjax);
 	}
 	/**
 	 * Do a GET of json data
@@ -1734,8 +1734,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	 * @param  {Function} cb   callback function with "data" argument
 	 * @return {jqXHR}
 	 */
-	static getJson(url, args, cb) {
-		return this.ajaxJson(url, args, "GET", cb);
+	static getJson(url, args, cb, optsAjax) {
+		return this.ajaxJson(url, args, "GET", cb, optsAjax);
 	}
 	/**
 	 * Do a DELETE of json data
@@ -1744,8 +1744,8 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	 * @param  {Function} cb   callback function with "data" argument
 	 * @return {jqXHR}
 	 */
-	static deleteJson(url, args, cb) {
-		return this.ajaxJson(url, args, "DELETE", cb);
+	static deleteJson(url, args, cb, optsAjax) {
+		return this.ajaxJson(url, args, "DELETE", cb, optsAjax);
 	}
 	/**
 	 * Do a Ajax call of json data
@@ -1755,7 +1755,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 	 * @param  {Function} cb   callback function with "data" argument
 	 * @return {jqXHR}
 	 */
-	static ajaxJson(url, args, method, cb) {
+	static ajaxJson(url, args, method, cb, optsAjax) {
 		var opts = {
 			url: url,
 			type: method,
@@ -1767,6 +1767,7 @@ var plural3 = M_.Utils.plural(3, "une guitare", "une des {nb} guitares")
 				cb(jqXHR.responseJSON);
 			}
 		};
+		if (optsAjax) _.merge(opts, optsAjax);
 		if (method == "GET" || method == "DELETE") {
 			if (args) opts.data = args;
 		} else {
