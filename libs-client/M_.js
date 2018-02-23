@@ -4571,7 +4571,7 @@ M_.CRUD = {
 		var moreUrl = "";
 		if (this.model) {
 			var modelTemp = new this.model({ row: {} });
-			if (!_.isEmpty(okArgs[modelTemp.primaryKey])) {
+			if (!_.isEmpty(okArgs[modelTemp.primaryKey]) || (_.isNumber(okArgs[modelTemp.primaryKey]) && okArgs[modelTemp.primaryKey]!==0)) {
 				method = "PUT";
 				moreUrl = "/" + okArgs[modelTemp.primaryKey];
 				if (this.urls) {
