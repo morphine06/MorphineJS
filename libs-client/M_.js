@@ -5278,7 +5278,7 @@ M_.Window = class {
 		});
 	}
 };
-M_.Window._escapeButtonListener();
+// M_.Window._escapeButtonListener();
 
 /**
  * Display a button
