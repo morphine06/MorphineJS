@@ -19,7 +19,6 @@ export class CalendarWinEdit extends M_.Window {
 		super(optsTemp);
 		// log("this.jEl",this.jEl)
 	}
-
 	// static _instance = null ;
 	static getInstance(controller, fullcalendar) {
 		if (!this._instance) this._instance = new CalendarWinEdit({ controller: controller });
