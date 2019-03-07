@@ -2,6 +2,7 @@
 
 var express = require("express");
 var expressLayouts = require("express-ejs-layouts");
+var cors = require("cors");
 var bodyParser = require("body-parser");
 var cookieParser = require("cookie-parser");
 var compression = require("compression");
@@ -213,6 +214,10 @@ module.exports = class MorphineServer {
 
 		app.set("view engine", "ejs");
 		app.use(expressLayouts);
+
+		if (morphineserver.config.cors) {
+			app.use(cors(morphineserver.config.cors));
+		}
 
 		// 'startRequestTimer',
 		// 'cookieParser',
