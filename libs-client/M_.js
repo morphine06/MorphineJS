@@ -6923,7 +6923,7 @@ M_.Form.Input = class extends M_.Outlet {
 		if (this.labelFocusInput) forattr = 'for="' + this.id + '"';
 		if (!this.editable) readOnly = "readonly";
 		if (this.inputType == "hidden") {
-			html += `<input ${readOnly} id="${this.id}" type="${this.inputType}" class="M_Input" name="${this.name}" value="${v}">`;
+			html += `<input autocomplete="new-password" ${readOnly} id="${this.id}" type="${this.inputType}" class="M_Input" name="${this.name}" value="${v}">`;
 		} else {
 			html += `<div style="${this.styleGroup}" class="M_FormGroup ${this.clsGroup}">`;
 			if (this.label !== "" && (this.labelPosition == "left" || this.labelPosition == "top"))
@@ -6932,7 +6932,7 @@ M_.Form.Input = class extends M_.Outlet {
 			var multiple = "";
 			if (this.multiple) multiple = "multiple";
 			if (this.inputType == "file") {
-				html += `<input ${tabindex} ${readOnly} id="${this.id}" type="${this.inputType}" style="${
+				html += `<input autocomplete="new-password" ${tabindex} ${readOnly} id="${this.id}" type="${this.inputType}" style="${
 					this.styleInput
 				}" ${multiple} class="M_Input M_InputFile ${this.clsInput}" name="${this.name}" value="${v}" placeholder="${
 					this.placeholder
@@ -6948,7 +6948,7 @@ M_.Form.Input = class extends M_.Outlet {
 			} else {
 				var incremental = "";
 				if (this.incremental) incremental = 'incremental="incremental"';
-				html += `<input ${tabindex} ${readOnly} id="${this.id}" ${incremental} type="${this.inputType}" style="${
+				html += `<input autocomplete="new-password" ${tabindex} ${readOnly} id="${this.id}" ${incremental} type="${this.inputType}" style="${
 					this.styleInput
 				}" class="M_Input ${this._clsMore} ${this.clsInput}" name="${this.name}" value="${v}" placeholder="${this.placeholder}">`;
 			}
@@ -8417,9 +8417,9 @@ M_.Form.Hour = class extends M_.Form.Date {
 			<div class="M_Col6 M_FormHour_second_up"><span class="fa fa-chevron-up"></span></div>
 			<div class="M_Clear"></div>
 
-			<div class="M_Col6"><input type="text" class="form-control M_FormHour_hour" placeholder="" maxlength="2"></div>
-			<div class="M_Col6"><input type="text" class="form-control M_FormHour_minute" placeholder="" maxlength="2"></div>
-			<div class="M_Col6"><input type="text" class="form-control M_FormHour_second" placeholder="" maxlength="2"></div>
+			<div class="M_Col6"><input autocomplete="new-password" type="text" class="form-control M_FormHour_hour" placeholder="" maxlength="2"></div>
+			<div class="M_Col6"><input autocomplete="new-password" type="text" class="form-control M_FormHour_minute" placeholder="" maxlength="2"></div>
+			<div class="M_Col6"><input autocomplete="new-password" type="text" class="form-control M_FormHour_second" placeholder="" maxlength="2"></div>
 			<div class="M_Clear"></div>
 
 			<div class="M_Col6 M_FormHour_hour_down"><span class="fa fa-chevron-down"></span></div>
@@ -9691,7 +9691,7 @@ M_.Editor = class {
 							<div id="${idCode}"></div>
 							<div class="m_dropherenewimage" contenteditable><h2>Déposer ici un (ou des) fichier(s) de votre bureau</h2></div>
 							<h2 style="margin-top:15px;">Ou choisissez les fichiers à envoyer</h2>
-							<input type="file" class="m_fileinput" multiple />
+							<input autocomplete="new-password" type="file" class="m_fileinput" multiple />
 							<div class="M_Clear"></div>
 							<output class="m_fileoutput"></output>
 							<div class="M_Clear"></div>
