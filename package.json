@@ -40,7 +40,7 @@
 		"mysql2": "^1.6.1",
 		"node-minify": "^2.4.2",
 		"node-uuid": "^1.4.8",
-		"nodemailer": "^4.6.8",
+		"nodemailer": "^6.4.16",
 		"nodemailer-html-to-text": "^2.1.0",
 		"nodemailer-smtp-pool": "^2.8.3",
 		"nodemon": "^1.18.3",
